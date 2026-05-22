@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Products\Schemas;
 use App\Enums\Gender;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -23,6 +25,8 @@ class ProductForm
                     ->tabs([
                         Tab::make(trans('catalogue.product.tabs.main'))
                             ->schema(self::mainTab()),
+                        Tab::make(trans('catalogue.product.tabs.description'))
+                            ->schema(self::descriptionTab()),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -72,6 +76,17 @@ class ProductForm
             Toggle::make('in_stock')
                 ->label(fn () => trans('catalogue.product.fields.in_stock'))
                 ->default(true),
+        ];
+    }
+
+    protected static function descriptionTab(): array
+    {
+        return [
+            Textarea::make('tagline')
+                ->label(fn () => trans('catalogue.product.fields.tagline'))
+                ->rows(2),
+            RichEditor::make('description')
+                ->label(fn () => trans('catalogue.product.fields.description')),
         ];
     }
 
