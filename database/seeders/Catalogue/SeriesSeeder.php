@@ -2,12 +2,20 @@
 
 namespace Database\Seeders\Catalogue;
 
+use App\Models\Catalogue\Series;
 use Illuminate\Database\Seeder;
 
 class SeriesSeeder extends Seeder
 {
     public function run(): void
     {
-        // Content manager will add Series records via Filament admin.
+        $rows = [
+            ['slug' => 'luxury', 'name' => ['uk' => 'Luxury', 'en' => 'Luxury']],
+            ['slug' => 'onyx', 'name' => ['uk' => 'Onyx', 'en' => 'Onyx']],
+        ];
+
+        foreach ($rows as $i => $r) {
+            Series::updateOrCreate(['slug' => $r['slug']], array_merge($r, ['sort_order' => $i, 'is_active' => true]));
+        }
     }
 }

@@ -9,6 +9,7 @@ use Database\Seeders\Catalogue\ConcentrationSeeder;
 use Database\Seeders\Catalogue\NoteSeeder;
 use Database\Seeders\Catalogue\OccasionSeeder;
 use Database\Seeders\Catalogue\PerfumeFamilySeeder;
+use Database\Seeders\Catalogue\ProductSeeder;
 use Database\Seeders\Catalogue\SeasonSeeder;
 use Database\Seeders\Catalogue\SeriesSeeder;
 use Database\Seeders\Catalogue\TagSeeder;
@@ -41,6 +42,7 @@ class DatabaseSeeder extends Seeder
             AudienceSeeder::class,
             BrandSeeder::class,
             NoteSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }
