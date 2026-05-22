@@ -33,3 +33,8 @@ it('creates a concentration with abbreviation', function () {
     $c = App\Models\Catalogue\Concentration::factory()->create(['abbreviation' => 'EDP']);
     expect($c->abbreviation)->toBe('EDP');
 });
+
+it('creates a brand with country', function () {
+    $b = App\Models\Catalogue\Brand::factory()->create(['country' => 'FR']);
+    expect($b->country)->toBe('FR');
+});
