@@ -12,6 +12,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -39,6 +40,8 @@ class ProductForm
                             ->schema(self::markingTab()),
                         Tab::make(trans('catalogue.product.tabs.seo'))
                             ->schema(self::seoTab()),
+                        Tab::make(trans('catalogue.product.tabs.images'))
+                            ->schema(self::imagesTab()),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -189,6 +192,27 @@ class ProductForm
                 ->label(fn () => trans('catalogue.product.fields.seo_description'))
                 ->rows(3)
                 ->maxLength(500),
+        ];
+    }
+
+    protected static function imagesTab(): array
+    {
+        return [
+            SpatieMediaLibraryFileUpload::make('primary')
+                ->label(fn () => trans('catalogue.product.fields.primary_image'))
+                ->collection('primary')
+                ->image()
+                ->imageEditor()
+                ->maxSize(5120),
+
+            SpatieMediaLibraryFileUpload::make('gallery')
+                ->label(fn () => trans('catalogue.product.fields.gallery'))
+                ->collection('gallery')
+                ->multiple()
+                ->image()
+                ->reorderable()
+                ->appendFiles()
+                ->maxSize(5120),
         ];
     }
 

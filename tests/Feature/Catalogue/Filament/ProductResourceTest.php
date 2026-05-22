@@ -149,3 +149,27 @@ it('saves SEO fields translatable per locale', function () {
     app()->setLocale('en');
     expect($p->fresh()->seo_title)->toBe('Buy LUXURY 8');
 });
+
+it('uploads primary and gallery images via Filament', function () {
+    \Illuminate\Support\Facades\Storage::fake('public');
+
+    Livewire::test(CreateProduct::class)
+        ->fillForm([
+            'name' => ['uk' => 'LUXURY 9', 'en' => 'LUXURY 9'],
+            'slug' => 'luxury-9',
+            'sku' => 'LV-006',
+            'gender' => 'unisex',
+            'volume_ml' => 50,
+            'price_uah' => 1290,
+            'price_eur' => 35,
+            'in_stock' => true,
+            'primary' => [\Illuminate\Http\UploadedFile::fake()->image('main.jpg')],
+            'gallery' => [\Illuminate\Http\UploadedFile::fake()->image('g1.jpg'), \Illuminate\Http\UploadedFile::fake()->image('g2.jpg')],
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $p = Product::firstWhere('slug', 'luxury-9');
+    expect($p->getMedia('primary'))->toHaveCount(1);
+    expect($p->getMedia('gallery'))->toHaveCount(2);
+});
