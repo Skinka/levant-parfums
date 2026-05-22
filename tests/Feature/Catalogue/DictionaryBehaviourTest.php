@@ -38,3 +38,9 @@ it('creates a brand with country', function () {
     $b = App\Models\Catalogue\Brand::factory()->create(['country' => 'FR']);
     expect($b->country)->toBe('FR');
 });
+
+it('creates a tag with color and is_featured', function () {
+    $t = App\Models\Catalogue\Tag::factory()->create(['color' => '#C77B7B', 'is_featured' => true]);
+    expect($t->color)->toBe('#C77B7B');
+    expect($t->is_featured)->toBeTrue();
+});
