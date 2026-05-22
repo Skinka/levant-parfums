@@ -44,3 +44,14 @@ it('creates a tag with color and is_featured', function () {
     expect($t->color)->toBe('#C77B7B');
     expect($t->is_featured)->toBeTrue();
 });
+
+it('creates a note with translatable description', function () {
+    $n = App\Models\Catalogue\Note::create([
+        'name' => ['uk' => 'Жасмін', 'en' => 'Jasmine'],
+        'slug' => 'jasmin',
+        'description' => ['uk' => 'Квіткова нота', 'en' => 'Floral note'],
+    ]);
+
+    app()->setLocale('en');
+    expect($n->fresh()->description)->toBe('Floral note');
+});
