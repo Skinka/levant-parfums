@@ -173,3 +173,21 @@ it('uploads primary and gallery images via Filament', function () {
     expect($p->getMedia('primary'))->toHaveCount(1);
     expect($p->getMedia('gallery'))->toHaveCount(2);
 });
+
+it('filters products by published flag', function () {
+    Product::factory()->count(2)->create(['is_published' => true]);
+    Product::factory()->count(3)->draft()->create();
+
+    Livewire::test(ListProducts::class)
+        ->filterTable('is_published', true)
+        ->assertCountTableRecords(2);
+});
+
+it('bulk-publishes selected products', function () {
+    $drafts = Product::factory()->count(2)->draft()->create();
+
+    Livewire::test(ListProducts::class)
+        ->callTableBulkAction('publish', $drafts);
+
+    expect(Product::whereIn('id', $drafts->pluck('id'))->where('is_published', true)->count())->toBe(2);
+});
