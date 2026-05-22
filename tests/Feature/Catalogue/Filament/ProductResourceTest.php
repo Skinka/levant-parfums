@@ -127,3 +127,25 @@ it('attaches tags / seasons / occasions / audiences', function () {
     expect($p->occasions->pluck('id')->all())->toContain($occasion->id);
     expect($p->audiences->pluck('id')->all())->toContain($audience->id);
 });
+
+it('saves SEO fields translatable per locale', function () {
+    Livewire::test(CreateProduct::class)
+        ->fillForm([
+            'name' => ['uk' => 'LUXURY 8', 'en' => 'LUXURY 8'],
+            'slug' => 'luxury-8',
+            'sku' => 'LV-005',
+            'gender' => 'unisex',
+            'volume_ml' => 50,
+            'price_uah' => 1290,
+            'price_eur' => 35,
+            'in_stock' => true,
+            'seo_title' => ['uk' => 'Купити LUXURY 8', 'en' => 'Buy LUXURY 8'],
+            'seo_description' => ['uk' => 'Нотатки', 'en' => 'Notes'],
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $p = Product::firstWhere('slug', 'luxury-8');
+    app()->setLocale('en');
+    expect($p->fresh()->seo_title)->toBe('Buy LUXURY 8');
+});

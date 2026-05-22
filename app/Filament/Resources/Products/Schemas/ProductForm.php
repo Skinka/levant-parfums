@@ -37,6 +37,8 @@ class ProductForm
                             ->schema(self::inspiredByTab()),
                         Tab::make(trans('catalogue.product.tabs.marking'))
                             ->schema(self::markingTab()),
+                        Tab::make(trans('catalogue.product.tabs.seo'))
+                            ->schema(self::seoTab()),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -174,6 +176,19 @@ class ProductForm
                 ->label(fn () => trans('catalogue.product.fields.audiences'))
                 ->relationship('audiences', 'slug')
                 ->multiple()->searchable()->preload(),
+        ];
+    }
+
+    protected static function seoTab(): array
+    {
+        return [
+            TextInput::make('seo_title')
+                ->label(fn () => trans('catalogue.product.fields.seo_title'))
+                ->maxLength(255),
+            Textarea::make('seo_description')
+                ->label(fn () => trans('catalogue.product.fields.seo_description'))
+                ->rows(3)
+                ->maxLength(500),
         ];
     }
 
