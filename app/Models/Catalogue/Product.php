@@ -3,10 +3,12 @@
 namespace App\Models\Catalogue;
 
 use App\Enums\Gender;
+use App\Enums\NoteLevel;
 use Database\Factories\Catalogue\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -62,6 +64,19 @@ class Product extends Model implements HasMedia
     public function inspiredBrand(): BelongsTo
     {
         return $this->belongsTo(Brand::class, 'inspired_brand_id');
+    }
+
+    public function notes(): BelongsToMany
+    {
+        return $this->belongsToMany(Note::class, 'product_note')
+            ->withPivot(['level', 'sort_order'])
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
+    }
+
+    public function notesByLevel(NoteLevel $level): BelongsToMany
+    {
+        return $this->notes()->wherePivot('level', $level->value);
     }
 
     public function displayPrice(?string $locale = null): array
