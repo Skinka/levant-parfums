@@ -109,4 +109,34 @@ class Product extends Model implements HasMedia
             default => ['amount' => $this->price_uah, 'currency' => 'UAH'],
         };
     }
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('primary')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+
+        $this
+            ->addMediaCollection('gallery')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->fit(\Spatie\Image\Enums\Fit::Contain, 200, 200)
+            ->format('webp')
+            ->nonQueued();
+
+        $this->addMediaConversion('card')
+            ->fit(\Spatie\Image\Enums\Fit::Crop, 600, 800)
+            ->format('webp')
+            ->nonQueued();
+
+        $this->addMediaConversion('detail')
+            ->fit(\Spatie\Image\Enums\Fit::Contain, 1200, 1600)
+            ->format('webp')
+            ->nonQueued();
+    }
 }
