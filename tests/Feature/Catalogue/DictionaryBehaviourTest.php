@@ -28,3 +28,8 @@ it('boots through a factory', function () {
     expect($f->exists)->toBeTrue();
     expect($f->slug)->toBeString();
 });
+
+it('creates a concentration with abbreviation', function () {
+    $c = App\Models\Catalogue\Concentration::factory()->create(['abbreviation' => 'EDP']);
+    expect($c->abbreviation)->toBe('EDP');
+});
