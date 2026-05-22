@@ -79,6 +79,26 @@ class Product extends Model implements HasMedia
         return $this->notes()->wherePivot('level', $level->value);
     }
 
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'product_tag');
+    }
+
+    public function seasons(): BelongsToMany
+    {
+        return $this->belongsToMany(Season::class, 'product_season');
+    }
+
+    public function occasions(): BelongsToMany
+    {
+        return $this->belongsToMany(Occasion::class, 'product_occasion');
+    }
+
+    public function audiences(): BelongsToMany
+    {
+        return $this->belongsToMany(Audience::class, 'product_audience');
+    }
+
     public function displayPrice(?string $locale = null): array
     {
         $locale = $locale ?? app()->getLocale();

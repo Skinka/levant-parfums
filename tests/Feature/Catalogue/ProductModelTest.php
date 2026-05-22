@@ -60,3 +60,27 @@ it('rejects duplicate note at same level', function () {
     expect(fn () => $p->notes()->attach($n->id, ['level' => NoteLevel::Top->value, 'sort_order' => 1]))
         ->toThrow(Illuminate\Database\QueryException::class);
 });
+
+use App\Models\Catalogue\Audience;
+use App\Models\Catalogue\Occasion;
+use App\Models\Catalogue\Season;
+use App\Models\Catalogue\Tag;
+
+it('attaches simple many-to-many relations', function () {
+    $p = Product::factory()->create();
+
+    $tag = Tag::factory()->create();
+    $season = Season::factory()->create();
+    $occasion = Occasion::factory()->create();
+    $audience = Audience::factory()->create();
+
+    $p->tags()->attach($tag);
+    $p->seasons()->attach($season);
+    $p->occasions()->attach($occasion);
+    $p->audiences()->attach($audience);
+
+    expect($p->tags)->toHaveCount(1);
+    expect($p->seasons)->toHaveCount(1);
+    expect($p->occasions)->toHaveCount(1);
+    expect($p->audiences)->toHaveCount(1);
+});
