@@ -8,7 +8,6 @@ use App\Models\Catalogue\Note;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -100,8 +99,9 @@ class ProductForm
             Textarea::make('tagline')
                 ->label(fn () => trans('catalogue.product.fields.tagline'))
                 ->rows(2),
-            RichEditor::make('description')
-                ->label(fn () => trans('catalogue.product.fields.description')),
+            Textarea::make('description')
+                ->label(fn () => trans('catalogue.product.fields.description'))
+                ->rows(6),
         ];
     }
 
