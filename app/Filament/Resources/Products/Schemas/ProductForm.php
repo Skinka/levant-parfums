@@ -139,7 +139,7 @@ class ProductForm
             ->label(fn () => trans("catalogue.product.fields.{$key}"))
             ->schema([
                 Select::make('note_id')
-                    ->options(fn () => Note::query()->orderBy('slug')->pluck('slug', 'id'))
+                    ->options(fn () => Note::query()->orderBy('slug')->get()->mapWithKeys(fn (Note $n) => [$n->id => $n->name])->all())
                     ->searchable()
                     ->required(),
             ])
