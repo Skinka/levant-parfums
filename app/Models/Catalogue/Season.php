@@ -24,4 +24,9 @@ class Season extends Model
             'sort_order' => 'integer',
         ];
     }
+
+    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Catalogue\Product::class, 'product_season');
+    }
 }
