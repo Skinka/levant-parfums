@@ -11,9 +11,11 @@ use App\Models\Catalogue\Product;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 
 class ProductResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = Product::class;
 
     protected static ?string $recordTitleAttribute = 'name';

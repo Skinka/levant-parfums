@@ -10,9 +10,11 @@ use App\Filament\Resources\Notes\Tables\NotesTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 
 class NoteResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = \App\Models\Catalogue\Note::class;
 
     public static function getNavigationGroup(): ?string

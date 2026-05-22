@@ -10,9 +10,11 @@ use App\Filament\Resources\Audiences\Tables\AudiencesTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 
 class AudienceResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = \App\Models\Catalogue\Audience::class;
 
     public static function getNavigationGroup(): ?string

@@ -10,9 +10,11 @@ use App\Filament\Resources\Occasions\Tables\OccasionsTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 
 class OccasionResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = \App\Models\Catalogue\Occasion::class;
 
     public static function getNavigationGroup(): ?string

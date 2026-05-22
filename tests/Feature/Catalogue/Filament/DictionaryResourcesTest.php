@@ -37,7 +37,7 @@ it('lists PerfumeFamily records', function () {
 it('creates a PerfumeFamily', function () {
     Livewire::test(CreatePerfumeFamily::class)
         ->fillForm([
-            'name' => ['uk' => 'Цитрусове', 'en' => 'Citrus'],
+            'name' => 'Цитрусове',
             'slug' => 'citrus',
             'sort_order' => 0,
             'is_active' => true,
@@ -52,7 +52,7 @@ it('creates a PerfumeFamily', function () {
 it('creates a base-shape dictionary record via Filament', function (string $createPage, string $model, string $slug) {
     Livewire::test($createPage)
         ->fillForm([
-            'name' => ['uk' => 'Тест', 'en' => 'Test'],
+            'name' => 'Тест',
             'slug' => $slug,
             'sort_order' => 0,
             'is_active' => true,
@@ -71,7 +71,7 @@ it('creates a base-shape dictionary record via Filament', function (string $crea
 it('creates a Concentration with abbreviation via Filament', function () {
     Livewire::test(CreateConcentration::class)
         ->fillForm([
-            'name' => ['uk' => 'Парфум', 'en' => 'Parfum'],
+            'name' => 'Парфум',
             'slug' => 'parfum',
             'abbreviation' => 'PARF',
             'sort_order' => 0,
@@ -86,7 +86,7 @@ it('creates a Concentration with abbreviation via Filament', function () {
 it('creates a Brand with country via Filament', function () {
     Livewire::test(CreateBrand::class)
         ->fillForm([
-            'name' => ['uk' => 'Бренд', 'en' => 'Brand'],
+            'name' => 'Бренд',
             'slug' => 'brand-x',
             'country' => 'FR',
             'sort_order' => 0,
@@ -101,7 +101,7 @@ it('creates a Brand with country via Filament', function () {
 it('creates a Tag with color and featured flag via Filament', function () {
     Livewire::test(CreateTag::class)
         ->fillForm([
-            'name' => ['uk' => 'Бестселер', 'en' => 'Bestseller'],
+            'name' => 'Бестселер',
             'slug' => 'bestseller',
             'color' => '#C77B7B',
             'is_featured' => true,
@@ -117,9 +117,9 @@ it('creates a Tag with color and featured flag via Filament', function () {
 it('creates a Note with translatable description via Filament', function () {
     Livewire::test(CreateNote::class)
         ->fillForm([
-            'name' => ['uk' => 'Жасмін', 'en' => 'Jasmine'],
+            'name' => 'Жасмін',
             'slug' => 'jasmine',
-            'description' => ['uk' => 'Квіткова', 'en' => 'Floral'],
+            'description' => 'Квіткова',
             'sort_order' => 0,
             'is_active' => true,
         ])

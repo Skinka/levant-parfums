@@ -111,16 +111,19 @@ class ProductForm
             Select::make('perfume_family_id')
                 ->label(fn () => trans('catalogue.product.fields.perfume_family'))
                 ->relationship('perfumeFamily', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->searchable()
                 ->preload(),
             Select::make('concentration_id')
                 ->label(fn () => trans('catalogue.product.fields.concentration'))
                 ->relationship('concentration', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->searchable()
                 ->preload(),
             Select::make('series_id')
                 ->label(fn () => trans('catalogue.product.fields.series'))
                 ->relationship('series', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->searchable()
                 ->preload(),
 
@@ -152,6 +155,7 @@ class ProductForm
             Select::make('inspired_brand_id')
                 ->label(fn () => trans('catalogue.product.fields.inspired_brand'))
                 ->relationship('inspiredBrand', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->searchable()
                 ->preload(),
             TextInput::make('inspired_perfume_name')
@@ -166,18 +170,22 @@ class ProductForm
             Select::make('tags')
                 ->label(fn () => trans('catalogue.product.fields.tags'))
                 ->relationship('tags', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->multiple()->searchable()->preload(),
             Select::make('seasons')
                 ->label(fn () => trans('catalogue.product.fields.seasons'))
                 ->relationship('seasons', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->multiple()->searchable()->preload(),
             Select::make('occasions')
                 ->label(fn () => trans('catalogue.product.fields.occasions'))
                 ->relationship('occasions', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->multiple()->searchable()->preload(),
             Select::make('audiences')
                 ->label(fn () => trans('catalogue.product.fields.audiences'))
                 ->relationship('audiences', 'slug')
+                ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                 ->multiple()->searchable()->preload(),
         ];
     }

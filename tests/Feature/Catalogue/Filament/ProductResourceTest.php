@@ -26,13 +26,13 @@ it('renders the create product page with the main tab', function () {
 it('creates a product with description tab fields', function () {
     Livewire::test(CreateProduct::class)
         ->fillForm([
-            'name' => ['uk' => 'LUXURY 4', 'en' => 'LUXURY 4'],
+            'name' => 'LUXURY 4',
             'slug' => 'luxury-4',
             'sku' => 'LV-001',
             'gender' => 'unisex',
             'volume_ml' => 50,
-            'tagline' => ['uk' => 'Флоральний наркотик', 'en' => 'Floral narcotic'],
-            'description' => ['uk' => '<p>Опис</p>', 'en' => '<p>Description</p>'],
+            'tagline' => 'Флоральний наркотик',
+            'description' => '<p>Опис</p>',
             'price_uah' => 1290,
             'price_eur' => 35,
             'in_stock' => true,
@@ -50,7 +50,7 @@ it('creates a product with top/heart/base notes', function () {
 
     Livewire::test(CreateProduct::class)
         ->fillForm([
-            'name' => ['uk' => 'LUXURY 5', 'en' => 'LUXURY 5'],
+            'name' => 'LUXURY 5',
             'slug' => 'luxury-5',
             'sku' => 'LV-002',
             'gender' => 'unisex',
@@ -76,7 +76,7 @@ it('saves inspired-by brand and perfume name', function () {
 
     Livewire::test(CreateProduct::class)
         ->fillForm([
-            'name' => ['uk' => 'LUXURY 6', 'en' => 'LUXURY 6'],
+            'name' => 'LUXURY 6',
             'slug' => 'luxury-6',
             'sku' => 'LV-003',
             'gender' => 'unisex',
@@ -105,7 +105,7 @@ it('attaches tags / seasons / occasions / audiences', function () {
 
     Livewire::test(CreateProduct::class)
         ->fillForm([
-            'name' => ['uk' => 'LUXURY 7', 'en' => 'LUXURY 7'],
+            'name' => 'LUXURY 7',
             'slug' => 'luxury-7',
             'sku' => 'LV-004',
             'gender' => 'unisex',
@@ -131,7 +131,7 @@ it('attaches tags / seasons / occasions / audiences', function () {
 it('saves SEO fields translatable per locale', function () {
     Livewire::test(CreateProduct::class)
         ->fillForm([
-            'name' => ['uk' => 'LUXURY 8', 'en' => 'LUXURY 8'],
+            'name' => 'LUXURY 8',
             'slug' => 'luxury-8',
             'sku' => 'LV-005',
             'gender' => 'unisex',
@@ -139,15 +139,15 @@ it('saves SEO fields translatable per locale', function () {
             'price_uah' => 1290,
             'price_eur' => 35,
             'in_stock' => true,
-            'seo_title' => ['uk' => 'Купити LUXURY 8', 'en' => 'Buy LUXURY 8'],
-            'seo_description' => ['uk' => 'Нотатки', 'en' => 'Notes'],
+            'seo_title' => 'Купити LUXURY 8',
+            'seo_description' => 'Нотатки',
         ])
         ->call('create')
         ->assertHasNoFormErrors();
 
     $p = Product::firstWhere('slug', 'luxury-8');
-    app()->setLocale('en');
-    expect($p->fresh()->seo_title)->toBe('Buy LUXURY 8');
+    // Active locale is 'uk' (default), so seo_title is stored for 'uk'
+    expect($p->fresh()->getTranslation('seo_title', 'uk'))->toBe('Купити LUXURY 8');
 });
 
 it('uploads primary and gallery images via Filament', function () {
@@ -155,7 +155,7 @@ it('uploads primary and gallery images via Filament', function () {
 
     Livewire::test(CreateProduct::class)
         ->fillForm([
-            'name' => ['uk' => 'LUXURY 9', 'en' => 'LUXURY 9'],
+            'name' => 'LUXURY 9',
             'slug' => 'luxury-9',
             'sku' => 'LV-006',
             'gender' => 'unisex',

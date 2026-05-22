@@ -10,9 +10,11 @@ use App\Filament\Resources\Series\Tables\SeriesTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 
 class SeriesResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = \App\Models\Catalogue\Series::class;
 
     public static function getNavigationGroup(): ?string

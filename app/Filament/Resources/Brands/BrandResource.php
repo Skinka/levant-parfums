@@ -10,9 +10,11 @@ use App\Filament\Resources\Brands\Tables\BrandsTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 
 class BrandResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = \App\Models\Catalogue\Brand::class;
 
     public static function getNavigationGroup(): ?string

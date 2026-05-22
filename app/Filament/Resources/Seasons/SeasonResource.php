@@ -10,9 +10,11 @@ use App\Filament\Resources\Seasons\Tables\SeasonsTable;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 
 class SeasonResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = \App\Models\Catalogue\Season::class;
 
     public static function getNavigationGroup(): ?string

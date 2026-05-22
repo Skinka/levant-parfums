@@ -26,9 +26,9 @@ class ProductsTable
                     ->circular(),
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('sku')->searchable(),
-                TextColumn::make('series.slug')
+                TextColumn::make('series.name')
                     ->label(fn () => trans('catalogue.product.fields.series')),
-                TextColumn::make('perfumeFamily.slug')
+                TextColumn::make('perfumeFamily.name')
                     ->label(fn () => trans('catalogue.product.fields.perfume_family')),
                 TextColumn::make('concentration.abbreviation')
                     ->label(fn () => trans('catalogue.product.fields.concentration')),
@@ -38,9 +38,15 @@ class ProductsTable
                 IconColumn::make('is_published')->boolean(),
             ])
             ->filters([
-                SelectFilter::make('series_id')->relationship('series', 'slug'),
-                SelectFilter::make('perfume_family_id')->relationship('perfumeFamily', 'slug'),
-                SelectFilter::make('concentration_id')->relationship('concentration', 'slug'),
+                SelectFilter::make('series_id')
+                    ->relationship('series', 'slug')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name),
+                SelectFilter::make('perfume_family_id')
+                    ->relationship('perfumeFamily', 'slug')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name),
+                SelectFilter::make('concentration_id')
+                    ->relationship('concentration', 'slug')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name),
                 SelectFilter::make('gender')->options([
                     'male' => trans('catalogue.gender.male'),
                     'female' => trans('catalogue.gender.female'),
@@ -50,6 +56,7 @@ class ProductsTable
                 TernaryFilter::make('in_stock'),
                 SelectFilter::make('tags')
                     ->relationship('tags', 'slug')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                     ->multiple()
                     ->preload(),
             ])
