@@ -96,3 +96,34 @@ it('saves inspired-by brand and perfume name', function () {
         'inspired_perfume_name' => 'Fleur Narcotique',
     ]);
 });
+
+it('attaches tags / seasons / occasions / audiences', function () {
+    $tag = \App\Models\Catalogue\Tag::factory()->create();
+    $season = \App\Models\Catalogue\Season::factory()->create();
+    $occasion = \App\Models\Catalogue\Occasion::factory()->create();
+    $audience = \App\Models\Catalogue\Audience::factory()->create();
+
+    Livewire::test(CreateProduct::class)
+        ->fillForm([
+            'name' => ['uk' => 'LUXURY 7', 'en' => 'LUXURY 7'],
+            'slug' => 'luxury-7',
+            'sku' => 'LV-004',
+            'gender' => 'unisex',
+            'volume_ml' => 50,
+            'price_uah' => 1290,
+            'price_eur' => 35,
+            'in_stock' => true,
+            'tags' => [$tag->id],
+            'seasons' => [$season->id],
+            'occasions' => [$occasion->id],
+            'audiences' => [$audience->id],
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $p = Product::firstWhere('slug', 'luxury-7');
+    expect($p->tags->pluck('id')->all())->toContain($tag->id);
+    expect($p->seasons->pluck('id')->all())->toContain($season->id);
+    expect($p->occasions->pluck('id')->all())->toContain($occasion->id);
+    expect($p->audiences->pluck('id')->all())->toContain($audience->id);
+});

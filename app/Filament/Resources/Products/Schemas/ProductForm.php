@@ -35,6 +35,8 @@ class ProductForm
                             ->schema(self::aromaTab()),
                         Tab::make(trans('catalogue.product.tabs.inspired_by'))
                             ->schema(self::inspiredByTab()),
+                        Tab::make(trans('catalogue.product.tabs.marking'))
+                            ->schema(self::markingTab()),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -150,6 +152,28 @@ class ProductForm
             TextInput::make('inspired_perfume_name')
                 ->label(fn () => trans('catalogue.product.fields.inspired_perfume_name'))
                 ->maxLength(255),
+        ];
+    }
+
+    protected static function markingTab(): array
+    {
+        return [
+            Select::make('tags')
+                ->label(fn () => trans('catalogue.product.fields.tags'))
+                ->relationship('tags', 'slug')
+                ->multiple()->searchable()->preload(),
+            Select::make('seasons')
+                ->label(fn () => trans('catalogue.product.fields.seasons'))
+                ->relationship('seasons', 'slug')
+                ->multiple()->searchable()->preload(),
+            Select::make('occasions')
+                ->label(fn () => trans('catalogue.product.fields.occasions'))
+                ->relationship('occasions', 'slug')
+                ->multiple()->searchable()->preload(),
+            Select::make('audiences')
+                ->label(fn () => trans('catalogue.product.fields.audiences'))
+                ->relationship('audiences', 'slug')
+                ->multiple()->searchable()->preload(),
         ];
     }
 
