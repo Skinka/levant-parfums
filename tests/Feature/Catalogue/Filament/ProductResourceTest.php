@@ -2,6 +2,7 @@
 
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
+use App\Models\Catalogue\Note;
 use App\Models\Catalogue\Product;
 use App\Models\User;
 use Livewire\Livewire;
@@ -40,4 +41,32 @@ it('creates a product with description tab fields', function () {
         ->assertHasNoFormErrors();
 
     assertDatabaseHas('products', ['slug' => 'luxury-4', 'sku' => 'LV-001']);
+});
+
+it('creates a product with top/heart/base notes', function () {
+    $lychee = Note::factory()->create(['slug' => 'lychee']);
+    $jasmine = Note::factory()->create(['slug' => 'jasmine']);
+    $musk = Note::factory()->create(['slug' => 'musk']);
+
+    Livewire::test(CreateProduct::class)
+        ->fillForm([
+            'name' => ['uk' => 'LUXURY 5', 'en' => 'LUXURY 5'],
+            'slug' => 'luxury-5',
+            'sku' => 'LV-002',
+            'gender' => 'unisex',
+            'volume_ml' => 50,
+            'price_uah' => 1290,
+            'price_eur' => 35,
+            'in_stock' => true,
+            'notes_top' => [['note_id' => $lychee->id]],
+            'notes_heart' => [['note_id' => $jasmine->id]],
+            'notes_base' => [['note_id' => $musk->id]],
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $product = Product::firstWhere('slug', 'luxury-5');
+    expect($product->notesByLevel(\App\Enums\NoteLevel::Top)->pluck('id')->all())->toContain($lychee->id);
+    expect($product->notesByLevel(\App\Enums\NoteLevel::Heart)->pluck('id')->all())->toContain($jasmine->id);
+    expect($product->notesByLevel(\App\Enums\NoteLevel::Base)->pluck('id')->all())->toContain($musk->id);
 });

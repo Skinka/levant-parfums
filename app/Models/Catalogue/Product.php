@@ -76,7 +76,7 @@ class Product extends Model implements HasMedia
 
     public function notesByLevel(NoteLevel $level): BelongsToMany
     {
-        return $this->notes()->wherePivot('level', $level->value);
+        return $this->notes()->wherePivot('level', $level->value)->select('notes.*');
     }
 
     public function tags(): BelongsToMany

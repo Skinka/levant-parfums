@@ -3,9 +3,13 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use App\Enums\Gender;
+use App\Enums\NoteLevel;
+use App\Models\Catalogue\Note;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -27,6 +31,8 @@ class ProductForm
                             ->schema(self::mainTab()),
                         Tab::make(trans('catalogue.product.tabs.description'))
                             ->schema(self::descriptionTab()),
+                        Tab::make(trans('catalogue.product.tabs.aroma'))
+                            ->schema(self::aromaTab()),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -88,6 +94,47 @@ class ProductForm
             RichEditor::make('description')
                 ->label(fn () => trans('catalogue.product.fields.description')),
         ];
+    }
+
+    protected static function aromaTab(): array
+    {
+        return [
+            Select::make('perfume_family_id')
+                ->label(fn () => trans('catalogue.product.fields.perfume_family'))
+                ->relationship('perfumeFamily', 'slug')
+                ->searchable()
+                ->preload(),
+            Select::make('concentration_id')
+                ->label(fn () => trans('catalogue.product.fields.concentration'))
+                ->relationship('concentration', 'slug')
+                ->searchable()
+                ->preload(),
+            Select::make('series_id')
+                ->label(fn () => trans('catalogue.product.fields.series'))
+                ->relationship('series', 'slug')
+                ->searchable()
+                ->preload(),
+
+            self::notesRepeater('notes_top', NoteLevel::Top),
+            self::notesRepeater('notes_heart', NoteLevel::Heart),
+            self::notesRepeater('notes_base', NoteLevel::Base),
+        ];
+    }
+
+    protected static function notesRepeater(string $key, NoteLevel $level): Repeater
+    {
+        return Repeater::make($key)
+            ->label(fn () => trans("catalogue.product.fields.{$key}"))
+            ->schema([
+                Select::make('note_id')
+                    ->options(fn () => Note::query()->orderBy('slug')->pluck('slug', 'id'))
+                    ->searchable()
+                    ->required(),
+            ])
+            ->orderColumn('sort_order')
+            ->reorderable()
+            ->defaultItems(0)
+            ->addActionLabel(trans('catalogue.product.fields.'.$key));
     }
 
     protected static function sidebar(): array
