@@ -56,6 +56,13 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->navigationGroups([
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label(fn () => trans('catalogue.navigation.catalogue')),
+                \Filament\Navigation\NavigationGroup::make()
+                    ->label(fn () => trans('catalogue.navigation.attributes'))
+                    ->collapsed(),
+            ])
             ->plugins([
                 SpatieTranslatablePlugin::make()
                     ->defaultLocales(['uk', 'en']),
