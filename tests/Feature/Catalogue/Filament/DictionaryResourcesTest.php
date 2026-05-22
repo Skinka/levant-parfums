@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\Resources\Audiences\Pages\CreateAudience;
+use App\Filament\Resources\Brands\Pages\CreateBrand;
 use App\Filament\Resources\Concentrations\Pages\CreateConcentration;
 use App\Filament\Resources\Occasions\Pages\CreateOccasion;
 use App\Filament\Resources\PerfumeFamilies\Pages\CreatePerfumeFamily;
@@ -8,6 +9,7 @@ use App\Filament\Resources\PerfumeFamilies\Pages\ListPerfumeFamilies;
 use App\Filament\Resources\Seasons\Pages\CreateSeason;
 use App\Filament\Resources\Series\Pages\CreateSeries;
 use App\Models\Catalogue\Audience;
+use App\Models\Catalogue\Brand;
 use App\Models\Catalogue\Concentration;
 use App\Models\Catalogue\Occasion;
 use App\Models\Catalogue\PerfumeFamily;
@@ -75,4 +77,19 @@ it('creates a Concentration with abbreviation via Filament', function () {
         ->assertHasNoFormErrors();
 
     assertDatabaseHas('concentrations', ['slug' => 'parfum', 'abbreviation' => 'PARF']);
+});
+
+it('creates a Brand with country via Filament', function () {
+    Livewire::test(CreateBrand::class)
+        ->fillForm([
+            'name' => ['uk' => 'Бренд', 'en' => 'Brand'],
+            'slug' => 'brand-x',
+            'country' => 'FR',
+            'sort_order' => 0,
+            'is_active' => true,
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    assertDatabaseHas('brands', ['slug' => 'brand-x', 'country' => 'FR']);
 });
