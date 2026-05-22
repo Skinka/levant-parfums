@@ -33,6 +33,8 @@ class ProductForm
                             ->schema(self::descriptionTab()),
                         Tab::make(trans('catalogue.product.tabs.aroma'))
                             ->schema(self::aromaTab()),
+                        Tab::make(trans('catalogue.product.tabs.inspired_by'))
+                            ->schema(self::inspiredByTab()),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -135,6 +137,20 @@ class ProductForm
             ->reorderable()
             ->defaultItems(0)
             ->addActionLabel(trans('catalogue.product.fields.'.$key));
+    }
+
+    protected static function inspiredByTab(): array
+    {
+        return [
+            Select::make('inspired_brand_id')
+                ->label(fn () => trans('catalogue.product.fields.inspired_brand'))
+                ->relationship('inspiredBrand', 'slug')
+                ->searchable()
+                ->preload(),
+            TextInput::make('inspired_perfume_name')
+                ->label(fn () => trans('catalogue.product.fields.inspired_perfume_name'))
+                ->maxLength(255),
+        ];
     }
 
     protected static function sidebar(): array

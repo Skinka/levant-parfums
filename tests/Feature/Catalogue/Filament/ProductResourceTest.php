@@ -70,3 +70,29 @@ it('creates a product with top/heart/base notes', function () {
     expect($product->notesByLevel(\App\Enums\NoteLevel::Heart)->pluck('id')->all())->toContain($jasmine->id);
     expect($product->notesByLevel(\App\Enums\NoteLevel::Base)->pluck('id')->all())->toContain($musk->id);
 });
+
+it('saves inspired-by brand and perfume name', function () {
+    $brand = \App\Models\Catalogue\Brand::factory()->create(['slug' => 'ex-nihilo']);
+
+    Livewire::test(CreateProduct::class)
+        ->fillForm([
+            'name' => ['uk' => 'LUXURY 6', 'en' => 'LUXURY 6'],
+            'slug' => 'luxury-6',
+            'sku' => 'LV-003',
+            'gender' => 'unisex',
+            'volume_ml' => 50,
+            'price_uah' => 1290,
+            'price_eur' => 35,
+            'in_stock' => true,
+            'inspired_brand_id' => $brand->id,
+            'inspired_perfume_name' => 'Fleur Narcotique',
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    assertDatabaseHas('products', [
+        'slug' => 'luxury-6',
+        'inspired_brand_id' => $brand->id,
+        'inspired_perfume_name' => 'Fleur Narcotique',
+    ]);
+});
