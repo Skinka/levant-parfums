@@ -1,12 +1,14 @@
 <?php
 
 use App\Filament\Resources\Audiences\Pages\CreateAudience;
+use App\Filament\Resources\Concentrations\Pages\CreateConcentration;
 use App\Filament\Resources\Occasions\Pages\CreateOccasion;
 use App\Filament\Resources\PerfumeFamilies\Pages\CreatePerfumeFamily;
 use App\Filament\Resources\PerfumeFamilies\Pages\ListPerfumeFamilies;
 use App\Filament\Resources\Seasons\Pages\CreateSeason;
 use App\Filament\Resources\Series\Pages\CreateSeries;
 use App\Models\Catalogue\Audience;
+use App\Models\Catalogue\Concentration;
 use App\Models\Catalogue\Occasion;
 use App\Models\Catalogue\PerfumeFamily;
 use App\Models\Catalogue\Season;
@@ -59,3 +61,18 @@ it('creates a base-shape dictionary record via Filament', function (string $crea
     'occasion' => [CreateOccasion::class, Occasion::class, 'occasion-x'],
     'audience' => [CreateAudience::class, Audience::class, 'audience-x'],
 ]);
+
+it('creates a Concentration with abbreviation via Filament', function () {
+    Livewire::test(CreateConcentration::class)
+        ->fillForm([
+            'name' => ['uk' => 'Парфум', 'en' => 'Parfum'],
+            'slug' => 'parfum',
+            'abbreviation' => 'PARF',
+            'sort_order' => 0,
+            'is_active' => true,
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    assertDatabaseHas('concentrations', ['slug' => 'parfum', 'abbreviation' => 'PARF']);
+});
