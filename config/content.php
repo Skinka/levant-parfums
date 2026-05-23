@@ -5,5 +5,6 @@ return [
         'admin', 'api', 'assets', 'storage', 'login', 'register', 'logout',
         'blog', 'articles', 'pages', 'sitemap', 'feed',
         'uk', 'en',
+        'home',
     ],
 ];
