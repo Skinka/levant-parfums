@@ -32,6 +32,10 @@ return [
         'products' => 'Related products',
         'add_product' => 'Add product',
         'product_id' => 'Product',
+        'template' => 'Template',
+        'blocks' => 'Page blocks',
+        'add_block' => 'Add block',
+        'is_homepage' => 'Homepage',
     ],
     'hints' => [
         'published_at' => 'The article will appear on the site at this time. Leave empty to publish immediately.',
@@ -42,5 +46,38 @@ return [
     ],
     'filters' => [
         'scheduled' => 'Scheduled',
+    ],
+    'template' => [
+        'simple' => 'Simple page',
+        'landing' => 'Landing (blocks)',
+    ],
+    'blocks' => [
+        'hero' => [
+            'label' => 'Hero block',
+        ],
+        'products' => [
+            'label' => 'Product list',
+            'add_item' => 'Add product',
+        ],
+        'text' => [
+            'label' => 'Text block',
+        ],
+        'articles' => [
+            'label' => 'Article list',
+            'add_item' => 'Add article',
+        ],
+        'fields' => [
+            'is_visible' => 'Show block',
+            'anchor' => 'Anchor (URL id)',
+            'title' => 'Title',
+            'subtitle' => 'Subtitle',
+            'body' => 'Body',
+            'cta_label' => 'CTA label',
+            'cta_url' => 'CTA URL',
+            'image_path' => 'Image',
+            'product_id' => 'Product',
+            'article_id' => 'Article',
+            'cta_url_helper' => 'Internal "/products" or absolute "https://..." both work.',
+        ],
     ],
 ];
