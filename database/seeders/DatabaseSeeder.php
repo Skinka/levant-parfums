@@ -15,14 +15,11 @@ use Database\Seeders\Catalogue\SeriesSeeder;
 use Database\Seeders\Catalogue\TagSeeder;
 use Database\Seeders\Content\ArticleSeeder;
 use Database\Seeders\Content\PageSeeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     public function run(): void
     {
         User::updateOrCreate(
