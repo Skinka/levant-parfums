@@ -65,6 +65,19 @@ Models with images implement `HasMedia` + `InteractsWithMedia` and define:
 - `registerMediaCollections()` — `primary` (singleFile) and optionally `gallery`, restricted to `image/jpeg|png|webp`.
 - `registerMediaConversions()` — `thumb`, `card`, `detail`, all `format('webp')` and `nonQueued()` (intentional: keeps tests sync and admin previews instant).
 
+### Forms subsystem (`App\Forms\*`)
+
+Public forms (contact, order, future) are handled by a single engine:
+
+1. **One row per submission** — `form_submissions` table with JSON `data` + JSON `meta` + polymorphic `subject` + workflow `status` (`new` / `read` / `processed`). See `App\Forms\Models\FormSubmission`.
+2. **One PHP class per form type** — extend `App\Forms\Types\FormType` (`key()`, `label()`, `rules()`, `attributes()`, `adminMailable()`, optional `clientMailable()` and `subjectClass()`). Register the class in `config('forms.types')`.
+3. **One Livewire component per form** — extend `App\Forms\Livewire\FormComponent`, declare public properties for fields, override `formType()` and `render()`. The base owns: honeypot, rate-limit, validation, persistence, email dispatch, locale capture. Components live under `app/Forms/Livewire/`, so they must be registered with `Livewire::component()` in `AppServiceProvider::boot()` for `<livewire:my-form />` Blade syntax to work.
+4. **One Blade view per form** under `resources/views/forms/{key}.blade.php` — the developer writes the markup; the only mandatory element is `<x-forms.honeypot wire:model="hp" />`.
+5. **Per-type Mailable + Markdown template** under `App\Forms\Mail\*` and `resources/views/emails/forms/{key}-{admin|client}.blade.php`. Admin mail goes in `config('app.fallback_locale')`; client mail goes in the submission's captured locale.
+6. **Admin sees everything in one inbox** — `FormSubmissionResource` (read-only: only List + View). New rows fan out Filament database notifications to all admin users via `FormSubmissionObserver` (wired in `AppServiceProvider::boot()`).
+
+Anti-spam: silent honeypot (an empty `$hp` is the only acceptable value) + Laravel `RateLimiter` keyed on `forms:{type}:{ip}`. Rate-limit breach surfaces as a `ValidationException` on the `form` key so it shows up inline like any other field error.
+
 ### Public routing is localized
 
 `routes/web.php` wraps everything in `LaravelLocalization::setLocale()` + the `localeSessionRedirect` / `localizationRedirect` / `localeViewPath` middleware. Any new public route must go inside this group; admin (`/admin`) lives outside it.
