@@ -2,13 +2,13 @@
 
 namespace App\Forms\Livewire;
 
+use App\Forms\Exceptions\FormSubjectException;
 use App\Forms\Models\FormSubmission;
 use App\Forms\Support\FormRateLimiter;
 use App\Forms\Types\FormType;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
-use LogicException;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Livewire\Component;
 
@@ -27,7 +27,7 @@ abstract class FormComponent extends Component
         if ($type->subjectRequired()) {
             $expected = $type->subjectClass();
             if (! $subject instanceof $expected) {
-                throw new LogicException("Form {$type->key()} requires subject of type {$expected}");
+                throw new FormSubjectException("Form {$type->key()} requires subject of type {$expected}");
             }
         }
 
