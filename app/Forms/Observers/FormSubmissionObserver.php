@@ -5,7 +5,7 @@ namespace App\Forms\Observers;
 use App\Filament\Resources\FormSubmissions\FormSubmissionResource;
 use App\Forms\Models\FormSubmission;
 use App\Models\User;
-use Filament\Notifications\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 
 class FormSubmissionObserver
