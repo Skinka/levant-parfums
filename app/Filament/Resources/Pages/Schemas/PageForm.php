@@ -2,7 +2,14 @@
 
 namespace App\Filament\Resources\Pages\Schemas;
 
+use App\Enums\PageTemplate;
+use App\Filament\Resources\Pages\Schemas\Blocks\ArticlesBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\HeroBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\ProductsBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\TextBlock;
+use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -56,13 +63,37 @@ class PageForm
                 ->label(fn () => trans('content.fields.intro'))
                 ->rows(3)
                 ->maxLength(300),
+            Select::make('template')
+                ->label(fn () => trans('content.fields.template'))
+                ->options(PageTemplate::options())
+                ->default(PageTemplate::Simple->value)
+                ->required()
+                ->live(),
             MarkdownEditor::make('content')
                 ->label(fn () => trans('content.fields.content'))
-                ->required()
+                ->visible(fn (callable $get) => $get('template') === PageTemplate::Simple->value)
+                ->required(fn (callable $get) => $get('template') === PageTemplate::Simple->value)
                 ->toolbarButtons([
                     'bold', 'italic', 'link', 'heading',
                     'bulletList', 'orderedList', 'blockquote', 'codeBlock',
                 ]),
+            Builder::make('blocks')
+                ->label(fn () => trans('content.fields.blocks'))
+                ->visible(fn (callable $get) => $get('template') === PageTemplate::Landing->value)
+                ->blocks([
+                    HeroBlock::make(),
+                    ProductsBlock::make(),
+                    TextBlock::make(),
+                    ArticlesBlock::make(),
+                ])
+                ->collapsible()
+                ->collapsed()
+                ->blockNumbers(false)
+                ->addActionLabel(fn () => trans('content.fields.add_block'))
+                ->reorderableWithButtons()
+                ->cloneable(),
+            Toggle::make('is_homepage')
+                ->label(fn () => trans('content.fields.is_homepage')),
             Toggle::make('is_published')
                 ->label(fn () => trans('content.fields.is_published')),
         ];
