@@ -94,9 +94,12 @@ abstract class FormComponent extends Component
 
     protected function resetableFields(): array
     {
-        return array_diff(
-            array_keys(get_object_vars($this)),
-            ['subject', 'hp'],
+        $reflect = new \ReflectionClass($this);
+        $publicProps = array_map(
+            fn (\ReflectionProperty $p) => $p->getName(),
+            $reflect->getProperties(\ReflectionProperty::IS_PUBLIC),
         );
+
+        return array_values(array_diff($publicProps, ['subject', 'hp']));
     }
 }
