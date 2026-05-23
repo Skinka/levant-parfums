@@ -96,3 +96,25 @@ it('persists reorder of products on edit', function () {
 
     expect($article->fresh()->products->pluck('id')->all())->toBe([$p2->id, $p1->id]);
 });
+
+it('persists product changes across two consecutive saves', function () {
+    $p1 = Product::factory()->create();
+    $p2 = Product::factory()->create();
+    $p3 = Product::factory()->create();
+    $article = Article::factory()->create();
+    $article->products()->attach([$p1->id => ['sort_order' => 0]]);
+
+    $component = Livewire::test(EditArticle::class, ['record' => $article->getRouteKey()])
+        ->fillForm(['products' => [['product_id' => $p2->id]]])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($article->fresh()->products->pluck('id')->all())->toBe([$p2->id]);
+
+    $component
+        ->fillForm(['products' => [['product_id' => $p3->id]]])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($article->fresh()->products->pluck('id')->all())->toBe([$p3->id]);
+});

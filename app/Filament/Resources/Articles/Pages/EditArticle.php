@@ -53,5 +53,7 @@ class EditArticle extends EditRecord
                 $this->record->products()->attach($row['product_id'], ['sort_order' => $i]);
             }
         }
+
+        $this->productsCached = false;
     }
 }
