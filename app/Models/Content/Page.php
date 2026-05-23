@@ -2,6 +2,7 @@
 
 namespace App\Models\Content;
 
+use App\Enums\PageTemplate;
 use Database\Factories\Content\PageFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,12 +17,14 @@ class Page extends Model implements HasMedia
 {
     /** @use HasFactory<PageFactory> */
     use HasFactory;
+
     use HasTranslations;
     use InteractsWithMedia;
 
     protected $fillable = [
         'slug', 'title', 'intro', 'content',
         'seo_title', 'seo_description', 'is_published',
+        'template', 'blocks', 'is_homepage',
     ];
 
     public array $translatable = [
@@ -30,12 +33,30 @@ class Page extends Model implements HasMedia
 
     protected function casts(): array
     {
-        return ['is_published' => 'boolean'];
+        return [
+            'is_published' => 'boolean',
+            'is_homepage' => 'boolean',
+            'template' => PageTemplate::class,
+            'blocks' => 'array',
+        ];
     }
 
     public function scopePublished(Builder $q): Builder
     {
         return $q->where('is_published', true);
+    }
+
+    public function scopeHomepage(Builder $q): Builder
+    {
+        return $q->where('is_homepage', true);
+    }
+
+    public function visibleBlocks(): array
+    {
+        return array_values(array_filter(
+            $this->blocks ?? [],
+            fn (array $block) => ($block['data']['is_visible'] ?? true) !== false,
+        ));
     }
 
     protected static function booted(): void
@@ -47,6 +68,16 @@ class Page extends Model implements HasMedia
                 if (in_array($slug, $reserved, true)) {
                     throw new \DomainException("Slug '{$slug}' is reserved (locale: {$locale}).");
                 }
+            }
+
+            // Landing pages do not use content. Normalize Spatie's
+            // `{"uk":null}` artifact to a true DB NULL. Write to the
+            // raw attribute bag directly — calling `$page->content = null`
+            // would round-trip through HasTranslations' setter and
+            // re-serialize to `{"uk":null}`.
+            $content = $page->getTranslations('content');
+            if ($content === [] || array_filter($content, fn ($v) => $v !== null && $v !== '') === []) {
+                $page->attributes['content'] = null;
             }
         });
     }

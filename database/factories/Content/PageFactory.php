@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Content;
 
+use App\Enums\PageTemplate;
 use App\Models\Content\Page;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -29,11 +30,24 @@ class PageFactory extends Factory
             'seo_title' => ['uk' => $titleUk, 'en' => $titleEn],
             'seo_description' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],
             'is_published' => true,
+            'template' => PageTemplate::Simple,
+            'blocks' => null,
+            'is_homepage' => false,
         ];
     }
 
     public function draft(): static
     {
         return $this->state(['is_published' => false]);
+    }
+
+    public function homepage(): static
+    {
+        return $this->state([
+            'is_homepage' => true,
+            'template' => PageTemplate::Landing,
+            'content' => null,
+            'blocks' => [],
+        ]);
     }
 }
