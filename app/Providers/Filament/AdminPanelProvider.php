@@ -60,6 +60,8 @@ class AdminPanelProvider extends PanelProvider
                 \Filament\Navigation\NavigationGroup::make()
                     ->label(fn () => trans('catalogue.navigation.catalogue')),
                 \Filament\Navigation\NavigationGroup::make()
+                    ->label(fn () => trans('content.navigation.group')),
+                \Filament\Navigation\NavigationGroup::make()
                     ->label(fn () => trans('catalogue.navigation.attributes'))
                     ->collapsed(),
             ])
