@@ -15,6 +15,7 @@ use Database\Seeders\Catalogue\SeriesSeeder;
 use Database\Seeders\Catalogue\TagSeeder;
 use Database\Seeders\Content\ArticleSeeder;
 use Database\Seeders\Content\PageSeeder;
+use Database\Seeders\Forms\FormSubmissionSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -44,6 +45,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             PageSeeder::class,
             ArticleSeeder::class,
+            FormSubmissionSeeder::class,
         ]);
     }
 }
