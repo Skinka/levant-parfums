@@ -42,13 +42,12 @@
 }
 .brand .mark {
   display: block;
-  letter-spacing: 0.32em;
-  text-align: justify;
-  text-align-last: justify;
+  letter-spacing: 0.17em;
+  text-align: center;
 }
 .brand .sub {
   display: block;
-  font-family: var(--font-sans); font-size: 9px; letter-spacing: 0.32em;
+  font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.61em;
   color: var(--ink-mute); margin-top: 6px;
   white-space: nowrap;
   text-align: center;

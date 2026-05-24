@@ -7,8 +7,9 @@
 }
 
 /* The #order section uses the form's own padding/border for spacing;
-   opt out of the global `section { padding: 120px 0 }` rule. */
-.product-page #order { padding: 0; }
+   opt out of the global `section { padding: 120px 0 }` rule, but keep
+   60px margin-top so the form sits 60px below the previous section. */
+.product-page #order { padding: 0; margin-top: 60px; }
 @media (max-width: 1000px) {
   .product-page .top { grid-template-columns: 1fr; gap: 40px; }
 }

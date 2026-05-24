@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'brand_strapline' => 'INTERSECTION OF THREE WORLDS',
+    'brand_strapline' => 'LUXURY SERIES',
 
     'announcement' => [
         'Collection 2026 · Luxury × Onyx — in stock',

@@ -6,9 +6,9 @@
 
         <div class="grid">
             <div>
-                <a href="{{ LaravelLocalization::localizeURL('/') }}" class="brand" style="align-items: flex-start">
-                    <span>L E V A N T</span>
-                    <span class="sub" style="letter-spacing: 1.2px">{{ __('site.brand_strapline') }}</span>
+                <a href="{{ LaravelLocalization::localizeURL('/') }}" class="brand">
+                    <span class="mark">L E V A N T</span>
+                    <span class="sub">{{ __('site.brand_strapline') }}</span>
                 </a>
                 <p style="margin-top: 24px; color: var(--ink-soft); font-size: 14px; line-height: 1.7; max-width: 36ch;">
                     {{ __('site.footer.about') }}

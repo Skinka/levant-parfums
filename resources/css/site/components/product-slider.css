@@ -1,7 +1,6 @@
 .product-slider {
-  margin-top: 80px; padding-block: 72px;
-  background: var(--bg-2);
-  border-top: 1px solid var(--line-soft);
+  margin: 60px 0;
+  padding: 0;
 }
 .product-slider .head {
   display: grid; grid-template-columns: 1fr auto; align-items: end; margin-bottom: 32px;
@@ -19,7 +18,7 @@
   text-transform: uppercase; color: var(--accent); justify-self: end;
 }
 .product-slider .track {
-  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 280px);
+  display: grid; grid-auto-flow: column; grid-auto-columns: 280px;
   gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory;
   padding-bottom: 12px;
 }
