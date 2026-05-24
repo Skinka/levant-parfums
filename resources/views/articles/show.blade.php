@@ -36,7 +36,8 @@
 
             @if($coverUrl)
                 <div class="article-cover">
-                    <img src="{{ $coverUrl }}" alt="{{ $article->title }}">
+                    <img src="{{ $coverUrl }}" alt="{{ $article->title }}"
+                         width="1920" height="1080" fetchpriority="high">
                 </div>
             @endif
 
