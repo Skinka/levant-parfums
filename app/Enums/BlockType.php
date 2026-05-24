@@ -5,8 +5,12 @@ namespace App\Enums;
 enum BlockType: string
 {
     case Hero = 'hero';
-    case Products = 'products';
     case Text = 'text';
+    case Products = 'products';
+    case BrandStory = 'brand_story';
+    case SeriesDuo = 'series_duo';
+    case Pillars = 'pillars';
+    case Testimonials = 'testimonials';
     case Articles = 'articles';
 
     public function label(): string
