@@ -76,3 +76,15 @@ it('omits metadata segments when nullable fields are empty', function () {
         ->assertSee('12 травня 2026');
     $response->assertSee('Читати далі');
 });
+
+it('renders the Articles entry in the header and footer', function () {
+    Article::factory()->create();
+
+    $response = $this->get('/articles')->assertOk();
+
+    $response->assertSee('class="active"', escape: false);
+    $response->assertSee('Статті');
+
+    $body = $response->getContent();
+    expect(substr_count($body, 'href="/articles"'))->toBeGreaterThanOrEqual(2);
+});

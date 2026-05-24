@@ -20,6 +20,7 @@
                 <ul>
                     <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ __('site.nav.home') }}</a></li>
                     <li><a href="{{ route('products.index') }}">{{ __('site.nav.catalog') }}</a></li>
+                    <li><a href="{{ route('articles.index', [], false) }}">{{ __('site.nav.articles') }}</a></li>
                 </ul>
             </div>
 
