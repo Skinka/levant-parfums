@@ -149,7 +149,18 @@ items:      repeater, exactly 2 (left/right):
    cta_label:    transl string                    # "Перейти до серії"
 ```
 
-`cta_url` для каждой карточки вычисляется в Blade: `route('products.index', ['series' => Series::find($series_id)->slug])`. Если `series_id` пуст или не найден — `route('products.index')`.
+`cta_url` для каждой карточки вычисляется в Blade через безопасный lookup:
+
+```blade
+@php
+    $series = ! empty($item['series_id']) ? \App\Models\Catalogue\Series::find($item['series_id']) : null;
+    $ctaUrl = $series
+        ? route('products.index', ['series' => $series->slug])
+        : route('products.index');
+@endphp
+```
+
+`Series::find()` возвращает `null` при отсутствии записи, поэтому `->slug` нельзя вызывать на нём напрямую — это вызовет fatal. Stale `series_id` (например, после удаления Series) даёт fallback на общий каталог.
 
 ### `pillars` (Guide + Advantages)
 
@@ -248,13 +259,18 @@ Builder::make('blocks')
 
 ```blade
 @php($locale = app()->getLocale())
-@php($t = fn($key) => $data[$key][$locale] ?? $data[$key]['uk'] ?? '')
+@php($t = function (string $key) use ($data, $locale) {
+    $value = $data[$key][$locale] ?? null;
+    return filled($value) ? $value : ($data[$key]['uk'] ?? '');
+})
 <section class="{block-class}" @if(!empty($data['anchor'])) id="{{ $data['anchor'] }}" @endif>
     <div class="container">
         ...
     </div>
 </section>
 ```
+
+**Важно:** именно `filled()`, не `??`. Filament `TextInput` для пустого поля сохраняет в JSON строку `''`, а не `null`. Чистый `?? $data[$key]['uk']` пропускает пустую строку как валидное значение и рендерит пустоту на `/en`, когда редактор оставил поле незаполненным. `filled()` (= не null **и** не пустая строка) даёт ожидаемый fallback на uk.
 
 ### Компоненты
 
@@ -265,7 +281,7 @@ Builder::make('blocks')
 h3 (title, serif italic)
 p (intro/excerpt, 3 строки clamp)
 ```
-`read-time` пока вычисляем из `str_word_count(strip_tags($article->content)) / 200` (округляем вверх) — если поле `read_time` не появится в модели.
+`read-time` пока вычисляем как `max(1, (int) ceil($words / 200))`, где `$words = preg_match_all('/[\\p{L}\\p{N}\']+/u', strip_tags($article->content))`. **Не** `str_word_count` — стандартная PHP-функция байт-based и матчит только `[A-Za-z\']`, поэтому для украинской кириллицы возвращает 0. Unicode-aware regex `\p{L}` (любая буква) + `\p{N}` (любая цифра) корректно считает uk/en. Если поле `read_time` появится в модели — переключимся на него.
 
 **`<x-site.review-card :item="$item">`** — карточка отзыва для слайдера `testimonials`:
 ```
@@ -322,16 +338,17 @@ p (intro/excerpt, 3 строки clamp)
 
 1. **Скопировать 3 ассета** из `docs/superpowers/design-sources/levant-parfums/project/assets/` в `database/seeders/images/` (один раз, через git). Файлы: `levant-luxury-bottle.jpg`, `levant-flacon-3.jpg`, `levant-flacon-4.jpg`.
 2. **При запуске** разложить их в `storage/app/public/pages/blocks/` через `Storage::disk('public')->put(...)`. Если файл уже есть — пропустить (`Storage::disk('public')->exists(...)`).
-3. **Найти связанные сущности:**
+3. **Зафиксировать порядок сидеров в `DatabaseSeeder::run()`.** Сейчас `PageSeeder` стоит перед `ArticleSeeder` (строки 46-47), из-за чего на `migrate:fresh --seed` `Article::limit(3)->pluck('id')` возвращает пустой набор, и блок articles на главной запускается с `is_visible = false`. Меняем порядок так, чтобы `ArticleSeeder` шёл перед `PageSeeder`. `ArticleSeeder` уже зависит от `ProductSeeder` (использует `Product::query()->inRandomOrder()->limit(9)`) и идёт после него — в новом порядке цепочка: `ProductSeeder → ArticleSeeder → PageSeeder`.
+4. **Найти связанные сущности:**
    - `$luxury = \App\Models\Catalogue\Series::where('slug', 'luxury')->first();`
    - `$onyx = \App\Models\Catalogue\Series::where('slug', 'onyx')->first();`
    - `$bestsellers = \App\Models\Catalogue\Product::whereHas('tags', fn($q) => $q->where('slug', 'bestseller'))->limit(6)->pluck('id')->all();` (или `Product::limit(6)->pluck('id')` если bestseller-тегов в сидерах ещё нет).
    - `$newItems = \App\Models\Catalogue\Product::whereHas('tags', fn($q) => $q->where('slug', 'new'))->limit(6)->pluck('id')->all();` (fallback аналогично).
-   - `$articleIds = \App\Models\Content\Article::orderByDesc('published_at')->limit(3)->pluck('id')->all();`
-4. **Собрать массив `blocks`** из 10 элементов в эталонном порядке. Тексты — из `data.js` (`t.hero_*`, `t.manifesto_*`, etc.) транскриптом ниже. Если какая-то связь пуста (например, нет тегированных продуктов или статей), блок всё равно записывается, но `is_visible = false` — редактор включит вручную.
-5. **Сохранить через `Page::query()->updateOrCreate(['is_homepage' => true], [...])`** — как уже сейчас.
+   - `$articleIds = \App\Models\Content\Article::orderByDesc('published_at')->limit(3)->pluck('id')->all();` (после реордера сидеров — не пусто).
+5. **Собрать массив `blocks`** из 10 элементов в эталонном порядке. Тексты — из `data.js` (`t.hero_*`, `t.manifesto_*`, etc.). Если какая-то связь всё-таки пуста (например, нет тегированных продуктов), соответствующий блок записывается с `is_visible = false` — редактор включит вручную.
+6. **Сохранить через `Page::query()->updateOrCreate(['is_homepage' => true], [...])`** — как уже сейчас.
 
-Полный массив `blocks` главной (с реальным копирайтом и связями) — приложен в плане реализации (`docs/superpowers/plans/`), здесь не дублируем для краткости.
+Полный массив `blocks` главной с дословным копирайтом из `data.js` и фактическими связями (Series/Product/Article ID) выносится в implementation plan (`docs/superpowers/plans/2026-05-24-homepage.md`, будет создан на следующем этапе после этого спека). В спеке его не дублируем для краткости и чтобы спека оставалась устойчивой к точечным изменениям копирайта.
 
 ## Переводы
 
@@ -418,16 +435,17 @@ p (intro/excerpt, 3 строки clamp)
 1. **Enums + переводы.** Расширить `BlockType`. Добавить ключи в `lang/{uk,en}/content.php`.
 2. **Filament Block-классы.** 4 новых + правки 4 существующих. Регистрация в `PageForm`.
 3. **Blade-компоненты.** `article-card`, `review-card`, `pillar`.
-4. **Партиалы.** 4 новых (`brand_story`, `series_duo`, `pillars`, `testimonials`) + переписанные 4 (`hero`, `text`, `products`, `articles`).
+4. **Партиалы.** 4 новых (`brand_story`, `series_duo`, `pillars`, `testimonials`) + переписанные 4 (`hero`, `text`, `products`, `articles`). Перенести fallback-хелпер `$t` на `filled()` (см. § Партиалы) во все, включая существующие.
 5. **CSS.** 7 новых файлов + 7 `@import` в `index.css`. Адаптация цвета через токены.
-6. **PageSeeder.** Скопировать 3 ассета в `database/seeders/images/`. Переписать массив `blocks` главной с реальным копирайтом.
-7. **Тесты.** 2 новых файла.
-8. **Верификация.** `composer test` зелёный. `php artisan migrate:fresh --seed`. `npm run dev` → ручной обзор `/uk` и `/en`. Админка: `/admin/pages` → редактирование главной (8 блоков, LocaleSwitcher, repeater min/max).
+6. **Реордер `DatabaseSeeder`.** Сдвинуть `ArticleSeeder::class` перед `PageSeeder::class` (между `ProductSeeder` и `PageSeeder`).
+7. **PageSeeder.** Скопировать 3 ассета в `database/seeders/images/`. Переписать массив `blocks` главной с реальным копирайтом.
+8. **Тесты.** 2 новых файла.
+9. **Верификация.** `composer test` зелёный. `php artisan migrate:fresh --seed`. `npm run dev` → ручной обзор `/uk` и `/en`. Админка: `/admin/pages` → редактирование главной (8 блоков, LocaleSwitcher, repeater min/max).
 
 ## Верификация
 
 - `composer test` — все тесты зелёные.
-- `php artisan migrate:fresh --seed` — БД поднимается; главная заполнена 10 секциями; storage содержит 3 jpg в `pages/blocks/`.
+- `php artisan migrate:fresh --seed` — БД поднимается; главная заполнена 10 секциями (включая блок articles с 3 реальными статьями — после реордера сидеров `ArticleSeeder` выполняется до `PageSeeder`); storage содержит 3 jpg в `pages/blocks/`.
 - `/uk` визуально соответствует `pages-home.jsx` (с поправкой на testimonials = slider).
 - `/en` — все строки переведены; пустые en-поля fallback'ятся на uk.
 - `/admin/pages` → EditPage главной → переключатель template `landing` → Builder показывает 8 типов; LocaleSwitcher переключает uk/en; в каждом repeater'е min/max работает.
@@ -456,3 +474,11 @@ p (intro/excerpt, 3 строки clamp)
 ## Revision log
 
 **2026-05-24 — initial.** Спека согласована в brainstorming-сессии 2026-05-24. Решения по подходу (1:1 по эталону), составу блоков (8 типов), полям hero/text/pillars (с дополнительным surface), способу хранения отзывов (repeater без отдельной модели) и порядку фонов задокументированы выше.
+
+**2026-05-24 — post-review revision (5 comments addressed):**
+
+- **P1 — `??` fallback пропускает пустую строку.** Filament `TextInput` сохраняет пустое поле как `''`, не `null`, поэтому существующий шаблон `$data[$key][$locale] ?? $data[$key]['uk']` рендерит пустоту на `/en`, когда редактор оставил поле незаполненным. Шаблон `$t` хелпера в § «Партиалы» переписан через `filled()` (= не `null` и не пустая строка) с явным fallback на uk. Тест `it falls back to uk when active locale string is empty` теперь зелёный по дизайну.
+- **P1 — `PageSeeder` идёт перед `ArticleSeeder`.** В текущем `DatabaseSeeder::run()` порядок такой, что `Article::limit(3)->pluck('id')` в `PageSeeder` возвращает пустой набор, блок articles пропадает с главной. Добавлен явный шаг в порядок реализации — реордер `ArticleSeeder` перед `PageSeeder` в `DatabaseSeeder`. Цепочка зависимостей: `ProductSeeder → ArticleSeeder → PageSeeder`.
+- **P1 — Stale `series_id` валит fatal.** `Series::find($id)->slug` падает с `Attempt to read property "slug" on null`, если редактор удалил Series или указал несуществующий id. Заменили на двухшаговый lookup с проверкой `null` и fallback на `route('products.index')` без параметра `series`.
+- **P2 — Битая ссылка на план.** Изначально спека ссылалась на `docs/superpowers/plans/` как на источник полного `blocks` payload, но плана ещё нет. Сформулировано явно: плана пока нет, он будет создан на следующем этапе как `docs/superpowers/plans/2026-05-24-homepage.md`, и именно он будет содержать дословный JSON `blocks` главной.
+- **P2 — `str_word_count` не Unicode-safe.** Стандартная PHP-функция матчит только `[A-Za-z\']`, поэтому для украинского контента возвращает 0 → read-time = 0 мин. Заменили на `preg_match_all('/[\\p{L}\\p{N}\']+/u', ...)` с `max(1, ceil(words / 200))` — корректно считает кириллицу и латиницу, минимум 1 мин.
