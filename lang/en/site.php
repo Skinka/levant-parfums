@@ -33,4 +33,8 @@ return [
         'rights' => '© :year Levant Parfums. All rights reserved.',
         'geo' => 'Composed in Spain · Bottled in Turkey · Assembled in Ukraine',
     ],
+
+    'article' => [
+        'read_min' => 'min',
+    ],
 ];
