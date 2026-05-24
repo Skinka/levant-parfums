@@ -21,6 +21,13 @@
 @import './components/qty-stepper.css';
 @import './components/order-form.css';
 @import './components/product-slider.css';
+@import './components/hero.css';
+@import './components/manifesto.css';
+@import './components/three-points.css';
+@import './components/collections.css';
+@import './components/pillars.css';
+@import './components/testimonials.css';
+@import './components/article-card.css';
 
 @import './pages/catalog.css';
 @import './pages/product.css';
