@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Content\Article;
+use Illuminate\Support\Carbon;
 
 beforeEach(function () {
     $this->withHeaders(['Accept-Language' => 'uk']);
@@ -43,4 +44,35 @@ it('renders the English page title when locale is en', function () {
 
     expect(__('site.articles.title'))->toBe('Articles');
     expect(Article::query()->first()->title)->toBe('English heading');
+});
+
+it('renders card metadata (category, date, read time)', function () {
+    Article::factory()->create([
+        'title' => ['uk' => 'Картка', 'en' => 'Card'],
+        'category' => ['uk' => 'Філософія', 'en' => 'Philosophy'],
+        'read_time_minutes' => 4,
+        'published_at' => Carbon::create(2026, 5, 12, 9),
+    ]);
+
+    $this->get('/articles')
+        ->assertOk()
+        ->assertSee('Філософія')
+        ->assertSee('12 травня 2026')
+        ->assertSee('4 хв')
+        ->assertSee('Читати далі');
+});
+
+it('omits metadata segments when nullable fields are empty', function () {
+    Article::factory()->create([
+        'title' => ['uk' => 'Без мети', 'en' => 'No meta'],
+        'category' => null,
+        'read_time_minutes' => null,
+        'published_at' => Carbon::create(2026, 5, 12, 9),
+    ]);
+
+    $response = $this->get('/articles');
+    $response->assertOk()
+        ->assertSee('Без мети')
+        ->assertSee('12 травня 2026');
+    $response->assertSee('Читати далі');
 });
