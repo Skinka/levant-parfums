@@ -1,0 +1,7 @@
+/* Shared top block for inner pages: spacing under the site header + bottom border.
+   Compose with a page-specific class (e.g. .catalog-head) for content layout. */
+
+.page-head {
+  padding: 32px 0 40px;
+  border-bottom: 1px solid var(--line-soft);
+}

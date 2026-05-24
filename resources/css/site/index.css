@@ -1,0 +1,19 @@
+/* Levant — storefront stylesheet (entry).
+   Imported from resources/css/app.css. */
+
+@import './base.css';
+@import './typography.css';
+@import './layout.css';
+@import './animations.css';
+
+@import './components/button.css';
+@import './components/announcement.css';
+@import './components/header.css';
+@import './components/footer.css';
+@import './components/product-card.css';
+@import './components/chip.css';
+@import './components/pagination.css';
+@import './components/breadcrumbs.css';
+@import './components/page-head.css';
+
+@import './pages/catalog.css';

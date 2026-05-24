@@ -1,0 +1,26 @@
+/* Top announcement bar with infinite marquee. */
+
+.announcement {
+  background: var(--ink); color: var(--bg);
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  padding: 10px 0; text-align: center;
+  overflow: hidden;
+}
+.announcement .marquee-track {
+  display: inline-flex; gap: 36px; align-items: center;
+  animation: marq 38s linear infinite;
+  white-space: nowrap;
+}
+.announcement .marquee-item {
+  opacity: 0.9;
+}
+.announcement .marquee-sep {
+  width: 3px; height: 3px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+@keyframes marq {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

@@ -1,0 +1,60 @@
+/* Page transitions, intro veil, scroll reveal. */
+
+.page-fade { animation: pageIn 0.6s var(--ease-out) both; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Initial intro veil — JS removes the node after the animation. */
+.intro-veil {
+  position: fixed; inset: 0; background: var(--bg);
+  z-index: 200; display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  animation: veilOut 0.9s var(--ease-out) 0.5s forwards;
+}
+.intro-veil .mark {
+  font-family: var(--font-serif); font-size: 28px; letter-spacing: 0.5em;
+  color: var(--ink); padding-left: 0.5em;
+  opacity: 0;
+  animation: markIn 0.6s var(--ease-out) 0.05s forwards;
+  position: relative;
+}
+.intro-veil .mark::after {
+  content: ""; position: absolute; left: 50%; right: 50%; bottom: -10px; height: 1px;
+  background: var(--accent);
+  animation: markRule 0.55s var(--ease-out) 0.4s forwards;
+}
+@keyframes markIn {
+  from { opacity: 0; letter-spacing: 0.32em; }
+  to   { opacity: 1; letter-spacing: 0.5em; }
+}
+@keyframes markRule { to { left: 0; right: 0; } }
+@keyframes veilOut  { to { opacity: 0; visibility: hidden; } }
+
+/* Scroll reveal — JS toggles `.in`. */
+@keyframes revealRise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal { opacity: 0; transform: translateY(24px); }
+.reveal.in { animation: revealRise 0.9s var(--ease-out) both; }
+.reveal-stagger > * { opacity: 0; transform: translateY(20px); }
+.reveal-stagger.in > * { animation: revealRise 0.7s var(--ease-out) both; }
+.reveal-stagger.in > *:nth-child(1) { animation-delay: 0.00s; }
+.reveal-stagger.in > *:nth-child(2) { animation-delay: 0.08s; }
+.reveal-stagger.in > *:nth-child(3) { animation-delay: 0.16s; }
+.reveal-stagger.in > *:nth-child(4) { animation-delay: 0.24s; }
+.reveal-stagger.in > *:nth-child(5) { animation-delay: 0.32s; }
+.reveal-stagger.in > *:nth-child(6) { animation-delay: 0.40s; }
+.reveal-stagger.in > *:nth-child(7) { animation-delay: 0.48s; }
+.reveal-stagger.in > *:nth-child(8) { animation-delay: 0.56s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal, .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
+}

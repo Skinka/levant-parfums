@@ -1,0 +1,106 @@
+/* Sticky header: 3-col grid (brand · nav · right-side controls). */
+
+.header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line-soft);
+  transition: background 0.3s var(--ease-out);
+}
+.header > .container {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  padding-top: 20px; padding-bottom: 20px;
+  gap: 40px;
+}
+.header .nav {
+  display: flex; gap: 26px; align-items: center;
+  flex-wrap: nowrap; white-space: nowrap;
+}
+.header .nav a {
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500;
+  color: var(--ink-soft); padding: 6px 0; position: relative;
+  transition: color var(--t-fast) var(--ease-out);
+}
+.header .nav a.active { color: var(--ink); }
+.header .nav a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 0.45s var(--ease-out);
+}
+.header .nav a.active::after,
+.header .nav a:hover::after { transform: scaleX(1); transform-origin: left; }
+.header .nav a:hover { color: var(--ink); }
+
+.brand {
+  display: inline-flex; flex-direction: column; align-items: stretch;
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: 22px;
+  color: var(--ink);
+  line-height: 1;
+}
+.brand .mark {
+  display: block;
+  letter-spacing: 0.32em;
+  text-align: justify;
+  text-align-last: justify;
+}
+.brand .sub {
+  display: block;
+  font-family: var(--font-sans); font-size: 9px; letter-spacing: 0.32em;
+  color: var(--ink-mute); margin-top: 6px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.head-right {
+  display: flex; gap: 18px;
+  justify-content: flex-end; align-items: center;
+}
+.head-right .icon-btn {
+  width: 38px; height: 38px;
+  border: 1px solid var(--line-soft);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--ink);
+  transition: all var(--t-fast) var(--ease-out);
+}
+.head-right .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Language dropdown */
+.lang { position: relative; }
+.lang-btn {
+  background: transparent;
+  border: 1px solid var(--line-soft);
+  padding: 9px 12px;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink); display: inline-flex; align-items: center; gap: 8px;
+  transition: border-color var(--t-fast) var(--ease-out);
+}
+.lang-btn:hover { border-color: var(--accent); }
+.lang-menu {
+  position: absolute; right: 0; top: calc(100% + 6px);
+  background: var(--card); border: 1px solid var(--line); min-width: 140px;
+  box-shadow: var(--shadow); z-index: 30; padding: 6px;
+  animation: drop 0.25s var(--ease-out) both;
+}
+@keyframes drop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lang-menu a, .lang-menu button {
+  background: transparent; border: none; width: 100%; text-align: left;
+  padding: 10px 12px; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-soft); display: flex; justify-content: space-between; align-items: center;
+  transition: all 0.2s var(--ease-out);
+  cursor: pointer;
+}
+.lang-menu a:hover, .lang-menu button:hover,
+.lang-menu a.active, .lang-menu button.active {
+  color: var(--ink); background: var(--bg-2);
+}
+.lang-menu a .dot, .lang-menu button .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); opacity: 0;
+}
+.lang-menu a.active .dot, .lang-menu button.active .dot { opacity: 1; }

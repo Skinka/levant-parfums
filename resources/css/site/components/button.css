@@ -1,0 +1,57 @@
+/* Primary CTA + link-with-arrow. */
+
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 26px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+  transition: all var(--t-fast) var(--ease-out);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: ""; position: absolute; inset: 0;
+  background: var(--accent-2); transform: translateX(-101%);
+  transition: transform 0.45s var(--ease-out);
+  z-index: 0;
+}
+.btn > * { position: relative; z-index: 1; }
+.btn:hover::after { transform: translateX(0); }
+.btn:hover { border-color: var(--accent-2); }
+.btn.ghost {
+  background: transparent; color: var(--ink); border-color: var(--ink-soft);
+}
+.btn.ghost::after { background: var(--ink); }
+.btn.ghost:hover { color: var(--bg); border-color: var(--ink); }
+.btn.gold-ghost {
+  background: transparent; color: var(--accent); border-color: var(--accent);
+}
+.btn.gold-ghost::after { background: var(--accent); }
+.btn.gold-ghost:hover { color: var(--accent-ink); }
+.btn-sm { padding: 10px 16px; font-size: 11px; letter-spacing: 0.14em; }
+
+/* Inline link with arrow — underline-reveal */
+.lnk {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 500;
+  color: var(--ink); padding-bottom: 6px; position: relative;
+  transition: gap var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.lnk::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--line);
+}
+.lnk::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%;
+  background: var(--accent); transform-origin: right center;
+  transform: scaleX(0.32);
+  transition: transform 0.5s var(--ease-out);
+}
+.lnk:hover { gap: 14px; }
+.lnk:hover::after { transform: scaleX(1); transform-origin: left center; }
+.lnk-mute { color: var(--ink-mute); }
+.lnk-mute:hover { color: var(--ink); }

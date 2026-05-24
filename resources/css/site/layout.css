@@ -1,0 +1,47 @@
+/* Layout primitives + ornaments + utilities. */
+
+.container { max-width: 1440px; margin: 0 auto; padding: 0 56px; }
+@media (max-width: 720px) { .container { padding: 0 24px; } }
+
+section { padding: 120px 0; }
+section.tight { padding: 80px 0; }
+section.compact { padding: 56px 0; }
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 56px;
+  margin-bottom: 56px;
+}
+.section-head h2 { max-width: 18ch; }
+
+/* Diamond ornament (from brand book packaging) */
+.diamond-band {
+  background-image:
+    linear-gradient(45deg, transparent 46%, currentColor 46%, currentColor 54%, transparent 54%),
+    linear-gradient(-45deg, transparent 46%, currentColor 46%, currentColor 54%, transparent 54%);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 0;
+  height: 14px;
+  color: var(--accent);
+  opacity: 0.55;
+}
+.diamond-band.tall {
+  height: 22px;
+  background-size: 22px 22px;
+  background-position: 0 0, 11px 0;
+}
+.diamond-rule {
+  display: flex; align-items: center; gap: 14px;
+  color: var(--accent); font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;
+}
+.diamond-rule::before, .diamond-rule::after {
+  content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.4;
+}
+.diamond-rule .gem {
+  width: 10px; height: 10px; transform: rotate(45deg);
+  border: 1px solid currentColor;
+}
+
+.divider-rule { height: 1px; background: var(--line-soft); width: 100%; }
+.gold-line { display: inline-block; width: 56px; height: 1px; background: var(--accent); vertical-align: middle; }

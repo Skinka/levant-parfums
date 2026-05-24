@@ -1,0 +1,12 @@
+/* Breadcrumbs. */
+
+.crumbs {
+  padding: 0 0 32px;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-mute);
+  display: flex; gap: 12px; align-items: center;
+}
+.crumbs a { transition: color var(--t-fast) var(--ease-out); }
+.crumbs a:hover { color: var(--ink); }
+.crumbs .sep { color: var(--ink-mute); }
+.crumbs .current { color: var(--ink); }

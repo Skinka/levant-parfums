@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Levant Parfums — Print</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Poppins:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="styles.css"/>
+
+  <style>
+    /* ============= PRINT-BUILD OVERRIDES ============= */
+
+    /* Always use the screen styles, but kill anything that conflicts with paginated output. */
+    html, body { background: var(--bg); }
+
+    /* Intro veil never shows in the print build (we don't render it). */
+
+    /* Header should not be sticky in print — it would render on the first page only. */
+    .header { position: static !important; }
+
+    /* Tweaks UI is not rendered, but make extra sure. */
+    .tweaks-panel, [data-tweaks-panel] { display: none !important; }
+
+    /* Page-fade / reveal animations: just show content. */
+    .page-fade,
+    .reveal,
+    .reveal-stagger,
+    .reveal-stagger > * {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+    .reveal.in, .reveal-stagger.in > * { animation: none !important; }
+
+    /* Marquee should not animate — print one static row. */
+    .announcement .marquee-track { animation: none !important; }
+
+    /* Disable all transitions globally for print build. */
+    *, *::before, *::after { transition: none !important; }
+
+    /* Section between every page in the print doc. */
+    .print-page-break {
+      break-after: page;
+      page-break-after: always;
+      height: 0;
+    }
+    .print-section {
+      break-inside: avoid-page;
+    }
+
+    /* Avoid awkward splits on cards, hero, etc. */
+    .card,
+    .collection-card,
+    .review,
+    .guide .step,
+    .article-card,
+    .product-page .top,
+    .pyramid,
+    .order-form,
+    .contacts .form-card,
+    .about-hero .grid,
+    .threepoints .points {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* The footer needs some breathing room from the last section */
+    .footer { margin-top: 80px; }
+
+    /* ============= @media print ============= */
+    @page {
+      size: A4;
+      margin: 14mm 10mm;
+    }
+    @media print {
+      html, body {
+        background: #fff !important;
+      }
+      /* Force background colours/images to render in print. */
+      *, *::before, *::after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      /* Big hero/section spacing collapses a little in print. */
+      section { padding: 60px 0 !important; }
+      .hero  { padding: 40px 0 60px !important; }
+      .footer { padding-top: 48px !important; margin-top: 48px !important; }
+
+      /* Hide elements that don't make sense in a printed brochure */
+      .product-row .nav-btns,    /* slider arrows */
+      .lightbox,                  /* modal */
+      .intro-veil {
+        display: none !important;
+      }
+
+      /* Sliders are horizontally scrollable on screen; let them wrap in print. */
+      .product-track {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        grid-auto-flow: row !important;
+        overflow: visible !important;
+        gap: 16px !important;
+      }
+      /* Catalog grids — keep tight so each page fits ~8 cards. */
+      .product-grid { gap: 16px !important; row-gap: 32px !important; }
+
+      /* Avoid huge font sizes from clamp() that get out of hand on print. */
+      h1 { font-size: 64px !important; }
+      h2 { font-size: 44px !important; }
+
+      /* Each major page section starts on a new page. */
+      .print-section { break-before: page; page-break-before: always; }
+      .print-section:first-of-type { break-before: auto; page-break-before: auto; }
+    }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="data.js"></script>
+</head>
+<body style="font-family: Jost">
+  <div id="root"></div>
+
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="pages-home.jsx"></script>
+  <script type="text/babel" src="pages-catalog.jsx"></script>
+  <script type="text/babel" src="pages-product.jsx"></script>
+  <script type="text/babel" src="pages-other.jsx"></script>
+  <script type="text/babel" src="print-app.jsx"></script>
+</body>
+</html>

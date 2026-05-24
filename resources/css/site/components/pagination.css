@@ -1,0 +1,35 @@
+/* Pagination — used by the catalog grid. */
+
+.pagination {
+  display: flex; justify-content: center; gap: 8px; align-items: center;
+  margin-top: 80px; padding-bottom: 40px;
+}
+.pagination a,
+.pagination button,
+.pagination .page {
+  width: 44px; height: 44px;
+  border: 1px solid var(--line-soft);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 12px; letter-spacing: 0.04em; font-family: var(--font-serif);
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  transition: all var(--t-fast) var(--ease-out);
+}
+.pagination .active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+.pagination a:hover,
+.pagination button:hover:not(:disabled):not(.active) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.pagination button:disabled,
+.pagination span.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.pagination .gap { color: var(--ink-mute); padding: 0 4px; border: none; }
+.pagination .arrow { width: auto; padding: 0 18px; }
