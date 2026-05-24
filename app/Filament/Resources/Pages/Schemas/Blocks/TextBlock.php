@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Pages\Schemas\Blocks;
 
 use App\Filament\Resources\Pages\Schemas\Blocks\Concerns\TranslatableTabs;
 use Filament\Forms\Components\Builder\Block;
-use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 
@@ -17,8 +17,10 @@ class TextBlock
             ->icon('heroicon-o-document-text')
             ->schema([
                 ...self::commonFields(),
-                TranslatableTabs::make('title'),
-                TranslatableTabs::make('body', required: true, component: MarkdownEditor::class),
+                TranslatableTabs::make('eyebrow'),
+                TranslatableTabs::make('title', required: true),
+                TranslatableTabs::make('body', required: true, component: Textarea::class),
+                TranslatableTabs::make('signature'),
             ]);
     }
 
