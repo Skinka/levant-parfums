@@ -10,8 +10,8 @@ class SeriesSeeder extends Seeder
     public function run(): void
     {
         $rows = [
-            ['slug' => 'luxury', 'name' => ['uk' => 'Luxury', 'en' => 'Luxury']],
-            ['slug' => 'onyx', 'name' => ['uk' => 'Onyx', 'en' => 'Onyx']],
+            ['slug' => 'luxury', 'name' => ['uk' => 'Luxury', 'en' => 'Luxury'], 'theme_class' => 'theme-cream'],
+            ['slug' => 'onyx', 'name' => ['uk' => 'Onyx', 'en' => 'Onyx'], 'theme_class' => 'theme-onyx'],
         ];
 
         foreach ($rows as $i => $r) {
