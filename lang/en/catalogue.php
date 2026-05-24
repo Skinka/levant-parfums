@@ -120,8 +120,8 @@ return [
             'gallery_open' => 'Open image',
             'gallery_zoom' => 'Click to enlarge',
             'why_label' => 'Why this one',
-            'order_cta' => 'Order',
-            'preorder_cta' => 'Preorder',
+            'order_cta' => 'Place order',
+            'preorder_cta' => 'Place preorder',
             'badges' => ['new' => 'New', 'best' => 'Bestseller'],
             'specs' => [
                 'sku' => 'SKU',
@@ -135,6 +135,7 @@ return [
             'pyramid' => [
                 'title' => 'The pyramid',
                 'subtitle' => 'How the scent unfolds on skin',
+                'description' => 'Every composition is built in three layers. Top notes for the first half hour, heart for two to three hours, base up to ten.',
                 'top' => 'Top',
                 'heart' => 'Heart',
                 'base' => 'Base',

@@ -11,6 +11,7 @@
     <div>
         <div class="eyebrow">{{ __('catalogue.public.product.pyramid.title') }}</div>
         <h2 style="margin-top:16px">{{ __('catalogue.public.product.pyramid.subtitle') }}</h2>
+        <p class="desc">{{ __('catalogue.public.product.pyramid.description') }}</p>
     </div>
     <div class="levels">
         @if($top->isNotEmpty())

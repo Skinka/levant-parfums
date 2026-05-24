@@ -34,6 +34,12 @@
 .btn.gold-ghost:hover { color: var(--accent-ink); }
 .btn-sm { padding: 10px 16px; font-size: 11px; letter-spacing: 0.14em; }
 
+.btn .btn-arrow {
+  font-size: 14px; line-height: 1;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.btn:hover .btn-arrow { transform: translateX(4px); }
+
 /* Inline link with arrow — underline-reveal */
 .lnk {
   display: inline-flex; align-items: center; gap: 8px;

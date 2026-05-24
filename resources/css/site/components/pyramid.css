@@ -1,17 +1,41 @@
 .pyramid {
-  margin-top: 80px; display: grid; gap: 48px;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
-  padding-block: 56px; border-top: 1px solid var(--line-soft);
+  margin-top: 80px;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 80px; align-items: start;
+  padding: 64px 0; border-top: 1px solid var(--line-soft);
 }
-@media (max-width: 880px) { .pyramid { grid-template-columns: 1fr; gap: 32px; } }
-.pyramid h2 { font-family: var(--font-serif); font-weight: 300; font-size: 32px; }
-.pyramid .levels { display: grid; gap: 36px; }
+@media (max-width: 1000px) {
+  .pyramid { grid-template-columns: 1fr; gap: 40px; padding: 48px 0; }
+}
+.pyramid h2 {
+  font-family: var(--font-serif); font-style: italic; font-weight: 300;
+  font-size: 32px; line-height: 1.15; margin: 0;
+}
+.pyramid .desc {
+  margin-top: 18px;
+  font-size: 14px; line-height: 1.7;
+  max-width: 32ch; color: var(--ink-mute);
+}
+.pyramid .levels { display: flex; flex-direction: column; }
+.pyramid .level {
+  display: grid; grid-template-columns: 140px 1fr;
+  gap: 32px; align-items: start;
+  padding: 24px 0; border-bottom: 1px solid var(--line-soft);
+}
+.pyramid .level:last-child { border-bottom: none; padding-bottom: 0; }
+.pyramid .level:first-child { padding-top: 0; }
 .pyramid .level .lbl {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.24em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--accent); padding-top: 4px;
 }
-.pyramid .notes { display: flex; flex-wrap: wrap; gap: 8px; }
-.pyramid .note {
-  padding: 8px 14px; border: 1px solid var(--line);
-  font-size: 13px; background: var(--card);
+.pyramid .level .notes { display: flex; flex-wrap: wrap; gap: 10px; }
+.pyramid .level .note {
+  padding: 8px 16px; border: 1px solid var(--line);
+  font-family: var(--font-serif); font-size: 17px; color: var(--ink);
+  background: var(--card);
+  transition: all var(--t-fast) var(--ease-out);
+}
+.pyramid .level .note:hover { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 640px) {
+  .pyramid .level { grid-template-columns: 1fr; gap: 12px; }
 }

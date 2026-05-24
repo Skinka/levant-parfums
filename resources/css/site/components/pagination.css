@@ -26,8 +26,7 @@
   border-color: var(--accent);
   color: var(--accent);
 }
-.pagination button:disabled,
-.pagination span.disabled {
+.pagination button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }

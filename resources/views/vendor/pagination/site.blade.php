@@ -3,11 +3,9 @@
     @php($nextLabel = __('catalogue.public.next'))
 
     <nav class="pagination" role="navigation" aria-label="Pagination">
-        @if ($paginator->onFirstPage())
-            <span class="arrow disabled" aria-disabled="true">← {{ $prevLabel }}</span>
-        @else
+        @unless ($paginator->onFirstPage())
             <a class="arrow" href="{{ $paginator->previousPageUrl() }}" rel="prev">← {{ $prevLabel }}</a>
-        @endif
+        @endunless
 
         @foreach ($elements as $element)
             @if (is_string($element))
@@ -27,8 +25,6 @@
 
         @if ($paginator->hasMorePages())
             <a class="arrow" href="{{ $paginator->nextPageUrl() }}" rel="next">{{ $nextLabel }} →</a>
-        @else
-            <span class="arrow disabled" aria-disabled="true">{{ $nextLabel }} →</span>
         @endif
     </nav>
 @endif

@@ -4,14 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-LevantParfums is a Laravel 13 + Filament 5 application for a perfumery catalogue. There is **no storefront yet** — the work to date is data layer + admin panel only (`routes/web.php` exposes a localized `/` welcome view and nothing else).
+LevantParfums is a Laravel 13 + Filament 5 application for a perfumery catalogue. It has three surfaces:
+
+- **Admin panel** at `/admin` (Filament 5).
+- **Storefront** at `/{locale}/...` — home (a `Page` flagged `is_homepage`), product catalogue (`/products`, `/products/{slug}`), and arbitrary CMS pages (`/{slug}` resolved against translated `Page.slug`).
+- **Public forms** (contact, order) embedded as Livewire components.
 
 Two main domains, kept in separate namespaces:
 
 - `App\Models\Catalogue\*` — `Product` plus nine reference dictionaries (`PerfumeFamily`, `Concentration`, `Series`, `Note`, `Brand`, `Tag`, `Season`, `Occasion`, `Audience`).
-- `App\Models\Content\*` — `Page` (static pages, no listing) and `Article` (flat blog, scheduled publishing, M2M `article_product` with `sort_order`).
+- `App\Models\Content\*` — `Page` (static pages with `simple`/`landing` templates + JSON `blocks`, no public listing) and `Article` (flat blog, scheduled publishing, M2M `article_product` with `sort_order`).
 
-Filament resources mirror this split under `app/Filament/Resources/{Products,Articles,Pages,...}/`, each with `Schemas/`, `Tables/`, and `Pages/` subfolders. Resources are auto-discovered (see `AdminPanelProvider`). The admin panel lives at `/admin`.
+Filament resources mirror this split under `app/Filament/Resources/{Products,Articles,Pages,...}/`, each with `Schemas/`, `Tables/`, and `Pages/` subfolders. Resources are auto-discovered (see `AdminPanelProvider`).
 
 ## Commands
 
@@ -78,9 +82,36 @@ Public forms (contact, order, future) are handled by a single engine:
 
 Anti-spam: silent honeypot (an empty `$hp` is the only acceptable value) + Laravel `RateLimiter` keyed on `forms:{type}:{ip}`. Rate-limit breach surfaces as a `ValidationException` on the `form` key so it shows up inline like any other field error.
 
-### Public routing is localized
+### Public routing is localized + the `/{slug}` catch-all
 
-`routes/web.php` wraps everything in `LaravelLocalization::setLocale()` + the `localeSessionRedirect` / `localizationRedirect` / `localeViewPath` middleware. Any new public route must go inside this group; admin (`/admin`) lives outside it.
+`routes/web.php` wraps every public route in `LaravelLocalization::setLocale()` + the `localeSessionRedirect` / `localizationRedirect` / `localeViewPath` middleware. Admin (`/admin`) lives outside this group.
+
+Route order matters: `/products` and `/products/{slug}` are defined before the catch-all `/{slug}` → `PageController@show`, which resolves the slug against `Page` per locale via `whereJsonContains("slug->{$locale}", $slug)`. Any new top-level path (e.g. `/blog`, `/cart`) must be:
+
+1. Registered **before** the `/{slug}` route, **and**
+2. Added to `config('content.reserved_slugs')` so it can never be claimed by a CMS page (saving a `Page` with a reserved slug throws `DomainException` from `Page::booted()`).
+
+### Storefront pages, templates, and blocks
+
+The home page and CMS pages share `PageController` + `resources/views/pages/templates/{template}.blade.php`. `Page::template` is a `PageTemplate` enum (`simple` | `landing`); the controller dispatches on `$page->template->value`.
+
+- **`simple`** uses `intro` + `content` (translatable HTML).
+- **`landing`** ignores `content` and renders `Page::visibleBlocks()` — an ordered array from the JSON `blocks` column, with each entry shaped `['type' => BlockType, 'data' => [...]]`. `visibleBlocks()` filters out blocks where `data.is_visible === false`. Block partials live in `resources/views/pages/blocks/{hero,products,text,articles}.blade.php`, matching the `BlockType` enum cases. `Page::booted()` also normalizes Spatie's `{"uk":null}` translation artifact to a true DB `NULL` for `content` — write through `attributes` directly if you need to bypass the translation setter.
+
+### Series-driven theming
+
+Each `Series` has a `theme_class` column. `ProductCatalogController@show` passes `$theme = $product->series?->theme_class ?? 'theme-cream'` to the view; `layouts/site.blade.php` writes it onto `<body class="{{ $theme ?? 'theme-cream' }}">`. New pages/controllers that should respect series theming must pass `$theme` explicitly — the layout has no fallback lookup.
+
+### Catalogue listing: sort + series filter
+
+`ProductCatalogController@index` only accepts a whitelisted `series` query param (`onyx`, `luxury` — see `ALLOWED_SERIES`) and a whitelisted `sort` token (`pop` | `new` | `priceA` | `priceB` — see `ALLOWED_SORTS`); anything else is silently coerced to the default. Sort tokens `pop` and `new` rank products that carry the `bestseller` / `new` `Tag` (matched by `tags.slug`) ahead of the rest via a correlated `EXISTS` subquery on `product_tag`. The tag slugs are interpolated into raw SQL — keep them slug-safe (the route regex is `[A-Za-z0-9\-_]+`) and never derive them from user input.
+
+### Frontend stack
+
+- **Tailwind CSS v4** via the `@tailwindcss/vite` plugin; entry is `resources/css/app.css` which imports `tailwindcss`, then the modular `resources/css/site/index.css` (which pulls in `site/components/*.css` and `site/pages/*.css`). Theme tokens (`--font-sans`, `--font-serif`) are declared in the `@theme` block in `app.css`.
+- **Fonts**: Inter + Fraunces, wired through `laravel-vite-plugin/fonts` (`bunny(...)` in `vite.config.js`) and injected via the `@fonts` Blade directive in the site layout.
+- **Alpine.js 3** is registered once at the layout level. JS entry `resources/js/app.js` imports a small set of site modules from `resources/js/site/` (`reveal`, `intro-veil`, `lightbox`). Do not pull in a second Alpine instance — see commit `056fb9b` ("drop duplicate Alpine") for the precedent.
+- Public site Blade components live under `resources/views/components/site/*` and are invoked as `<x-site.{name} />`.
 
 ## Testing
 

@@ -83,7 +83,11 @@
             </label>
 
             <div class="actions">
-                <button type="submit" class="btn">{{ trans("forms.order.submit.{$titleKey}") }}</button>
+                <span class="agree">{{ trans('forms.order.agree') }}</span>
+                <button type="submit" class="btn">
+                    <span>{{ trans("forms.order.submit.{$titleKey}") }}</span>
+                    <span class="btn-arrow" aria-hidden="true">→</span>
+                </button>
             </div>
         </div>
     </form>

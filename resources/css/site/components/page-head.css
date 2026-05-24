@@ -2,6 +2,6 @@
    Compose with a page-specific class (e.g. .catalog-head) for content layout. */
 
 .page-head {
-  padding: 32px 0 40px;
+  padding: 24px 0 40px;
   border-bottom: 1px solid var(--line-soft);
 }

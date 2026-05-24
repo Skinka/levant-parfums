@@ -8,6 +8,7 @@
     @hasSection('description')
         <meta name="description" content="@yield('description')">
     @endif
+    @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>

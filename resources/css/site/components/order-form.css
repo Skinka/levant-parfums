@@ -1,10 +1,13 @@
 .order-form {
-  margin-top: 64px; padding-block: 56px;
-  border-top: 1px solid var(--line-soft);
-  display: grid; gap: 48px;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  padding: 64px;
+  background: var(--bg-2); border: 1px solid var(--line-soft);
+  display: grid; gap: 64px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  align-items: start;
 }
-@media (max-width: 880px) { .order-form { grid-template-columns: 1fr; gap: 32px; } }
+@media (max-width: 880px) {
+  .order-form { grid-template-columns: 1fr; gap: 40px; padding: 40px; }
+}
 
 .order-form .intro .eyebrow {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.24em;
@@ -16,7 +19,8 @@
 }
 .order-form .intro p { margin-top: 12px; color: var(--ink-soft); }
 .order-form .summary {
-  margin-top: 24px; padding: 20px; background: var(--bg-2);
+  margin-top: 32px; padding-top: 24px;
+  border-top: 1px solid var(--line-soft);
   display: grid; grid-template-columns: 80px 1fr; gap: 16px;
 }
 .order-form .summary .img img { width: 80px; height: 100px; object-fit: cover; }
@@ -51,7 +55,15 @@
   font-family: var(--font-sans); font-size: 14px; color: var(--ink);
 }
 .order-form .field .err { color: #c0392b; font-size: 12px; }
-.order-form .actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 8px; }
+.order-form .actions {
+  grid-column: 1 / -1;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px; margin-top: 12px; flex-wrap: wrap;
+}
+.order-form .actions .agree {
+  font-size: 11px; letter-spacing: 0.06em; line-height: 1.5;
+  color: var(--ink-mute); max-width: 36ch;
+}
 .order-form .alert { grid-column: 1 / -1; padding: 12px; background: #fdecea; color: #c0392b; }
 
 .order-thanks {

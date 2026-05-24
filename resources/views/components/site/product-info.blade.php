@@ -1,7 +1,9 @@
 @props(['product'])
 
 @php
-    $firstOccasion = $product->relationLoaded('occasions') ? $product->occasions->first() : null;
+    $occasionsText = $product->relationLoaded('occasions')
+        ? $product->occasions->pluck('name')->filter()->join(', ')
+        : '';
     $tags = $product->relationLoaded('tags') ? $product->tags : collect();
     $isNew = $tags->contains('slug', 'new');
     $isBest = $tags->contains('slug', 'bestseller');
@@ -18,14 +20,14 @@
         <div class="subtitle">{{ $product->tagline }}</div>
     @endif
 
-    @if($product->character || $firstOccasion)
+    @if($product->character || $occasionsText !== '')
         <div class="character-line">
             @if($product->character)
                 <span class="accent">{{ $product->character }}</span>
             @endif
-            @if($product->character && $firstOccasion) · @endif
-            @if($firstOccasion)
-                <span>{{ $firstOccasion->name }}</span>
+            @if($product->character && $occasionsText !== '') <span class="sep">·</span> @endif
+            @if($occasionsText !== '')
+                <span>{{ $occasionsText }}</span>
             @endif
         </div>
     @endif
@@ -73,9 +75,15 @@
 
     <div class="cta-row">
         @if($product->in_stock)
-            <a href="#order" class="btn">{{ __('catalogue.public.product.order_cta') }}</a>
+            <a href="#order" class="btn">
+                <span>{{ __('catalogue.public.product.order_cta') }}</span>
+                <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
         @else
-            <a href="#order" class="btn btn-secondary">{{ __('catalogue.public.product.preorder_cta') }}</a>
+            <a href="#order" class="btn btn-secondary">
+                <span>{{ __('catalogue.public.product.preorder_cta') }}</span>
+                <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
         @endif
     </div>
 </div>
