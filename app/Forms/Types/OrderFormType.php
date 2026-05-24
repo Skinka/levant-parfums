@@ -37,8 +37,10 @@ class OrderFormType extends FormType
             'name' => ['required', 'string', 'max:120'],
             'phone' => ['required', 'string', 'max:40'],
             'email' => ['required', 'string', 'email:rfc', 'max:255'],
-            'qty' => ['required', 'integer', 'min:1', 'max:100'],
-            'note' => ['nullable', 'string', 'max:1000'],
+            'city' => ['required', 'string', 'max:120'],
+            'np_office' => ['required', 'string', 'max:80'],
+            'qty' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
@@ -48,8 +50,10 @@ class OrderFormType extends FormType
             'name' => trans('forms.fields.name'),
             'phone' => trans('forms.fields.phone'),
             'email' => trans('forms.fields.email'),
+            'city' => trans('forms.fields.city'),
+            'np_office' => trans('forms.fields.np_office'),
             'qty' => trans('forms.fields.qty'),
-            'note' => trans('forms.fields.note'),
+            'comment' => trans('forms.fields.comment'),
         ];
     }
 

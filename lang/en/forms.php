@@ -43,6 +43,9 @@ return [
         'message' => 'Message',
         'qty' => 'Quantity',
         'note' => 'Note',
+        'city' => 'City',
+        'np_office' => 'Nova Poshta office',
+        'comment' => 'Comment',
     ],
 
     'errors' => [
