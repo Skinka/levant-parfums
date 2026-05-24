@@ -22,6 +22,10 @@
             @if($product->notes->isNotEmpty())
                 <x-site.product-pyramid :product="$product"/>
             @endif
+
+            @if($product->sillage_score || $product->longevity_hours)
+                <x-site.product-character :product="$product"/>
+            @endif
         </div>
     </div>
 @endsection

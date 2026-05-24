@@ -94,3 +94,23 @@ it('hides pyramid when product has no notes', function () {
     $this->get(route('products.show', $p->slug))
         ->assertDontSee(__('catalogue.public.product.pyramid.title'));
 });
+
+it('renders sillage bar when sillage_score set', function () {
+    $p = publishedProductInSeries('luxury', ['sillage_score' => 4]);
+    $r = $this->get(route('products.show', $p->slug));
+    $r->assertSee(__('catalogue.public.product.character.sillage_label'));
+    $r->assertSee(__('catalogue.public.product.character.sillage_words.4'));
+});
+
+it('renders longevity bar when longevity_hours set', function () {
+    $p = publishedProductInSeries('luxury', ['longevity_hours' => 10]);
+    $r = $this->get(route('products.show', $p->slug));
+    $r->assertSee(__('catalogue.public.product.character.longevity_label'));
+});
+
+it('hides character section when both sillage and longevity are null', function () {
+    $p = publishedProductInSeries('luxury', ['sillage_score' => null, 'longevity_hours' => null]);
+    $this->get(route('products.show', $p->slug))
+        ->assertDontSee(__('catalogue.public.product.character.sillage_label'))
+        ->assertDontSee(__('catalogue.public.product.character.longevity_label'));
+});

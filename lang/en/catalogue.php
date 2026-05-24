@@ -139,6 +139,18 @@ return [
                 'heart' => 'Heart',
                 'base' => 'Base',
             ],
+            'character' => [
+                'sillage_label' => 'Sillage',
+                'longevity_label' => 'Longevity',
+                'longevity_word_h' => 'h',
+                'sillage_words' => [
+                    1 => 'Skin',
+                    2 => 'Close',
+                    3 => 'Moderate',
+                    4 => 'Strong',
+                    5 => 'Heavy',
+                ],
+            ],
         ],
     ],
 ];
