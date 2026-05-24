@@ -3,6 +3,7 @@
     $titleKey = $isPreorder ? 'preorder' : 'order';
 @endphp
 
+<div>
 @if (session('forms.success.order'))
     @php($latestId = \App\Forms\Models\FormSubmission::query()->latest('id')->value('id'))
     <div class="order-thanks">
@@ -87,3 +88,4 @@
         </div>
     </form>
 @endif
+</div>
