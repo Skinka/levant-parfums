@@ -43,8 +43,8 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             NoteSeeder::class,
             ProductSeeder::class,
-            PageSeeder::class,
             ArticleSeeder::class,
+            PageSeeder::class,
             FormSubmissionSeeder::class,
         ]);
     }
