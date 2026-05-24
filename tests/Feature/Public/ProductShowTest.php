@@ -38,3 +38,10 @@ it('unpublished product returns 404', function () {
 it('missing slug returns 404', function () {
     $this->get(route('products.show', 'nope-not-real'))->assertNotFound();
 });
+
+it('gallery renders main image as data-lightbox-trigger button', function () {
+    $p = publishedProductInSeries('luxury');
+    $r = $this->get(route('products.show', $p->slug));
+    $r->assertSee('data-lightbox-trigger', false);
+    $r->assertSee('data-lightbox-images', false);
+});

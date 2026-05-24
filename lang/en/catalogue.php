@@ -116,5 +116,9 @@ return [
         'badge_new' => 'New',
         'badge_best' => 'Bestseller',
         'empty' => 'No products in this series yet.',
+        'product' => [
+            'gallery_open' => 'Open image',
+            'gallery_zoom' => 'Click to enlarge',
+        ],
     ],
 ];
