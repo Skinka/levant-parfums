@@ -78,3 +78,19 @@ it('hides why-block when why is null', function () {
     $this->get(route('products.show', $p->slug))
         ->assertDontSee(__('catalogue.public.product.why_label'));
 });
+
+it('renders pyramid section when product has notes', function () {
+    $p = publishedProductInSeries('luxury');
+    $note = \App\Models\Catalogue\Note::factory()->create(['name' => ['uk' => 'Бергамот', 'en' => 'Bergamot']]);
+    $p->notes()->attach($note, ['level' => 'top', 'sort_order' => 0]);
+
+    $this->get(route('products.show', $p->slug))
+        ->assertSee(__('catalogue.public.product.pyramid.title'))
+        ->assertSee('Бергамот');
+});
+
+it('hides pyramid when product has no notes', function () {
+    $p = publishedProductInSeries('luxury');
+    $this->get(route('products.show', $p->slug))
+        ->assertDontSee(__('catalogue.public.product.pyramid.title'));
+});

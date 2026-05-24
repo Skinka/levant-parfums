@@ -18,6 +18,10 @@
                 <x-site.product-gallery :product="$product"/>
                 <x-site.product-info :product="$product"/>
             </div>
+
+            @if($product->notes->isNotEmpty())
+                <x-site.product-pyramid :product="$product"/>
+            @endif
         </div>
     </div>
 @endsection

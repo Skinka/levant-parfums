@@ -132,6 +132,13 @@ return [
                 'composed_value' => 'Spain / ES',
                 'series' => 'Series',
             ],
+            'pyramid' => [
+                'title' => 'The pyramid',
+                'subtitle' => 'How the scent unfolds on skin',
+                'top' => 'Top',
+                'heart' => 'Heart',
+                'base' => 'Base',
+            ],
         ],
     ],
 ];
