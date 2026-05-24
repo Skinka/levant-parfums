@@ -18,6 +18,7 @@ class Article extends Model implements HasMedia
 {
     /** @use HasFactory<ArticleFactory> */
     use HasFactory;
+
     use HasTranslations;
     use InteractsWithMedia;
 

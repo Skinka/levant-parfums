@@ -7,6 +7,7 @@ use App\Filament\Resources\Tags\Pages\EditTag;
 use App\Filament\Resources\Tags\Pages\ListTags;
 use App\Filament\Resources\Tags\Schemas\TagForm;
 use App\Filament\Resources\Tags\Tables\TagsTable;
+use App\Models\Catalogue\Tag;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -15,7 +16,8 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class TagResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = \App\Models\Catalogue\Tag::class;
+
+    protected static ?string $model = Tag::class;
 
     public static function getNavigationGroup(): ?string
     {

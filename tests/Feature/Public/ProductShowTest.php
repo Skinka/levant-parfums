@@ -1,11 +1,13 @@
 <?php
 
+use App\Forms\Livewire\OrderForm;
+use App\Models\Catalogue\Note;
 use App\Models\Catalogue\Product;
 use App\Models\Catalogue\Series;
 use Database\Seeders\Catalogue\SeriesSeeder;
 
 beforeEach(function () {
-    (new SeriesSeeder())->run();
+    (new SeriesSeeder)->run();
     $this->withSession(['locale' => 'uk']);
 });
 
@@ -81,7 +83,7 @@ it('hides why-block when why is null', function () {
 
 it('renders pyramid section when product has notes', function () {
     $p = publishedProductInSeries('luxury');
-    $note = \App\Models\Catalogue\Note::factory()->create(['name' => ['uk' => 'Бергамот', 'en' => 'Bergamot']]);
+    $note = Note::factory()->create(['name' => ['uk' => 'Бергамот', 'en' => 'Bergamot']]);
     $p->notes()->attach($note, ['level' => 'top', 'sort_order' => 0]);
 
     $this->get(route('products.show', $p->slug))
@@ -118,7 +120,7 @@ it('hides character section when both sillage and longevity are null', function 
 it('mounts Livewire order-form with product as subject', function () {
     $p = publishedProductInSeries('luxury');
     $r = $this->get(route('products.show', $p->slug));
-    $r->assertSeeLivewire(\App\Forms\Livewire\OrderForm::class);
+    $r->assertSeeLivewire(OrderForm::class);
 });
 
 it('order form section is anchorable via #order', function () {

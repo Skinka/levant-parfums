@@ -5,12 +5,14 @@ namespace App\Models\Catalogue;
 use Database\Factories\Catalogue\ConcentrationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
 class Concentration extends Model
 {
     /** @use HasFactory<ConcentrationFactory> */
     use HasFactory;
+
     use HasTranslations;
 
     protected $fillable = ['name', 'slug', 'abbreviation', 'sort_order', 'is_active'];
@@ -25,8 +27,8 @@ class Concentration extends Model
         ];
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function products(): HasMany
     {
-        return $this->hasMany(\App\Models\Catalogue\Product::class);
+        return $this->hasMany(Product::class);
     }
 }

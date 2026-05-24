@@ -6,6 +6,7 @@ use App\Forms\Models\FormSubmission;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
+use Mcamara\LaravelLocalization\LaravelLocalization;
 
 beforeEach(function () {
     config()->set('forms.admin_email', 'admin@levantparfums.test');
@@ -83,7 +84,7 @@ it('6th submit within window throws rate-limit error', function () {
 });
 
 it('locale is captured from current LaravelLocalization locale', function () {
-    app(\Mcamara\LaravelLocalization\LaravelLocalization::class)->setLocale('en');
+    app(LaravelLocalization::class)->setLocale('en');
 
     Livewire::test(ContactForm::class)
         ->set('name', 'John')

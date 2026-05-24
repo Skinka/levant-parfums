@@ -7,6 +7,7 @@ use App\Filament\Resources\Brands\Pages\EditBrand;
 use App\Filament\Resources\Brands\Pages\ListBrands;
 use App\Filament\Resources\Brands\Schemas\BrandForm;
 use App\Filament\Resources\Brands\Tables\BrandsTable;
+use App\Models\Catalogue\Brand;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -15,7 +16,8 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class BrandResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = \App\Models\Catalogue\Brand::class;
+
+    protected static ?string $model = Brand::class;
 
     public static function getNavigationGroup(): ?string
     {

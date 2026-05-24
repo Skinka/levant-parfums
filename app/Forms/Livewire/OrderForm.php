@@ -9,11 +9,17 @@ use Illuminate\Contracts\View\View;
 class OrderForm extends FormComponent
 {
     public string $name = '';
+
     public string $phone = '';
+
     public string $email = '';
+
     public string $city = '';
+
     public string $np_office = '';
+
     public int $qty = 1;
+
     public string $comment = '';
 
     protected function formType(): FormType

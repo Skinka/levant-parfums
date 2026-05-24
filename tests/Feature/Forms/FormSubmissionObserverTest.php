@@ -2,7 +2,6 @@
 
 use App\Forms\Models\FormSubmission;
 use App\Models\User;
-use Filament\Notifications\Notification;
 use Illuminate\Notifications\DatabaseNotification;
 
 beforeEach(function () {

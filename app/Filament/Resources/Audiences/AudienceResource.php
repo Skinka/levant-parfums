@@ -7,6 +7,7 @@ use App\Filament\Resources\Audiences\Pages\EditAudience;
 use App\Filament\Resources\Audiences\Pages\ListAudiences;
 use App\Filament\Resources\Audiences\Schemas\AudienceForm;
 use App\Filament\Resources\Audiences\Tables\AudiencesTable;
+use App\Models\Catalogue\Audience;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -15,7 +16,8 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class AudienceResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = \App\Models\Catalogue\Audience::class;
+
+    protected static ?string $model = Audience::class;
 
     public static function getNavigationGroup(): ?string
     {

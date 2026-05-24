@@ -3,15 +3,16 @@
 use App\Models\Catalogue\Product;
 use App\Models\Catalogue\Series;
 use Database\Seeders\Catalogue\SeriesSeeder;
+use Database\Seeders\DatabaseSeeder;
 
 it('seeds luxury with theme-cream and onyx with theme-onyx', function () {
-    (new SeriesSeeder())->run();
+    (new SeriesSeeder)->run();
     expect(Series::where('slug', 'luxury')->first()->theme_class)->toBe('theme-cream');
     expect(Series::where('slug', 'onyx')->first()->theme_class)->toBe('theme-onyx');
 });
 
 it('seeds character/sillage data on first 2 luxury + 2 onyx products', function () {
-    $this->seed(\Database\Seeders\DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
 
     $sampleLux = Product::where('slug', 'luxury-1')->first();
     $sampleOnyx = Product::where('slug', 'onyx-1')->first();

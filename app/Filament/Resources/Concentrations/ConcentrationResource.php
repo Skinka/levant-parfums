@@ -7,6 +7,7 @@ use App\Filament\Resources\Concentrations\Pages\EditConcentration;
 use App\Filament\Resources\Concentrations\Pages\ListConcentrations;
 use App\Filament\Resources\Concentrations\Schemas\ConcentrationForm;
 use App\Filament\Resources\Concentrations\Tables\ConcentrationsTable;
+use App\Models\Catalogue\Concentration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -15,7 +16,8 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class ConcentrationResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = \App\Models\Catalogue\Concentration::class;
+
+    protected static ?string $model = Concentration::class;
 
     public static function getNavigationGroup(): ?string
     {

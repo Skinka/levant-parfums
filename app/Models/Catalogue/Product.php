@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -18,6 +19,7 @@ class Product extends Model implements HasMedia
 {
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
+
     use HasTranslations;
     use InteractsWithMedia;
 
@@ -140,17 +142,17 @@ class Product extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->fit(\Spatie\Image\Enums\Fit::Contain, 200, 200)
+            ->fit(Fit::Contain, 200, 200)
             ->format('webp')
             ->nonQueued();
 
         $this->addMediaConversion('card')
-            ->fit(\Spatie\Image\Enums\Fit::Crop, 600, 800)
+            ->fit(Fit::Crop, 600, 800)
             ->format('webp')
             ->nonQueued();
 
         $this->addMediaConversion('detail')
-            ->fit(\Spatie\Image\Enums\Fit::Contain, 1200, 1600)
+            ->fit(Fit::Contain, 1200, 1600)
             ->format('webp')
             ->nonQueued();
     }

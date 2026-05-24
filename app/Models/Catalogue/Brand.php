@@ -5,12 +5,14 @@ namespace App\Models\Catalogue;
 use Database\Factories\Catalogue\BrandFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
 class Brand extends Model
 {
     /** @use HasFactory<BrandFactory> */
     use HasFactory;
+
     use HasTranslations;
 
     protected $fillable = ['name', 'slug', 'country', 'sort_order', 'is_active'];
@@ -25,8 +27,8 @@ class Brand extends Model
         ];
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function products(): HasMany
     {
-        return $this->hasMany(\App\Models\Catalogue\Product::class, 'inspired_brand_id');
+        return $this->hasMany(Product::class, 'inspired_brand_id');
     }
 }

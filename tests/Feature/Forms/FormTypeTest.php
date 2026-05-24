@@ -5,8 +5,11 @@ use App\Forms\Mail\OrderAdminMail;
 use App\Forms\Mail\OrderClientMail;
 use App\Forms\Models\FormSubmission;
 use App\Forms\Types\ContactFormType;
+use App\Forms\Types\FormType;
 use App\Forms\Types\OrderFormType;
 use App\Models\Catalogue\Product;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\Mailable;
 
 it('ContactFormType: key + label + rules + admin mailable', function () {
     config()->set('forms.admin_email', 'admin@levantparfums.test');
@@ -48,12 +51,26 @@ it('rateLimit default is 5 attempts per 60 minutes', function () {
 });
 
 it('FormType::metadata() default returns empty array', function () {
-    $type = new class extends \App\Forms\Types\FormType {
-        public function key(): string { return 'x'; }
-        public function label(): string { return 'X'; }
-        public function rules(?\Illuminate\Database\Eloquent\Model $s = null): array { return []; }
-        public function adminMailable(\App\Forms\Models\FormSubmission $s): \Illuminate\Mail\Mailable {
-            return new class extends \Illuminate\Mail\Mailable {};
+    $type = new class extends FormType
+    {
+        public function key(): string
+        {
+            return 'x';
+        }
+
+        public function label(): string
+        {
+            return 'X';
+        }
+
+        public function rules(?Model $s = null): array
+        {
+            return [];
+        }
+
+        public function adminMailable(FormSubmission $s): Mailable
+        {
+            return new class extends Mailable {};
         }
     };
     expect($type->metadata(null))->toBe([]);

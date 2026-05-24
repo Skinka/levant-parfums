@@ -3,10 +3,11 @@
 use App\Models\Catalogue\Product;
 use App\Models\Content\Article;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Carbon;
 
 it('casts published_at to datetime', function () {
     $a = Article::factory()->create(['published_at' => '2026-06-01 12:00:00']);
-    expect($a->published_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
+    expect($a->published_at)->toBeInstanceOf(Carbon::class);
 });
 
 it('stores translatable fields per locale', function () {

@@ -1,8 +1,15 @@
 <?php
 
 use App\Enums\Gender;
+use App\Enums\NoteLevel;
+use App\Models\Catalogue\Audience;
+use App\Models\Catalogue\Note;
+use App\Models\Catalogue\Occasion;
 use App\Models\Catalogue\Product;
+use App\Models\Catalogue\Season;
 use App\Models\Catalogue\Series;
+use App\Models\Catalogue\Tag;
+use Illuminate\Database\QueryException;
 
 it('series has theme_class column with default theme-cream', function () {
     $s = Series::create(['name' => ['uk' => 'Test', 'en' => 'Test'], 'slug' => 'test-series']);
@@ -77,11 +84,8 @@ it('keeps name translatable across locales', function () {
 it('enforces unique sku', function () {
     Product::factory()->create(['sku' => 'DUP-1']);
     expect(fn () => Product::factory()->create(['sku' => 'DUP-1']))
-        ->toThrow(Illuminate\Database\QueryException::class);
+        ->toThrow(QueryException::class);
 });
-
-use App\Enums\NoteLevel;
-use App\Models\Catalogue\Note;
 
 it('attaches notes at different levels', function () {
     $p = Product::factory()->create();
@@ -104,13 +108,8 @@ it('rejects duplicate note at same level', function () {
     $p->notes()->attach($n->id, ['level' => NoteLevel::Top->value, 'sort_order' => 0]);
 
     expect(fn () => $p->notes()->attach($n->id, ['level' => NoteLevel::Top->value, 'sort_order' => 1]))
-        ->toThrow(Illuminate\Database\QueryException::class);
+        ->toThrow(QueryException::class);
 });
-
-use App\Models\Catalogue\Audience;
-use App\Models\Catalogue\Occasion;
-use App\Models\Catalogue\Season;
-use App\Models\Catalogue\Tag;
 
 it('attaches simple many-to-many relations', function () {
     $p = Product::factory()->create();

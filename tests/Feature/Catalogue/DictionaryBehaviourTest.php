@@ -1,7 +1,11 @@
 <?php
 
+use App\Models\Catalogue\Brand;
+use App\Models\Catalogue\Concentration;
+use App\Models\Catalogue\Note;
 use App\Models\Catalogue\PerfumeFamily;
-use Illuminate\Validation\ValidationException;
+use App\Models\Catalogue\Tag;
+use Illuminate\Database\QueryException;
 
 it('creates a base-shape dictionary record with translatable name', function () {
     $family = PerfumeFamily::create([
@@ -20,7 +24,7 @@ it('enforces unique slug on base dictionaries', function () {
     PerfumeFamily::create(['name' => ['uk' => 'A'], 'slug' => 'dup']);
 
     expect(fn () => PerfumeFamily::create(['name' => ['uk' => 'B'], 'slug' => 'dup']))
-        ->toThrow(Illuminate\Database\QueryException::class);
+        ->toThrow(QueryException::class);
 });
 
 it('boots through a factory', function () {
@@ -30,23 +34,23 @@ it('boots through a factory', function () {
 });
 
 it('creates a concentration with abbreviation', function () {
-    $c = App\Models\Catalogue\Concentration::factory()->create(['abbreviation' => 'EDP']);
+    $c = Concentration::factory()->create(['abbreviation' => 'EDP']);
     expect($c->abbreviation)->toBe('EDP');
 });
 
 it('creates a brand with country', function () {
-    $b = App\Models\Catalogue\Brand::factory()->create(['country' => 'FR']);
+    $b = Brand::factory()->create(['country' => 'FR']);
     expect($b->country)->toBe('FR');
 });
 
 it('creates a tag with color and is_featured', function () {
-    $t = App\Models\Catalogue\Tag::factory()->create(['color' => '#C77B7B', 'is_featured' => true]);
+    $t = Tag::factory()->create(['color' => '#C77B7B', 'is_featured' => true]);
     expect($t->color)->toBe('#C77B7B');
     expect($t->is_featured)->toBeTrue();
 });
 
 it('creates a note with translatable description', function () {
-    $n = App\Models\Catalogue\Note::create([
+    $n = Note::create([
         'name' => ['uk' => 'Жасмін', 'en' => 'Jasmine'],
         'slug' => 'jasmin',
         'description' => ['uk' => 'Квіткова нота', 'en' => 'Floral note'],

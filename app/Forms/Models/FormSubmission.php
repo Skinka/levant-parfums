@@ -18,7 +18,9 @@ class FormSubmission extends Model
     }
 
     public const STATUS_NEW = 'new';
+
     public const STATUS_READ = 'read';
+
     public const STATUS_PROCESSED = 'processed';
 
     public const STATUSES = [self::STATUS_NEW, self::STATUS_READ, self::STATUS_PROCESSED];
