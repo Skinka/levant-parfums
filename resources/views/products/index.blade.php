@@ -16,11 +16,10 @@
     <div class="catalog">
         <div class="page-head catalog-head">
             <div class="container">
-                <nav class="crumbs" aria-label="breadcrumb">
-                    <a href="{{ LaravelLocalization::localizeURL('/') }}">{{ __('catalogue.public.crumb_home') }}</a>
-                    <span class="sep">/</span>
-                    <span class="current">{{ __('catalogue.public.title') }}</span>
-                </nav>
+                <x-site.breadcrumbs :items="[
+                    ['href' => LaravelLocalization::localizeURL('/'), 'label' => __('catalogue.public.crumb_home')],
+                    ['label' => __('catalogue.public.title')],
+                ]"/>
 
                 <div class="row">
                     <div>
