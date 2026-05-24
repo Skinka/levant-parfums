@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProductCatalogController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -9,6 +10,12 @@ Route::group([
     'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
 ], function () {
     Route::get('/', [PageController::class, 'home'])->name('home');
+
+    Route::get('/products', [ProductCatalogController::class, 'index'])->name('products.index');
+    Route::get('/products/{slug}', fn () => abort(404))
+        ->where('slug', '[A-Za-z0-9\-_]+')
+        ->name('products.show');
+
     Route::get('/{slug}', [PageController::class, 'show'])
         ->where('slug', '[A-Za-z0-9\-_]+')
         ->name('page.show');
