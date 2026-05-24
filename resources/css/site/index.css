@@ -20,6 +20,7 @@
 @import './components/character-bars.css';
 @import './components/qty-stepper.css';
 @import './components/order-form.css';
+@import './components/product-slider.css';
 
 @import './pages/catalog.css';
 @import './pages/product.css';

@@ -151,6 +151,11 @@ return [
                     5 => 'Heavy',
                 ],
             ],
+            'related' => [
+                'eyebrow' => 'More from our house',
+                'title' => 'Other compositions',
+                'all_label' => 'All perfumes',
+            ],
         ],
     ],
 ];

@@ -125,3 +125,25 @@ it('order form section is anchorable via #order', function () {
     $p = publishedProductInSeries('luxury');
     $this->get(route('products.show', $p->slug))->assertSee('id="order"', false);
 });
+
+it('shows up to 6 related products from same series', function () {
+    $main = publishedProductInSeries('luxury', ['slug' => 'lux-main']);
+    for ($i = 1; $i <= 8; $i++) {
+        publishedProductInSeries('luxury', ['slug' => "lux-related-{$i}"]);
+    }
+    $r = $this->get(route('products.show', $main->slug));
+    $r->assertSee(__('catalogue.public.product.related.title'));
+    $r->assertSee('lux-related-1');
+});
+
+it('fills with cross-series related when same-series count under 4', function () {
+    $main = publishedProductInSeries('luxury', ['slug' => 'lux-main']);
+    publishedProductInSeries('luxury', ['slug' => 'lux-only-buddy']);
+    for ($i = 1; $i <= 5; $i++) {
+        publishedProductInSeries('onyx', ['slug' => "onyx-fill-{$i}"]);
+    }
+
+    $r = $this->get(route('products.show', $main->slug));
+    $r->assertSee('lux-only-buddy');
+    $r->assertSee('onyx-fill-1');
+});

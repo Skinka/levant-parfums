@@ -31,5 +31,7 @@
                 <livewire:order-form :subject="$product"/>
             </section>
         </div>
+
+        <x-site.product-slider :products="$related"/>
     </div>
 @endsection
