@@ -73,6 +73,11 @@ return [
             'products_count' => 'Products',
         ],
     ],
+    'series' => [
+        'fields' => [
+            'theme_class' => 'Theme',
+        ],
+    ],
     'gender' => [
         'male' => 'Male',
         'female' => 'Female',

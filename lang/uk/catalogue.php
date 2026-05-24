@@ -73,6 +73,11 @@ return [
             'products_count' => 'Товарів',
         ],
     ],
+    'series' => [
+        'fields' => [
+            'theme_class' => 'Тема оформлення',
+        ],
+    ],
     'gender' => [
         'male' => 'Чоловіча',
         'female' => 'Жіноча',
