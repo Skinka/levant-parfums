@@ -52,20 +52,14 @@ return [
         'landing' => 'Landing (blocks)',
     ],
     'blocks' => [
-        'hero' => [
-            'label' => 'Hero block',
-        ],
-        'products' => [
-            'label' => 'Product list',
-            'add_item' => 'Add product',
-        ],
-        'text' => [
-            'label' => 'Text block',
-        ],
-        'articles' => [
-            'label' => 'Article list',
-            'add_item' => 'Add article',
-        ],
+        'hero' => ['label' => 'Hero block'],
+        'text' => ['label' => 'Manifesto / editorial text'],
+        'products' => ['label' => 'Product list', 'add_item' => 'Add product'],
+        'brand_story' => ['label' => 'Brand story (three points)', 'add_pillar' => 'Add point'],
+        'series_duo' => ['label' => 'Two collections (Onyx × Luxury)', 'add_item' => 'Add collection'],
+        'pillars' => ['label' => 'Guide / Advantages (numbered grid)', 'add_item' => 'Add item'],
+        'testimonials' => ['label' => 'Testimonials (slider)', 'add_item' => 'Add testimonial'],
+        'articles' => ['label' => 'Article list', 'add_item' => 'Add article'],
         'fields' => [
             'is_visible' => 'Show block',
             'anchor' => 'Anchor (URL id)',
@@ -78,6 +72,37 @@ return [
             'product_id' => 'Product',
             'article_id' => 'Article',
             'cta_url_helper' => 'Internal "/products" or absolute "https://..." both work.',
+
+            'eyebrow' => 'Eyebrow',
+            'lead' => 'Lead paragraph',
+            'signature' => 'Signature',
+            'kicker' => 'Kicker',
+            'description' => 'Description',
+            'surface' => 'Section surface',
+
+            'title_top' => 'Title (top line)',
+            'title_bottom' => 'Title (bottom line, italic)',
+            'floating_label' => 'Floating tag',
+            'meta' => 'Meta numbers (3 items)',
+            'meta_num' => 'Number',
+            'meta_label' => 'Label',
+            'secondary_cta_label' => 'Secondary CTA label',
+            'secondary_cta_url' => 'Secondary CTA URL',
+
+            'pillars' => 'Points',
+            'pillar_label' => 'Label',
+            'pillar_caption' => 'Caption',
+
+            'series_id' => 'Series',
+
+            'quote' => 'Quote',
+            'author' => 'Author',
+            'city' => 'City',
+            'rating' => 'Rating (1-5)',
+        ],
+        'surface' => [
+            'default' => 'Plain (default)',
+            'tinted' => 'Tinted background',
         ],
     ],
 ];
