@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -28,6 +29,12 @@ class FormSubmissionsTable
                     ->formatStateUsing(fn (string $state) => trans("forms.types.{$state}"))
                     ->sortable(),
 
+                TextColumn::make('preorder')
+                    ->label('')
+                    ->badge()
+                    ->color('warning')
+                    ->getStateUsing(fn ($record) => ($record->data['is_preorder'] ?? false) ? 'PRE-ORDER' : null),
+
                 TextColumn::make('status')
                     ->label(trans('forms.fields.status'))
                     ->badge()
@@ -48,6 +55,7 @@ class FormSubmissionsTable
                         if ($name && $email) {
                             return "{$name} <{$email}>";
                         }
+
                         return $name
                             ?? $email
                             ?? Str::limit((string) ($record->data['message'] ?? ''), 60);
@@ -62,6 +70,7 @@ class FormSubmissionsTable
                             return null;
                         }
                         $label = is_array($s->name ?? null) ? ($s->name[app()->getLocale()] ?? null) : ($s->name ?? null);
+
                         return $label ?? class_basename($s).'#'.$s->getKey();
                     })
                     ->placeholder('—'),
@@ -87,8 +96,8 @@ class FormSubmissionsTable
 
                 Filter::make('created_at')
                     ->form([
-                        \Filament\Forms\Components\DatePicker::make('from'),
-                        \Filament\Forms\Components\DatePicker::make('until'),
+                        DatePicker::make('from'),
+                        DatePicker::make('until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query

@@ -1,14 +1,13 @@
+@php($isPreorder = (bool) ($s->data['is_preorder'] ?? false))
+@php($key = $isPreorder ? 'preorder' : 'order')
 <x-mail::message>
-# {{ trans('forms.mail.order.client.subject') }}
+# {{ trans("forms.mail.{$key}.client.subject") }}
 
-{{ trans('forms.mail.order.client.intro') }}
+{{ trans("forms.mail.{$key}.client.intro") }}
 
-**{{ trans('forms.fields.name') }}:** {{ $s->data['name'] ?? '—' }}
-@if ($s->subject)
-**{{ trans('forms.fields.subject') }}:** {{ $s->subject->name ?? $s->subject->getKey() }}
+@if($isPreorder)
+> {{ trans('forms.order.preorder_client_notice') }}
 @endif
-**{{ trans('forms.fields.qty') }}:** {{ $s->data['qty'] ?? '—' }}
 
-Thanks,<br>
-{{ config('app.name') }}
+— LEVANT Parfums
 </x-mail::message>

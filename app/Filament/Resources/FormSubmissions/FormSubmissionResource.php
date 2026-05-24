@@ -37,6 +37,7 @@ class FormSubmissionResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         $count = FormSubmission::query()->where('status', FormSubmission::STATUS_NEW)->count();
+
         return $count > 0 ? (string) $count : null;
     }
 

@@ -11,7 +11,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body class="theme-cream">
+<body class="{{ $theme ?? 'theme-cream' }}">
     <x-site.intro-veil />
     <x-site.announcement />
     <x-site.header :locale="$currentLocale" />

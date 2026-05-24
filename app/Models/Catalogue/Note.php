@@ -5,12 +5,14 @@ namespace App\Models\Catalogue;
 use Database\Factories\Catalogue\NoteFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Translatable\HasTranslations;
 
 class Note extends Model
 {
     /** @use HasFactory<NoteFactory> */
     use HasFactory;
+
     use HasTranslations;
 
     protected $fillable = ['name', 'slug', 'description', 'sort_order', 'is_active'];
@@ -25,9 +27,9 @@ class Note extends Model
         ];
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function products(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Models\Catalogue\Product::class, 'product_note')
+        return $this->belongsToMany(Product::class, 'product_note')
             ->withPivot(['level', 'sort_order'])
             ->withTimestamps();
     }

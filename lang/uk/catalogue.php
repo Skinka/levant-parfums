@@ -22,6 +22,7 @@ return [
             'main' => 'Основне',
             'description' => 'Опис',
             'aroma' => 'Аромат',
+            'character' => 'Характер',
             'inspired_by' => 'Inspired by',
             'marking' => 'Маркування',
             'seo' => 'SEO',
@@ -33,6 +34,10 @@ return [
             'sku' => 'Артикул',
             'tagline' => 'Слоган',
             'description' => 'Опис',
+            'character' => 'Характер (короткий настрій)',
+            'why' => 'Чому саме цей',
+            'sillage_score' => 'Шлейф',
+            'longevity_hours' => 'Стійкість',
             'gender' => 'Стать',
             'volume_ml' => "Об'єм, мл",
             'is_published' => 'Опубліковано',
@@ -58,6 +63,13 @@ return [
             'gallery' => 'Галерея',
             'alt' => 'Alt-текст',
         ],
+        'sillage_words' => [
+            1 => 'Поряд зі шкірою',
+            2 => 'Близько',
+            3 => 'Помірно',
+            4 => 'Сильно',
+            5 => 'Тяжко',
+        ],
     ],
     'dictionary' => [
         'fields' => [
@@ -71,6 +83,11 @@ return [
             'is_featured' => 'Показувати на картці',
             'country' => 'Країна',
             'products_count' => 'Товарів',
+        ],
+    ],
+    'series' => [
+        'fields' => [
+            'theme_class' => 'Тема оформлення',
         ],
     ],
     'gender' => [
@@ -99,5 +116,46 @@ return [
         'badge_new' => 'Новинка',
         'badge_best' => 'Бестселер',
         'empty' => 'У цій серії поки немає товарів.',
+        'product' => [
+            'gallery_open' => 'Відкрити зображення',
+            'gallery_zoom' => 'Натисніть, щоб збільшити',
+            'why_label' => 'Чому саме цей',
+            'order_cta' => 'Замовити',
+            'preorder_cta' => 'Передзамовити',
+            'badges' => ['new' => 'Новинка', 'best' => 'Бестселер'],
+            'specs' => [
+                'sku' => 'Артикул',
+                'volume' => 'Обʼєм',
+                'family' => 'Родина',
+                'concentration' => 'Концентрація',
+                'composed' => 'Розроблено',
+                'composed_value' => 'Іспанія / ES',
+                'series' => 'Серія',
+            ],
+            'pyramid' => [
+                'title' => 'Піраміда нот',
+                'subtitle' => 'Як аромат розкривається на шкірі',
+                'top' => 'Верхні',
+                'heart' => 'Серцеві',
+                'base' => 'Базові',
+            ],
+            'character' => [
+                'sillage_label' => 'Шлейф',
+                'longevity_label' => 'Стійкість',
+                'longevity_word_h' => 'год',
+                'sillage_words' => [
+                    1 => 'Поряд зі шкірою',
+                    2 => 'Близько',
+                    3 => 'Помірно',
+                    4 => 'Сильно',
+                    5 => 'Тяжко',
+                ],
+            ],
+            'related' => [
+                'eyebrow' => 'Інше з нашого дому',
+                'title' => 'Інші композиції',
+                'all_label' => 'Усі парфуми',
+            ],
+        ],
     ],
 ];

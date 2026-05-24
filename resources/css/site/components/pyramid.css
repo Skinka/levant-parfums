@@ -1,0 +1,17 @@
+.pyramid {
+  margin-top: 80px; display: grid; gap: 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  padding-block: 56px; border-top: 1px solid var(--line-soft);
+}
+@media (max-width: 880px) { .pyramid { grid-template-columns: 1fr; gap: 32px; } }
+.pyramid h2 { font-family: var(--font-serif); font-weight: 300; font-size: 32px; }
+.pyramid .levels { display: grid; gap: 36px; }
+.pyramid .level .lbl {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+}
+.pyramid .notes { display: flex; flex-wrap: wrap; gap: 8px; }
+.pyramid .note {
+  padding: 8px 14px; border: 1px solid var(--line);
+  font-size: 13px; background: var(--card);
+}

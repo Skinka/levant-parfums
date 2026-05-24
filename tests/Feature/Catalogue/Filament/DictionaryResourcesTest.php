@@ -4,17 +4,13 @@ use App\Filament\Resources\Audiences\Pages\CreateAudience;
 use App\Filament\Resources\Brands\Pages\CreateBrand;
 use App\Filament\Resources\Concentrations\Pages\CreateConcentration;
 use App\Filament\Resources\Notes\Pages\CreateNote;
-use App\Filament\Resources\Tags\Pages\CreateTag;
 use App\Filament\Resources\Occasions\Pages\CreateOccasion;
 use App\Filament\Resources\PerfumeFamilies\Pages\CreatePerfumeFamily;
 use App\Filament\Resources\PerfumeFamilies\Pages\ListPerfumeFamilies;
 use App\Filament\Resources\Seasons\Pages\CreateSeason;
 use App\Filament\Resources\Series\Pages\CreateSeries;
+use App\Filament\Resources\Tags\Pages\CreateTag;
 use App\Models\Catalogue\Audience;
-use App\Models\Catalogue\Brand;
-use App\Models\Catalogue\Concentration;
-use App\Models\Catalogue\Note;
-use App\Models\Catalogue\Tag;
 use App\Models\Catalogue\Occasion;
 use App\Models\Catalogue\PerfumeFamily;
 use App\Models\Catalogue\Season;
@@ -62,8 +58,8 @@ it('creates a base-shape dictionary record via Filament', function (string $crea
 
     assertDatabaseHas((new $model)->getTable(), ['slug' => $slug]);
 })->with([
-    'series'   => [CreateSeries::class, SeriesModel::class, 'series-x'],
-    'season'   => [CreateSeason::class, Season::class, 'season-x'],
+    'series' => [CreateSeries::class, SeriesModel::class, 'series-x'],
+    'season' => [CreateSeason::class, Season::class, 'season-x'],
     'occasion' => [CreateOccasion::class, Occasion::class, 'occasion-x'],
     'audience' => [CreateAudience::class, Audience::class, 'audience-x'],
 ]);

@@ -5,12 +5,14 @@ namespace App\Models\Catalogue;
 use Database\Factories\Catalogue\TagFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Translatable\HasTranslations;
 
 class Tag extends Model
 {
     /** @use HasFactory<TagFactory> */
     use HasFactory;
+
     use HasTranslations;
 
     protected $fillable = ['name', 'slug', 'color', 'is_featured', 'sort_order', 'is_active'];
@@ -26,8 +28,8 @@ class Tag extends Model
         ];
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function products(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Models\Catalogue\Product::class, 'product_tag');
+        return $this->belongsToMany(Product::class, 'product_tag');
     }
 }

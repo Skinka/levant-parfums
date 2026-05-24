@@ -1,0 +1,24 @@
+.character {
+  margin-top: 64px; padding-block: 56px; border-top: 1px solid var(--line-soft);
+  display: grid; gap: 36px;
+}
+.character .bar-row { display: grid; gap: 8px; }
+.character .bar-row .top {
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.character .bar-row .l {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--ink-mute);
+}
+.character .bar-row .v {
+  font-family: var(--font-serif); font-size: 18px; color: var(--accent);
+}
+.character .bar {
+  height: 2px; background: var(--line-soft); position: relative;
+}
+.character .bar .fill { height: 100%; background: var(--accent); }
+.character .ticks {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em;
+  color: var(--ink-mute);
+}

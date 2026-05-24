@@ -9,7 +9,9 @@ use Illuminate\Contracts\View\View;
 class ContactForm extends FormComponent
 {
     public string $name = '';
+
     public string $email = '';
+
     public string $message = '';
 
     protected function formType(): FormType

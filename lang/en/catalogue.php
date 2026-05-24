@@ -22,6 +22,7 @@ return [
             'main' => 'Main',
             'description' => 'Description',
             'aroma' => 'Aroma',
+            'character' => 'Character',
             'inspired_by' => 'Inspired by',
             'marking' => 'Marking',
             'seo' => 'SEO',
@@ -33,6 +34,10 @@ return [
             'sku' => 'SKU',
             'tagline' => 'Tagline',
             'description' => 'Description',
+            'character' => 'Character (mood line)',
+            'why' => 'Why this one',
+            'sillage_score' => 'Sillage',
+            'longevity_hours' => 'Longevity',
             'gender' => 'Gender',
             'volume_ml' => 'Volume, ml',
             'is_published' => 'Published',
@@ -58,6 +63,13 @@ return [
             'gallery' => 'Gallery',
             'alt' => 'Alt text',
         ],
+        'sillage_words' => [
+            1 => 'Skin',
+            2 => 'Close',
+            3 => 'Moderate',
+            4 => 'Strong',
+            5 => 'Heavy',
+        ],
     ],
     'dictionary' => [
         'fields' => [
@@ -71,6 +83,11 @@ return [
             'is_featured' => 'Show on card',
             'country' => 'Country',
             'products_count' => 'Products',
+        ],
+    ],
+    'series' => [
+        'fields' => [
+            'theme_class' => 'Theme',
         ],
     ],
     'gender' => [
@@ -99,5 +116,46 @@ return [
         'badge_new' => 'New',
         'badge_best' => 'Bestseller',
         'empty' => 'No products in this series yet.',
+        'product' => [
+            'gallery_open' => 'Open image',
+            'gallery_zoom' => 'Click to enlarge',
+            'why_label' => 'Why this one',
+            'order_cta' => 'Order',
+            'preorder_cta' => 'Preorder',
+            'badges' => ['new' => 'New', 'best' => 'Bestseller'],
+            'specs' => [
+                'sku' => 'SKU',
+                'volume' => 'Volume',
+                'family' => 'Family',
+                'concentration' => 'Concentration',
+                'composed' => 'Composed',
+                'composed_value' => 'Spain / ES',
+                'series' => 'Series',
+            ],
+            'pyramid' => [
+                'title' => 'The pyramid',
+                'subtitle' => 'How the scent unfolds on skin',
+                'top' => 'Top',
+                'heart' => 'Heart',
+                'base' => 'Base',
+            ],
+            'character' => [
+                'sillage_label' => 'Sillage',
+                'longevity_label' => 'Longevity',
+                'longevity_word_h' => 'h',
+                'sillage_words' => [
+                    1 => 'Skin',
+                    2 => 'Close',
+                    3 => 'Moderate',
+                    4 => 'Strong',
+                    5 => 'Heavy',
+                ],
+            ],
+            'related' => [
+                'eyebrow' => 'More from our house',
+                'title' => 'Other compositions',
+                'all_label' => 'All perfumes',
+            ],
+        ],
     ],
 ];

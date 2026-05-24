@@ -5,12 +5,14 @@ namespace App\Models\Catalogue;
 use Database\Factories\Catalogue\PerfumeFamilyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
 class PerfumeFamily extends Model
 {
     /** @use HasFactory<PerfumeFamilyFactory> */
     use HasFactory;
+
     use HasTranslations;
 
     protected $fillable = ['name', 'slug', 'sort_order', 'is_active'];
@@ -25,8 +27,8 @@ class PerfumeFamily extends Model
         ];
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function products(): HasMany
     {
-        return $this->hasMany(\App\Models\Catalogue\Product::class);
+        return $this->hasMany(Product::class);
     }
 }

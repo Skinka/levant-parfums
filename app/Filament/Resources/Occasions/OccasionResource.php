@@ -7,6 +7,7 @@ use App\Filament\Resources\Occasions\Pages\EditOccasion;
 use App\Filament\Resources\Occasions\Pages\ListOccasions;
 use App\Filament\Resources\Occasions\Schemas\OccasionForm;
 use App\Filament\Resources\Occasions\Tables\OccasionsTable;
+use App\Models\Catalogue\Occasion;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -15,7 +16,8 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class OccasionResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = \App\Models\Catalogue\Occasion::class;
+
+    protected static ?string $model = Occasion::class;
 
     public static function getNavigationGroup(): ?string
     {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Articles\Schemas;
 
+use App\Models\Catalogue\Product;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
@@ -95,10 +96,10 @@ class ArticleForm
             ->schema([
                 Select::make('product_id')
                     ->label(fn () => trans('content.fields.product_id'))
-                    ->options(fn () => \App\Models\Catalogue\Product::query()
+                    ->options(fn () => Product::query()
                         ->orderBy('slug')
                         ->get()
-                        ->mapWithKeys(fn (\App\Models\Catalogue\Product $p) => [$p->id => $p->name])
+                        ->mapWithKeys(fn (Product $p) => [$p->id => $p->name])
                         ->all())
                     ->searchable()
                     ->required(),

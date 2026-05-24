@@ -9,9 +9,9 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -33,6 +33,8 @@ class ProductForm
                             ->schema(self::descriptionTab()),
                         Tab::make(trans('catalogue.product.tabs.aroma'))
                             ->schema(self::aromaTab()),
+                        Tab::make(trans('catalogue.product.tabs.character'))
+                            ->schema(self::characterTab()),
                         Tab::make(trans('catalogue.product.tabs.inspired_by'))
                             ->schema(self::inspiredByTab()),
                         Tab::make(trans('catalogue.product.tabs.marking'))
@@ -130,6 +132,32 @@ class ProductForm
             self::notesRepeater('notes_top', NoteLevel::Top),
             self::notesRepeater('notes_heart', NoteLevel::Heart),
             self::notesRepeater('notes_base', NoteLevel::Base),
+        ];
+    }
+
+    protected static function characterTab(): array
+    {
+        return [
+            TextInput::make('character')
+                ->label(fn () => trans('catalogue.product.fields.character'))
+                ->maxLength(160),
+            Textarea::make('why')
+                ->label(fn () => trans('catalogue.product.fields.why'))
+                ->rows(4),
+            Select::make('sillage_score')
+                ->label(fn () => trans('catalogue.product.fields.sillage_score'))
+                ->options([
+                    1 => trans('catalogue.product.sillage_words.1'),
+                    2 => trans('catalogue.product.sillage_words.2'),
+                    3 => trans('catalogue.product.sillage_words.3'),
+                    4 => trans('catalogue.product.sillage_words.4'),
+                    5 => trans('catalogue.product.sillage_words.5'),
+                ])
+                ->native(false),
+            Select::make('longevity_hours')
+                ->label(fn () => trans('catalogue.product.fields.longevity_hours'))
+                ->options(collect([2, 4, 6, 8, 10, 12])->mapWithKeys(fn ($h) => [$h => $h.' h'])->all())
+                ->native(false),
         ];
     }
 

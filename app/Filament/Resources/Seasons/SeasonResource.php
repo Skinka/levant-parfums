@@ -7,6 +7,7 @@ use App\Filament\Resources\Seasons\Pages\EditSeason;
 use App\Filament\Resources\Seasons\Pages\ListSeasons;
 use App\Filament\Resources\Seasons\Schemas\SeasonForm;
 use App\Filament\Resources\Seasons\Tables\SeasonsTable;
+use App\Models\Catalogue\Season;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -15,7 +16,8 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class SeasonResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = \App\Models\Catalogue\Season::class;
+
+    protected static ?string $model = Season::class;
 
     public static function getNavigationGroup(): ?string
     {

@@ -60,4 +60,13 @@ abstract class FormType
     {
         return [5, 60];
     }
+
+    /**
+     * Per-type fields merged into FormSubmission::$data at submit time.
+     * Use to snapshot state from $subject (e.g. is_preorder).
+     */
+    public function metadata(?Model $subject): array
+    {
+        return [];
+    }
 }

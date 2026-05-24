@@ -9,15 +9,17 @@ use App\Forms\Types\FormType;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Livewire\Component;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 abstract class FormComponent extends Component
 {
     public ?Model $subject = null;
+
     public string $hp = '';
 
     abstract protected function formType(): FormType;
+
     abstract public function render(): View;
 
     public function mount(?Model $subject = null): void
@@ -43,12 +45,14 @@ abstract class FormComponent extends Component
                 'type' => $type->key(),
                 'ip' => request()->ip(),
             ]);
+
             return;
         }
 
         FormRateLimiter::ensureAllowed($type, request());
 
         $data = $this->validate($type->rules($this->subject), [], $type->attributes());
+        $data = array_merge($data, $type->metadata($this->subject));
 
         $submission = FormSubmission::create([
             'type' => $type->key(),

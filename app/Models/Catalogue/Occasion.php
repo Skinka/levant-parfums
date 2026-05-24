@@ -5,12 +5,14 @@ namespace App\Models\Catalogue;
 use Database\Factories\Catalogue\OccasionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Translatable\HasTranslations;
 
 class Occasion extends Model
 {
     /** @use HasFactory<OccasionFactory> */
     use HasFactory;
+
     use HasTranslations;
 
     protected $fillable = ['name', 'slug', 'sort_order', 'is_active'];
@@ -25,8 +27,8 @@ class Occasion extends Model
         ];
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function products(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Models\Catalogue\Product::class, 'product_occasion');
+        return $this->belongsToMany(Product::class, 'product_occasion');
     }
 }

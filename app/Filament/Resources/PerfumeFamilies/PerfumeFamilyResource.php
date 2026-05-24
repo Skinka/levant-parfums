@@ -16,6 +16,7 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class PerfumeFamilyResource extends Resource
 {
     use Translatable;
+
     protected static ?string $model = PerfumeFamily::class;
 
     public static function getNavigationGroup(): ?string

@@ -31,7 +31,10 @@ class FormSubmissionInfolist
                     ->label(trans('forms.fields.subject'))
                     ->state(function (FormSubmission $record): ?string {
                         $s = $record->subject;
-                        if (! $s) return null;
+                        if (! $s) {
+                            return null;
+                        }
+
                         return class_basename($s).'#'.$s->getKey();
                     })
                     ->placeholder('—'),
@@ -53,12 +56,15 @@ class FormSubmissionInfolist
 
     private static function formatKeyValue(array $data): string
     {
-        if ($data === []) return '—';
+        if ($data === []) {
+            return '—';
+        }
         $lines = [];
         foreach ($data as $k => $v) {
             $value = is_scalar($v) ? (string) $v : json_encode($v, JSON_UNESCAPED_UNICODE);
             $lines[] = "**{$k}:** {$value}";
         }
+
         return implode("\n\n", $lines);
     }
 }

@@ -7,6 +7,7 @@ use App\Filament\Resources\Series\Pages\EditSeries;
 use App\Filament\Resources\Series\Pages\ListSeries;
 use App\Filament\Resources\Series\Schemas\SeriesForm;
 use App\Filament\Resources\Series\Tables\SeriesTable;
+use App\Models\Catalogue\Series;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -15,7 +16,8 @@ use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 class SeriesResource extends Resource
 {
     use Translatable;
-    protected static ?string $model = \App\Models\Catalogue\Series::class;
+
+    protected static ?string $model = Series::class;
 
     public static function getNavigationGroup(): ?string
     {

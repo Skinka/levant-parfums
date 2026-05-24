@@ -49,6 +49,39 @@ class ProductCatalogController extends Controller
         ]);
     }
 
+    public function show(Product $product): View
+    {
+        abort_unless($product->is_published, 404);
+
+        $product->load(['series', 'perfumeFamily', 'concentration', 'notes', 'tags', 'occasions', 'media']);
+
+        $sameSeries = Product::query()
+            ->where('is_published', true)
+            ->where('series_id', $product->series_id)
+            ->where('id', '!=', $product->id)
+            ->with(['series', 'perfumeFamily', 'tags', 'media'])
+            ->take(6)
+            ->get();
+
+        if ($sameSeries->count() < 4 && $product->series_id) {
+            $need = 6 - $sameSeries->count();
+            $cross = Product::query()
+                ->where('is_published', true)
+                ->where('series_id', '!=', $product->series_id)
+                ->where('id', '!=', $product->id)
+                ->with(['series', 'perfumeFamily', 'tags', 'media'])
+                ->take($need)
+                ->get();
+            $related = $sameSeries->concat($cross);
+        } else {
+            $related = $sameSeries;
+        }
+
+        $theme = $product->series?->theme_class ?? 'theme-cream';
+
+        return view('products.show', compact('product', 'related', 'theme'));
+    }
+
     private function applySort(Builder $query, string $sort): void
     {
         $tagPredicate = fn (string $slug) => "EXISTS (

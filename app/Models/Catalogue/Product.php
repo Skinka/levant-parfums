@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -18,20 +19,34 @@ class Product extends Model implements HasMedia
 {
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
+
     use HasTranslations;
     use InteractsWithMedia;
 
     protected $fillable = [
         'sku', 'slug', 'name', 'tagline', 'description',
+        'character', 'why',
         'inspired_perfume_name', 'inspired_brand_id',
         'volume_ml', 'gender',
         'price_uah', 'price_eur',
+        'sillage_score', 'longevity_hours',
         'in_stock', 'is_published', 'published_at',
         'seo_title', 'seo_description',
         'perfume_family_id', 'concentration_id', 'series_id',
     ];
 
-    public array $translatable = ['name', 'tagline', 'description', 'seo_title', 'seo_description'];
+    public array $translatable = ['name', 'tagline', 'description', 'character', 'why', 'seo_title', 'seo_description'];
+
+    public function setAttribute($key, $value)
+    {
+        if ($value === null && $this->isTranslatableAttribute($key)) {
+            $this->attributes[$key] = null;
+
+            return $this;
+        }
+
+        return parent::setAttribute($key, $value);
+    }
 
     protected function casts(): array
     {
@@ -42,6 +57,8 @@ class Product extends Model implements HasMedia
             'volume_ml' => 'integer',
             'price_uah' => 'decimal:2',
             'price_eur' => 'decimal:2',
+            'sillage_score' => 'integer',
+            'longevity_hours' => 'integer',
             'gender' => Gender::class,
         ];
     }
@@ -125,17 +142,17 @@ class Product extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->fit(\Spatie\Image\Enums\Fit::Contain, 200, 200)
+            ->fit(Fit::Contain, 200, 200)
             ->format('webp')
             ->nonQueued();
 
         $this->addMediaConversion('card')
-            ->fit(\Spatie\Image\Enums\Fit::Crop, 600, 800)
+            ->fit(Fit::Crop, 600, 800)
             ->format('webp')
             ->nonQueued();
 
         $this->addMediaConversion('detail')
-            ->fit(\Spatie\Image\Enums\Fit::Contain, 1200, 1600)
+            ->fit(Fit::Contain, 1200, 1600)
             ->format('webp')
             ->nonQueued();
     }

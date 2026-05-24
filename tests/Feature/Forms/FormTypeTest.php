@@ -5,8 +5,11 @@ use App\Forms\Mail\OrderAdminMail;
 use App\Forms\Mail\OrderClientMail;
 use App\Forms\Models\FormSubmission;
 use App\Forms\Types\ContactFormType;
+use App\Forms\Types\FormType;
 use App\Forms\Types\OrderFormType;
 use App\Models\Catalogue\Product;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\Mailable;
 
 it('ContactFormType: key + label + rules + admin mailable', function () {
     config()->set('forms.admin_email', 'admin@levantparfums.test');
@@ -45,4 +48,47 @@ it('adminRecipients filters out null FORMS_ADMIN_EMAIL', function () {
 
 it('rateLimit default is 5 attempts per 60 minutes', function () {
     expect((new ContactFormType)->rateLimit())->toBe([5, 60]);
+});
+
+it('FormType::metadata() default returns empty array', function () {
+    $type = new class extends FormType
+    {
+        public function key(): string
+        {
+            return 'x';
+        }
+
+        public function label(): string
+        {
+            return 'X';
+        }
+
+        public function rules(?Model $s = null): array
+        {
+            return [];
+        }
+
+        public function adminMailable(FormSubmission $s): Mailable
+        {
+            return new class extends Mailable {};
+        }
+    };
+    expect($type->metadata(null))->toBe([]);
+});
+
+it('OrderFormType::metadata() returns is_preorder = false for in_stock product', function () {
+    $p = Product::factory()->create(['in_stock' => true]);
+    expect(app(OrderFormType::class)->metadata($p))
+        ->toBe(['is_preorder' => false]);
+});
+
+it('OrderFormType::metadata() returns is_preorder = true for out-of-stock product', function () {
+    $p = Product::factory()->create(['in_stock' => false]);
+    expect(app(OrderFormType::class)->metadata($p))
+        ->toBe(['is_preorder' => true]);
+});
+
+it('OrderFormType::metadata() returns is_preorder = false when subject is null', function () {
+    expect(app(OrderFormType::class)->metadata(null))
+        ->toBe(['is_preorder' => false]);
 });

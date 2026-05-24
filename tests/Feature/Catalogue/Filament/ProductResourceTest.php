@@ -1,10 +1,18 @@
 <?php
 
+use App\Enums\NoteLevel;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
+use App\Models\Catalogue\Audience;
+use App\Models\Catalogue\Brand;
 use App\Models\Catalogue\Note;
+use App\Models\Catalogue\Occasion;
 use App\Models\Catalogue\Product;
+use App\Models\Catalogue\Season;
+use App\Models\Catalogue\Tag;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
@@ -66,13 +74,13 @@ it('creates a product with top/heart/base notes', function () {
         ->assertHasNoFormErrors();
 
     $product = Product::firstWhere('slug', 'luxury-5');
-    expect($product->notesByLevel(\App\Enums\NoteLevel::Top)->pluck('id')->all())->toContain($lychee->id);
-    expect($product->notesByLevel(\App\Enums\NoteLevel::Heart)->pluck('id')->all())->toContain($jasmine->id);
-    expect($product->notesByLevel(\App\Enums\NoteLevel::Base)->pluck('id')->all())->toContain($musk->id);
+    expect($product->notesByLevel(NoteLevel::Top)->pluck('id')->all())->toContain($lychee->id);
+    expect($product->notesByLevel(NoteLevel::Heart)->pluck('id')->all())->toContain($jasmine->id);
+    expect($product->notesByLevel(NoteLevel::Base)->pluck('id')->all())->toContain($musk->id);
 });
 
 it('saves inspired-by brand and perfume name', function () {
-    $brand = \App\Models\Catalogue\Brand::factory()->create(['slug' => 'ex-nihilo']);
+    $brand = Brand::factory()->create(['slug' => 'ex-nihilo']);
 
     Livewire::test(CreateProduct::class)
         ->fillForm([
@@ -98,10 +106,10 @@ it('saves inspired-by brand and perfume name', function () {
 });
 
 it('attaches tags / seasons / occasions / audiences', function () {
-    $tag = \App\Models\Catalogue\Tag::factory()->create();
-    $season = \App\Models\Catalogue\Season::factory()->create();
-    $occasion = \App\Models\Catalogue\Occasion::factory()->create();
-    $audience = \App\Models\Catalogue\Audience::factory()->create();
+    $tag = Tag::factory()->create();
+    $season = Season::factory()->create();
+    $occasion = Occasion::factory()->create();
+    $audience = Audience::factory()->create();
 
     Livewire::test(CreateProduct::class)
         ->fillForm([
@@ -151,7 +159,7 @@ it('saves SEO fields translatable per locale', function () {
 });
 
 it('uploads primary and gallery images via Filament', function () {
-    \Illuminate\Support\Facades\Storage::fake('public');
+    Storage::fake('public');
 
     Livewire::test(CreateProduct::class)
         ->fillForm([
@@ -163,8 +171,8 @@ it('uploads primary and gallery images via Filament', function () {
             'price_uah' => 1290,
             'price_eur' => 35,
             'in_stock' => true,
-            'primary' => [\Illuminate\Http\UploadedFile::fake()->image('main.jpg')],
-            'gallery' => [\Illuminate\Http\UploadedFile::fake()->image('g1.jpg'), \Illuminate\Http\UploadedFile::fake()->image('g2.jpg')],
+            'primary' => [UploadedFile::fake()->image('main.jpg')],
+            'gallery' => [UploadedFile::fake()->image('g1.jpg'), UploadedFile::fake()->image('g2.jpg')],
         ])
         ->call('create')
         ->assertHasNoFormErrors();

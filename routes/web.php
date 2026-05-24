@@ -12,8 +12,8 @@ Route::group([
     Route::get('/', [PageController::class, 'home'])->name('home');
 
     Route::get('/products', [ProductCatalogController::class, 'index'])->name('products.index');
-    Route::get('/products/{slug}', fn () => abort(404))
-        ->where('slug', '[A-Za-z0-9\-_]+')
+    Route::get('/products/{product:slug}', [ProductCatalogController::class, 'show'])
+        ->where('product', '[A-Za-z0-9\-_]+')
         ->name('products.show');
 
     Route::get('/{slug}', [PageController::class, 'show'])
