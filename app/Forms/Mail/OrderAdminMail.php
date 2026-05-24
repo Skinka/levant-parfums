@@ -19,7 +19,10 @@ class OrderAdminMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: trans('forms.mail.order.admin.subject'));
+        $isPreorder = (bool) ($this->submission->data['is_preorder'] ?? false);
+        $key = $isPreorder ? 'preorder' : 'order';
+
+        return new Envelope(subject: trans("forms.mail.{$key}.admin.subject"));
     }
 
     public function content(): Content

@@ -108,3 +108,27 @@ it('increment() and decrement() clamp qty to 1..5', function () {
         ->call('increment')->call('increment')->call('increment')->call('increment')
         ->assertSet('qty', 5);
 });
+
+it('admin mail subject differs for order vs preorder', function () {
+    config()->set('app.fallback_locale', 'uk');
+
+    $inStock = Product::factory()->create(['in_stock' => true]);
+    Livewire::test(OrderForm::class, ['subject' => $inStock])
+        ->set(validOrderPayload())->call('submit');
+
+    Mail::assertQueued(OrderAdminMail::class, function ($mail) {
+        return str_contains($mail->envelope()->subject, 'замовлення')
+            && ! str_contains($mail->envelope()->subject, 'Передзамовлення');
+    });
+
+    Mail::fake();
+    RateLimiter::clear('forms:order:127.0.0.1');
+
+    $outOfStock = Product::factory()->create(['in_stock' => false]);
+    Livewire::test(OrderForm::class, ['subject' => $outOfStock])
+        ->set(validOrderPayload())->call('submit');
+
+    Mail::assertQueued(OrderAdminMail::class, function ($mail) {
+        return str_contains($mail->envelope()->subject, 'передзамовлення');
+    });
+});
