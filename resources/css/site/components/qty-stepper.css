@@ -1,0 +1,15 @@
+.qty-stepper {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 10px;
+}
+.qty-stepper .l {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-mute); margin-right: 8px;
+}
+.qty-stepper button {
+  width: 28px; height: 28px; border: 1px solid var(--line);
+  background: var(--card); cursor: pointer; font-size: 16px;
+}
+.qty-stepper .v {
+  min-width: 24px; text-align: center; font-family: var(--font-serif); font-size: 18px;
+}

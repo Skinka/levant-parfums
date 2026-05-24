@@ -26,6 +26,10 @@
             @if($product->sillage_score || $product->longevity_hours)
                 <x-site.product-character :product="$product"/>
             @endif
+
+            <section id="order">
+                <livewire:order-form :subject="$product"/>
+            </section>
         </div>
     </div>
 @endsection

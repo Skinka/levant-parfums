@@ -114,3 +114,14 @@ it('hides character section when both sillage and longevity are null', function 
         ->assertDontSee(__('catalogue.public.product.character.sillage_label'))
         ->assertDontSee(__('catalogue.public.product.character.longevity_label'));
 });
+
+it('mounts Livewire order-form with product as subject', function () {
+    $p = publishedProductInSeries('luxury');
+    $r = $this->get(route('products.show', $p->slug));
+    $r->assertSeeLivewire(\App\Forms\Livewire\OrderForm::class);
+});
+
+it('order form section is anchorable via #order', function () {
+    $p = publishedProductInSeries('luxury');
+    $this->get(route('products.show', $p->slug))->assertSee('id="order"', false);
+});

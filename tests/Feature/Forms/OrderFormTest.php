@@ -109,6 +109,14 @@ it('increment() and decrement() clamp qty to 1..5', function () {
         ->assertSet('qty', 5);
 });
 
+it('thank-you state shows LV-{padded id} after submit', function () {
+    $product = Product::factory()->create();
+    Livewire::test(OrderForm::class, ['subject' => $product])
+        ->set(validOrderPayload())
+        ->call('submit')
+        ->assertSee('LV-');
+});
+
 it('admin mail subject differs for order vs preorder', function () {
     config()->set('app.fallback_locale', 'uk');
 

@@ -88,5 +88,14 @@ return [
     'order' => [
         'preorder_admin_notice' => 'Item is temporarily out of stock — this is a preorder.',
         'preorder_client_notice' => 'The item is temporarily out of stock. We will reserve your preorder and let you know when it is ready.',
+        'eyebrow' => ['order' => 'Order', 'preorder' => 'Preorder'],
+        'title' => ['order' => 'Place an order', 'preorder' => 'Place a preorder'],
+        'intro' => [
+            'order' => 'Leave your contacts — we will reach out within the day to confirm.',
+            'preorder' => 'Leave your contacts — we will reserve the item and contact you about timing.',
+        ],
+        'submit' => ['order' => 'Order', 'preorder' => 'Preorder'],
+        'thanks' => ['order' => 'Thank you for your order', 'preorder' => 'Thank you for your preorder'],
+        'subtotal' => 'Subtotal',
     ],
 ];
