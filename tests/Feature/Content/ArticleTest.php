@@ -62,7 +62,7 @@ it('DB rejects duplicate en slug for two articles', function () {
 });
 
 it('stores category as a translatable json column and read_time_minutes as int', function () {
-    $article = \App\Models\Content\Article::factory()->create([
+    $article = Article::factory()->create([
         'category' => ['uk' => 'Філософія', 'en' => 'Philosophy'],
         'read_time_minutes' => 7,
     ]);
@@ -75,8 +75,8 @@ it('stores category as a translatable json column and read_time_minutes as int',
 });
 
 it('formats displayDate() in the active locale', function () {
-    $article = \App\Models\Content\Article::factory()->create([
-        'published_at' => \Carbon\Carbon::create(2026, 5, 12, 9, 0, 0),
+    $article = Article::factory()->create([
+        'published_at' => Carbon::create(2026, 5, 12, 9, 0, 0),
     ]);
 
     app()->setLocale('uk');
@@ -87,7 +87,7 @@ it('formats displayDate() in the active locale', function () {
 });
 
 it('displayDate() returns null when published_at is null', function () {
-    $article = \App\Models\Content\Article::factory()->draft()->create();
+    $article = Article::factory()->draft()->create();
 
     expect($article->displayDate())->toBeNull();
 });

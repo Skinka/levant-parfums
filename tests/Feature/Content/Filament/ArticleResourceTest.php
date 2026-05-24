@@ -120,7 +120,7 @@ it('persists product changes across two consecutive saves', function () {
 });
 
 it('creates an article with category and read_time_minutes', function () {
-    \Livewire\Livewire::test(\App\Filament\Resources\Articles\Pages\CreateArticle::class)
+    Livewire::test(CreateArticle::class)
         ->fillForm([
             'title' => 'З категорією',
             'slug' => 'z-kategoriyeyu',
@@ -133,7 +133,7 @@ it('creates an article with category and read_time_minutes', function () {
         ->call('create')
         ->assertHasNoFormErrors();
 
-    $article = \App\Models\Content\Article::firstWhere('slug->uk', 'z-kategoriyeyu');
+    $article = Article::firstWhere('slug->uk', 'z-kategoriyeyu');
     expect($article->read_time_minutes)->toBe(6);
     expect($article->getTranslation('category', 'uk'))->toBe('Філософія');
 });
