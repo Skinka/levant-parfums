@@ -42,13 +42,14 @@ it('creates a landing page with two blocks preserving order', function () {
                     'type' => 'hero',
                     'data' => [
                         'is_visible' => true,
-                        'title' => ['uk' => 'Привіт', 'en' => 'Hi'],
+                        'title_top' => ['uk' => 'Привіт', 'en' => 'Hi'],
                     ],
                 ],
                 [
                     'type' => 'text',
                     'data' => [
                         'is_visible' => true,
+                        'title' => ['uk' => 'Заголовок', 'en' => 'Title'],
                         'body' => ['uk' => 'Текст', 'en' => 'Body'],
                     ],
                 ],
@@ -61,7 +62,7 @@ it('creates a landing page with two blocks preserving order', function () {
     expect($page->blocks)->toHaveCount(2)
         ->and($page->blocks[0]['type'])->toBe('hero')
         ->and($page->blocks[1]['type'])->toBe('text')
-        ->and($page->blocks[0]['data']['title']['uk'])->toBe('Привіт')
+        ->and($page->blocks[0]['data']['title_top']['uk'])->toBe('Привіт')
         ->and($page->blocks[1]['data']['body']['en'])->toBe('Body')
         ->and($page->content)->toBeNull();
 });
