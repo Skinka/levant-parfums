@@ -49,6 +49,7 @@ abstract class FormComponent extends Component
         FormRateLimiter::ensureAllowed($type, request());
 
         $data = $this->validate($type->rules($this->subject), [], $type->attributes());
+        $data = array_merge($data, $type->metadata($this->subject));
 
         $submission = FormSubmission::create([
             'type' => $type->key(),

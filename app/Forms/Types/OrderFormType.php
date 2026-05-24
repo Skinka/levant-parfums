@@ -62,4 +62,11 @@ class OrderFormType extends FormType
     {
         return new OrderClientMail($submission);
     }
+
+    public function metadata(?Model $subject): array
+    {
+        return [
+            'is_preorder' => $subject instanceof Product ? ! $subject->in_stock : false,
+        ];
+    }
 }
