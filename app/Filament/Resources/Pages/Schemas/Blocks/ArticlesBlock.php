@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Pages\Schemas\Blocks;
 
+use App\Filament\Resources\Pages\Schemas\Blocks\Concerns\TranslatableTabs;
 use App\Models\Content\Article;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Repeater;
@@ -18,6 +19,13 @@ class ArticlesBlock
             ->icon('heroicon-o-newspaper')
             ->schema([
                 ...self::commonFields(),
+                TranslatableTabs::make('eyebrow'),
+                TranslatableTabs::make('title', required: true),
+                TranslatableTabs::make('cta_label'),
+                TextInput::make('cta_url')
+                    ->label(trans('content.blocks.fields.cta_url'))
+                    ->maxLength(2048)
+                    ->helperText(trans('content.blocks.fields.cta_url_helper')),
                 Repeater::make('items')
                     ->schema([
                         Select::make('article_id')
@@ -30,8 +38,10 @@ class ArticlesBlock
                             ->searchable()
                             ->required(),
                     ])
+                    ->minItems(3)
+                    ->maxItems(3)
+                    ->defaultItems(3)
                     ->reorderable()
-                    ->defaultItems(0)
                     ->addActionLabel(trans('content.blocks.articles.add_item')),
             ]);
     }
