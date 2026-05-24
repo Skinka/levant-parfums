@@ -70,10 +70,10 @@ Route::get('/articles/{slug}', [ArticleController::class, 'show'])
 
 New `App\Http\Controllers\ArticleController`:
 
-- `index()` — `Article::published()->latest('published_at')->paginate(12)` → `view('articles.index', compact('articles'))`. No `$theme` is passed — layout falls back to `theme-cream`.
+- `index()` — `Article::published()->with('media')->latest('published_at')->paginate(12)` → `view('articles.index', compact('articles'))`. No `$theme` is passed — layout falls back to `theme-cream`. `with('media')` avoids an N+1 across the paginated `.cover` `<img>` lookups (each card calls `getFirstMediaUrl('primary', 'card')`).
 - `show(string $slug)` — resolves the article with `whereJsonContains("slug->{$locale}", $slug)->published()->firstOrFail()`. Loads:
-  - `$products = $article->products` (ordered M2M, defined on the model);
-  - `$related = Article::published()->where('id', '!=', $article->id)->latest('published_at')->take(3)->get()`.
+  - `$products = $article->products()->with(['media', 'tags', 'series', 'perfumeFamily'])->get()` — the eager loads cover everything `<x-site.product-card>` accesses (media for `getFirstMediaUrl`, `tags` for new/best badges, `series`/`perfumeFamily` for labels);
+  - `$related = Article::published()->with('media')->where('id', '!=', $article->id)->latest('published_at')->take(3)->get()`.
   - Returns `view('articles.show', compact('article', 'products', 'related'))`.
 
 The controller does not pass `$theme`; articles always render under the default theme.
@@ -97,7 +97,7 @@ Extends `layouts.site`. Sections:
    - `<h3>{{ $article->title }}</h3>`;
    - `<p>{{ $article->intro }}</p>` (gated on non-empty);
    - `<span class="lnk">{{ __('site.articles.read_more') }} →</span>`.
-6. `{{ $articles->onEachSide(1)->links() }}` — uses the default Tailwind paginator view; styling is covered by the existing `resources/css/site/components/pagination.css`. If the existing pagination CSS targets a project-specific markup, we publish a thin custom view `resources/views/vendor/pagination/site.blade.php` mirroring the catalog's pagination (decision deferred to implementation plan based on what `pagination.css` already targets).
+6. `{{ $articles->onEachSide(1)->links('vendor.pagination.site') }}` — uses the project's existing custom paginator view at `resources/views/vendor/pagination/site.blade.php`, which the catalog already uses (`resources/views/products/index.blade.php:79`) and which `resources/css/site/components/pagination.css` is styled for.
 
 ### `resources/views/articles/show.blade.php`
 
@@ -111,8 +111,8 @@ Extends `layouts.site`. Sections:
    - `<h1 class="article-title">{{ $article->title }}</h1>`;
    - `.lead`: `{{ $article->intro }}`.
 5. `.article-cover`: `<img src="{{ $article->getFirstMediaUrl('primary', 'detail') }}" alt="{{ $article->title }}">`.
-6. `.article-body`: `{!! $article->content !!}`. Content is HTML produced by Filament's rich-text editor (same trust boundary as `Page::content` rendered in `resources/views/pages/templates/simple.blade.php` — no extra escaping).
-7. Optional products section (`@if($products->isNotEmpty())`): `.eyebrow` `{{ __('site.articles.in_article_products') }}` followed by `<x-site.product-slider :products="$products" />`. The slider component already exists.
+6. `.article-body`: `{!! \Illuminate\Support\Str::markdown($article->content ?? '') !!}`. `Article->content` is produced by Filament's `MarkdownEditor` (see `app/Filament/Resources/Articles/Schemas/ArticleForm.php`), and the existing CMS pages render it the same way (`resources/views/pages/templates/simple.blade.php:13`). Same trust boundary — editor input is trusted, no extra escaping. `Str::markdown` emits the heading/list/blockquote/link HTML targeted by the `.article-body` selectors in section 4.
+7. Optional products section (`@if($products->isNotEmpty())`): `<x-site.product-slider :products="$products" :eyebrow="__('site.articles.in_article_products')" :title="$article->title" :cta-label="null" :cta-url="null" />`. **Requires extending `resources/views/components/site/product-slider.blade.php`** to accept `eyebrow`, `title`, `ctaLabel`, `ctaUrl` props with defaults equal to the current catalogue copy (`catalogue.public.product.related.{eyebrow,title,all_label}` and `route('products.index')`). When `ctaLabel`/`ctaUrl` are `null`, suppress the link. This keeps the existing product page call site (no props) working unchanged while letting the article page override copy and drop the "all products" CTA that does not belong on an article.
 8. Optional related section (`@if($related->isNotEmpty())`): `<section class="related-articles">` with `.eyebrow` + `<h2>{{ __('site.articles.related_title') }}</h2>` + a `.articles-grid.articles-grid--3` rendering three cards in the same shape as the index card.
 
 ## Styles
@@ -232,18 +232,13 @@ Created:
 
 Edited:
 - `app/Models/Content/Article.php`
-- `app/Filament/Resources/Articles/Schemas/*` and `Tables/*` (whatever holds the form/table — current naming TBD at implementation time)
+- `app/Filament/Resources/Articles/Schemas/ArticleForm.php` (extend `mainTab()` with `category` + `read_time_minutes` fields)
+- `app/Filament/Resources/Articles/Tables/ArticlesTable.php` (surface category and read time)
 - `database/factories/Content/ArticleFactory.php`
 - `routes/web.php`
 - `resources/css/site/index.css`
 - `resources/views/components/site/header.blade.php`
 - `resources/views/components/site/footer.blade.php`
+- `resources/views/components/site/product-slider.blade.php` (add optional `eyebrow`, `title`, `ctaLabel`, `ctaUrl` props with defaults matching today's catalogue copy)
 - `lang/uk/site.php`, `lang/en/site.php`
 - `lang/uk/content.php`, `lang/en/content.php`
-
-## Open implementation-time questions
-
-These do not block sign-off on the design; the implementation plan resolves them by inspection of current code:
-
-1. Exact path of the Filament form/table classes for `ArticleResource` (project uses `Schemas/` + `Tables/` subfolders).
-2. Whether the existing `resources/css/site/components/pagination.css` targets the default Tailwind paginator view or a custom one — determines whether a pagination view file needs to be published. The catalog list (`ProductCatalogController@index`) already paginates; the answer is whatever it uses.
