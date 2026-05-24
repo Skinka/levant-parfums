@@ -23,15 +23,28 @@ class Product extends Model implements HasMedia
 
     protected $fillable = [
         'sku', 'slug', 'name', 'tagline', 'description',
+        'character', 'why',
         'inspired_perfume_name', 'inspired_brand_id',
         'volume_ml', 'gender',
         'price_uah', 'price_eur',
+        'sillage_score', 'longevity_hours',
         'in_stock', 'is_published', 'published_at',
         'seo_title', 'seo_description',
         'perfume_family_id', 'concentration_id', 'series_id',
     ];
 
-    public array $translatable = ['name', 'tagline', 'description', 'seo_title', 'seo_description'];
+    public array $translatable = ['name', 'tagline', 'description', 'character', 'why', 'seo_title', 'seo_description'];
+
+    public function setAttribute($key, $value)
+    {
+        if ($value === null && $this->isTranslatableAttribute($key)) {
+            $this->attributes[$key] = null;
+
+            return $this;
+        }
+
+        return parent::setAttribute($key, $value);
+    }
 
     protected function casts(): array
     {
@@ -42,6 +55,8 @@ class Product extends Model implements HasMedia
             'volume_ml' => 'integer',
             'price_uah' => 'decimal:2',
             'price_eur' => 'decimal:2',
+            'sillage_score' => 'integer',
+            'longevity_hours' => 'integer',
             'gender' => Gender::class,
         ];
     }

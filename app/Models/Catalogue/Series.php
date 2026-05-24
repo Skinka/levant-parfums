@@ -13,7 +13,7 @@ class Series extends Model
     use HasFactory;
     use HasTranslations;
 
-    protected $fillable = ['name', 'slug', 'sort_order', 'is_active'];
+    protected $fillable = ['name', 'slug', 'sort_order', 'is_active', 'theme_class'];
 
     public array $translatable = ['name'];
 

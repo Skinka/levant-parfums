@@ -2,6 +2,52 @@
 
 use App\Enums\Gender;
 use App\Models\Catalogue\Product;
+use App\Models\Catalogue\Series;
+
+it('series has theme_class column with default theme-cream', function () {
+    $s = Series::create(['name' => ['uk' => 'Test', 'en' => 'Test'], 'slug' => 'test-series']);
+    expect($s->fresh()->theme_class)->toBe('theme-cream');
+});
+
+it('series accepts custom theme_class', function () {
+    $s = Series::create([
+        'name' => ['uk' => 'Test', 'en' => 'Test'],
+        'slug' => 'test-series',
+        'theme_class' => 'theme-onyx',
+    ]);
+    expect($s->fresh()->theme_class)->toBe('theme-onyx');
+});
+
+it('product persists translatable character + why and integer sillage + longevity', function () {
+    $p = Product::factory()->create([
+        'character' => ['uk' => 'Прохолодний шкіра', 'en' => 'Cool skin'],
+        'why' => ['uk' => 'Бо нерви', 'en' => 'Because nerves'],
+        'sillage_score' => 4,
+        'longevity_hours' => 8,
+    ]);
+
+    $p = $p->fresh();
+    expect($p->getTranslation('character', 'uk'))->toBe('Прохолодний шкіра');
+    expect($p->getTranslation('character', 'en'))->toBe('Cool skin');
+    expect($p->getTranslation('why', 'uk'))->toBe('Бо нерви');
+    expect($p->sillage_score)->toBe(4);
+    expect($p->longevity_hours)->toBe(8);
+});
+
+it('product allows null character + why + sillage + longevity', function () {
+    $p = Product::factory()->create([
+        'character' => null,
+        'why' => null,
+        'sillage_score' => null,
+        'longevity_hours' => null,
+    ]);
+
+    $p = $p->fresh();
+    expect($p->character)->toBeNull();
+    expect($p->why)->toBeNull();
+    expect($p->sillage_score)->toBeNull();
+    expect($p->longevity_hours)->toBeNull();
+});
 
 it('creates a product with all belongsTo relations', function () {
     $p = Product::factory()->create();
