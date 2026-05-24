@@ -28,6 +28,12 @@ class FormSubmissionsTable
                     ->formatStateUsing(fn (string $state) => trans("forms.types.{$state}"))
                     ->sortable(),
 
+                TextColumn::make('preorder')
+                    ->label('')
+                    ->badge()
+                    ->color('warning')
+                    ->getStateUsing(fn ($record) => ($record->data['is_preorder'] ?? false) ? 'PRE-ORDER' : null),
+
                 TextColumn::make('status')
                     ->label(trans('forms.fields.status'))
                     ->badge()
