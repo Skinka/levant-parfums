@@ -45,6 +45,47 @@
             </div>
         </div>
 
-        {{-- products + related sections added in Task 9 --}}
+        @if($products->isNotEmpty())
+            <div class="in-article-products">
+                <x-site.product-slider
+                    :products="$products"
+                    :eyebrow="__('site.articles.in_article_products')"
+                    :title="$article->title"
+                    cta-label=""
+                    cta-url=""/>
+            </div>
+        @endif
+
+        @if($related->isNotEmpty())
+            <section class="related-articles">
+                <div class="container">
+                    <div class="eyebrow">{{ __('site.articles.eyebrow', ['year' => now()->year]) }}</div>
+                    <h2 style="font-style: italic; margin-top: 12px">{{ __('site.articles.related_title') }}</h2>
+                    <div class="articles-grid articles-grid--3">
+                        @foreach($related as $relatedArticle)
+                            @php($relatedCover = $relatedArticle->getFirstMediaUrl('primary', 'card'))
+                            <a class="article-card"
+                               href="{{ route('articles.show', $relatedArticle->getTranslation('slug', $locale)) }}">
+                                <div class="cover">
+                                    @if($relatedCover)
+                                        <img src="{{ $relatedCover }}" alt="{{ $relatedArticle->title }}"
+                                             loading="lazy" width="800" height="600">
+                                    @endif
+                                </div>
+                                <div class="meta">
+                                    @if($relatedArticle->category)
+                                        <span class="tag">{{ $relatedArticle->category }}</span>
+                                    @endif
+                                    @if($d = $relatedArticle->displayDate())
+                                        <span>{{ $d }}</span>
+                                    @endif
+                                </div>
+                                <h3>{{ $relatedArticle->title }}</h3>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
     </article>
 @endsection

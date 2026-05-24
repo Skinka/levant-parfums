@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Catalogue\Product;
 use App\Models\Content\Article;
 use Illuminate\Support\Carbon;
 
@@ -78,4 +79,63 @@ it('shows breadcrumbs that link back to the articles index', function () {
         ->assertOk()
         ->assertSee('href="/articles"', escape: false)
         ->assertSee('Крихти');
+});
+
+it('shows attached products with article-specific copy', function () {
+    $product = Product::factory()->create([
+        'name' => ['uk' => 'Onyx 03', 'en' => 'Onyx 03'],
+    ]);
+    $article = Article::factory()->create([
+        'slug' => ['uk' => 'z-tovaramy', 'en' => 'with-products'],
+        'title' => ['uk' => 'Із товарами', 'en' => 'With products'],
+    ]);
+    $article->products()->attach($product->id, ['sort_order' => 0]);
+
+    $this->get('/articles/z-tovaramy')
+        ->assertOk()
+        ->assertSee('Аромати у статті')
+        ->assertSee('Onyx 03')
+        ->assertDontSee('Усі парфуми');
+});
+
+it('omits the products section when no products are attached', function () {
+    Article::factory()->create([
+        'slug' => ['uk' => 'bez-tovariv', 'en' => 'no-products'],
+    ]);
+
+    $this->get('/articles/bez-tovariv')
+        ->assertOk()
+        ->assertDontSee('Аромати у статті');
+});
+
+it('renders the related articles block when other published articles exist', function () {
+    Article::factory()->create([
+        'slug' => ['uk' => 'osnovna', 'en' => 'main'],
+        'title' => ['uk' => 'Основна', 'en' => 'Main'],
+    ]);
+    Article::factory()->create(['title' => ['uk' => 'Сусід A', 'en' => 'Neighbor A']]);
+    Article::factory()->create(['title' => ['uk' => 'Сусід B', 'en' => 'Neighbor B']]);
+    Article::factory()->create(['title' => ['uk' => 'Сусід C', 'en' => 'Neighbor C']]);
+
+    $response = $this->get('/articles/osnovna');
+    $response->assertOk()
+        ->assertSee('Читайте також')
+        ->assertSee('Сусід A')
+        ->assertSee('Сусід B')
+        ->assertSee('Сусід C');
+
+    // Current article title appears in breadcrumb + h1 = 2 occurrences;
+    // if it also leaked into "related" it would be 3.
+    $body = $response->getContent();
+    expect(substr_count($body, 'Основна'))->toBeLessThan(3);
+});
+
+it('omits the related block when there are no other articles', function () {
+    Article::factory()->create([
+        'slug' => ['uk' => 'sama', 'en' => 'alone'],
+    ]);
+
+    $this->get('/articles/sama')
+        ->assertOk()
+        ->assertDontSee('Читайте також');
 });
