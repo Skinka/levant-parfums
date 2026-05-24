@@ -4,8 +4,12 @@ namespace App\Filament\Resources\Pages\Schemas;
 
 use App\Enums\PageTemplate;
 use App\Filament\Resources\Pages\Schemas\Blocks\ArticlesBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\BrandStoryBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\HeroBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\PillarsBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\ProductsBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\SeriesDuoBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\TestimonialsBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\TextBlock;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\MarkdownEditor;
@@ -82,8 +86,12 @@ class PageForm
                 ->visible(fn (callable $get) => $get('template') === PageTemplate::Landing->value)
                 ->blocks([
                     HeroBlock::make(),
-                    ProductsBlock::make(),
                     TextBlock::make(),
+                    ProductsBlock::make(),
+                    BrandStoryBlock::make(),
+                    SeriesDuoBlock::make(),
+                    PillarsBlock::make(),
+                    TestimonialsBlock::make(),
                     ArticlesBlock::make(),
                 ])
                 ->collapsible()
