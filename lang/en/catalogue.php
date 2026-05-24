@@ -119,6 +119,19 @@ return [
         'product' => [
             'gallery_open' => 'Open image',
             'gallery_zoom' => 'Click to enlarge',
+            'why_label' => 'Why this one',
+            'order_cta' => 'Order',
+            'preorder_cta' => 'Preorder',
+            'badges' => ['new' => 'New', 'best' => 'Bestseller'],
+            'specs' => [
+                'sku' => 'SKU',
+                'volume' => 'Volume',
+                'family' => 'Family',
+                'concentration' => 'Concentration',
+                'composed' => 'Composed',
+                'composed_value' => 'Spain / ES',
+                'series' => 'Series',
+            ],
         ],
     ],
 ];

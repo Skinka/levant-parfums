@@ -119,6 +119,19 @@ return [
         'product' => [
             'gallery_open' => 'Відкрити зображення',
             'gallery_zoom' => 'Натисніть, щоб збільшити',
+            'why_label' => 'Чому саме цей',
+            'order_cta' => 'Замовити',
+            'preorder_cta' => 'Передзамовити',
+            'badges' => ['new' => 'Новинка', 'best' => 'Бестселер'],
+            'specs' => [
+                'sku' => 'Артикул',
+                'volume' => 'Обʼєм',
+                'family' => 'Родина',
+                'concentration' => 'Концентрація',
+                'composed' => 'Розроблено',
+                'composed_value' => 'Іспанія / ES',
+                'series' => 'Серія',
+            ],
         ],
     ],
 ];

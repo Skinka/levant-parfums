@@ -16,7 +16,7 @@
 
             <div class="top">
                 <x-site.product-gallery :product="$product"/>
-                <div class="info"><h1>{{ $product->name }}</h1></div>
+                <x-site.product-info :product="$product"/>
             </div>
         </div>
     </div>

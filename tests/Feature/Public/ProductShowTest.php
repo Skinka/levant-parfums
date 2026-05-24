@@ -45,3 +45,36 @@ it('gallery renders main image as data-lightbox-trigger button', function () {
     $r->assertSee('data-lightbox-trigger', false);
     $r->assertSee('data-lightbox-images', false);
 });
+
+it('renders product name, tagline, description', function () {
+    $p = publishedProductInSeries('luxury', [
+        'name' => ['uk' => 'Luxury № 01', 'en' => 'Luxury № 01'],
+        'tagline' => ['uk' => 'Тиха ясність', 'en' => 'Quiet clarity'],
+        'description' => ['uk' => 'Опис українською', 'en' => 'Description in English'],
+    ]);
+
+    $this->get(route('products.show', $p->slug))
+        ->assertSee('Luxury № 01')
+        ->assertSee('Тиха ясність')
+        ->assertSee('Опис українською');
+});
+
+it('shows order CTA when in_stock=true', function () {
+    $p = publishedProductInSeries('luxury', ['in_stock' => true]);
+    $r = $this->get(route('products.show', $p->slug));
+    $r->assertSee(__('catalogue.public.product.order_cta'));
+    $r->assertDontSee(__('catalogue.public.product.preorder_cta'));
+});
+
+it('shows preorder CTA + btn-secondary when in_stock=false', function () {
+    $p = publishedProductInSeries('luxury', ['in_stock' => false]);
+    $r = $this->get(route('products.show', $p->slug));
+    $r->assertSee(__('catalogue.public.product.preorder_cta'));
+    $r->assertSee('btn-secondary', false);
+});
+
+it('hides why-block when why is null', function () {
+    $p = publishedProductInSeries('luxury', ['why' => null]);
+    $this->get(route('products.show', $p->slug))
+        ->assertDontSee(__('catalogue.public.product.why_label'));
+});
