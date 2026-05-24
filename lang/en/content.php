@@ -23,6 +23,8 @@ return [
         'title' => 'Title',
         'slug' => 'URL',
         'intro' => 'Intro',
+        'category' => 'Category',
+        'read_time_minutes' => 'Read time (min)',
         'content' => 'Content',
         'seo_title' => 'SEO title',
         'seo_description' => 'SEO description',
@@ -50,6 +52,9 @@ return [
     'template' => [
         'simple' => 'Simple page',
         'landing' => 'Landing (blocks)',
+    ],
+    'units' => [
+        'minutes' => 'min',
     ],
     'blocks' => [
         'hero' => [

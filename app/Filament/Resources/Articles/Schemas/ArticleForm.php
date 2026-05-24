@@ -57,6 +57,14 @@ class ArticleForm
                 ->label(fn () => trans('content.fields.intro'))
                 ->rows(3)
                 ->maxLength(300),
+            TextInput::make('category')
+                ->label(fn () => trans('content.fields.category')),
+            TextInput::make('read_time_minutes')
+                ->label(fn () => trans('content.fields.read_time_minutes'))
+                ->numeric()
+                ->minValue(1)
+                ->maxValue(120)
+                ->suffix(fn () => trans('content.units.minutes')),
             MarkdownEditor::make('content')
                 ->label(fn () => trans('content.fields.content'))
                 ->required()

@@ -118,3 +118,22 @@ it('persists product changes across two consecutive saves', function () {
 
     expect($article->fresh()->products->pluck('id')->all())->toBe([$p3->id]);
 });
+
+it('creates an article with category and read_time_minutes', function () {
+    \Livewire\Livewire::test(\App\Filament\Resources\Articles\Pages\CreateArticle::class)
+        ->fillForm([
+            'title' => 'З категорією',
+            'slug' => 'z-kategoriyeyu',
+            'content' => 'Body.',
+            'category' => 'Філософія',
+            'read_time_minutes' => 6,
+            'is_published' => true,
+            'published_at' => now()->toDateTimeString(),
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $article = \App\Models\Content\Article::firstWhere('slug->uk', 'z-kategoriyeyu');
+    expect($article->read_time_minutes)->toBe(6);
+    expect($article->getTranslation('category', 'uk'))->toBe('Філософія');
+});

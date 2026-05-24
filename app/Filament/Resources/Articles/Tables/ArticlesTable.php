@@ -31,6 +31,14 @@ class ArticlesTable
                 TextColumn::make('slug')
                     ->label(fn () => trans('content.fields.slug'))
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('category')
+                    ->label(fn () => trans('content.fields.category'))
+                    ->badge()
+                    ->toggleable(),
+                TextColumn::make('read_time_minutes')
+                    ->label(fn () => trans('content.fields.read_time_minutes'))
+                    ->suffix(fn () => ' '.trans('content.units.minutes'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_published')
                     ->label(fn () => trans('content.fields.is_published'))
                     ->boolean(),
