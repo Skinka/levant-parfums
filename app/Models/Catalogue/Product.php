@@ -155,5 +155,12 @@ class Product extends Model implements HasMedia
             ->fit(Fit::Contain, 1200, 1600)
             ->format('webp')
             ->nonQueued();
+
+        $this->addMediaConversion('og')
+            ->fit(Fit::Crop, 1200, 630)
+            ->format('jpg')
+            ->quality(82)
+            ->nonQueued()
+            ->performOnCollections('primary');
     }
 }

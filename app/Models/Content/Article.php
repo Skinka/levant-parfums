@@ -74,5 +74,12 @@ class Article extends Model implements HasMedia
         $this->addMediaConversion('thumb')->fit(Fit::Crop, 400, 400)->format('webp')->nonQueued();
         $this->addMediaConversion('card')->fit(Fit::Crop, 1200, 630)->format('webp')->nonQueued();
         $this->addMediaConversion('detail')->fit(Fit::Crop, 1920, 1080)->format('webp')->nonQueued();
+
+        $this->addMediaConversion('og')
+            ->fit(Fit::Crop, 1200, 630)
+            ->format('jpg')
+            ->quality(82)
+            ->nonQueued()
+            ->performOnCollections('primary');
     }
 }
