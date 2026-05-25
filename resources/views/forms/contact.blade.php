@@ -9,26 +9,26 @@
         <x-forms.honeypot wire:model="hp" />
 
         @error('form')
-            <div class="form-error" data-testid="form-error">{{ $message }}</div>
+            <div class="alert" data-testid="form-error">{{ $message }}</div>
         @enderror
 
-        <div class="field">
-            <label for="contact-name">{{ __('forms.fields.name') }} *</label>
-            <input id="contact-name" type="text" wire:model="name" autocomplete="name" required>
-            @error('name') <span class="field-error" data-testid="name-error">{{ $message }}</span> @enderror
-        </div>
+        <label class="field">
+            <span>{{ __('forms.fields.name') }} *</span>
+            <input type="text" wire:model="name" autocomplete="name" required>
+            @error('name') <span class="err" data-testid="name-error">{{ $message }}</span> @enderror
+        </label>
 
-        <div class="field">
-            <label for="contact-email">{{ __('forms.fields.email') }} *</label>
-            <input id="contact-email" type="email" wire:model="email" autocomplete="email" required>
-            @error('email') <span class="field-error" data-testid="email-error">{{ $message }}</span> @enderror
-        </div>
+        <label class="field">
+            <span>{{ __('forms.fields.email') }} *</span>
+            <input type="email" wire:model="email" autocomplete="email" required>
+            @error('email') <span class="err" data-testid="email-error">{{ $message }}</span> @enderror
+        </label>
 
-        <div class="field full">
-            <label for="contact-message">{{ __('forms.fields.message') }} *</label>
-            <textarea id="contact-message" wire:model="message" rows="6" required></textarea>
-            @error('message') <span class="field-error" data-testid="message-error">{{ $message }}</span> @enderror
-        </div>
+        <label class="field full">
+            <span>{{ __('forms.fields.message') }} *</span>
+            <textarea wire:model="message" rows="6" required></textarea>
+            @error('message') <span class="err" data-testid="message-error">{{ $message }}</span> @enderror
+        </label>
 
         <div class="actions">
             <span class="agree">{{ __('forms.contact.agree') }}</span>

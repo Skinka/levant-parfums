@@ -74,62 +74,52 @@
     font-family: var(--font-serif);
 }
 
-.contacts .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.contacts .fields .field { display: flex; flex-direction: column; gap: 8px; }
+/* Field styles mirror .order-form so the contact form reads as the same
+   editorial system used on product order screens. */
+.contacts .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.contacts .fields .field { display: grid; gap: 6px; }
 .contacts .fields .field.full { grid-column: 1 / -1; }
-.contacts .fields label {
-    font-size: 11px;
-    letter-spacing: 0.22em;
+.contacts .fields .field span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-mute);
 }
-.contacts .fields input,
-.contacts .fields textarea {
-    width: 100%;
-    padding: 12px 0;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--line-soft);
-    font-family: inherit;
-    font-size: 16px;
+.contacts .fields .field input,
+.contacts .fields .field textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background: var(--field-bg);
+    font-family: var(--font-sans);
+    font-size: 14px;
     color: var(--ink);
-    transition: border-color 200ms var(--ease-out);
 }
-.contacts .fields input:focus,
-.contacts .fields textarea:focus {
-    outline: none;
-    border-bottom-color: var(--ink);
-}
-.contacts .fields textarea { resize: vertical; min-height: 120px; }
+.contacts .fields .field textarea { resize: vertical; min-height: 120px; }
+.contacts .fields .field .err { color: #c0392b; font-size: 12px; }
 
 .contacts .fields .actions {
     grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-top: 16px;
+    gap: 24px;
+    margin-top: 12px;
+    flex-wrap: wrap;
 }
 .contacts .fields .agree {
-    font-size: 12px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
     color: var(--ink-mute);
     max-width: 36ch;
-    line-height: 1.5;
 }
 
-.contacts .field-error {
-    font-size: 12px;
-    color: var(--danger, #b02a1c);
-    margin-top: 4px;
-}
-.contacts .form-error {
-    padding: 12px 16px;
-    background: var(--bg);
-    border: 1px solid var(--danger, #b02a1c);
-    color: var(--danger, #b02a1c);
-    font-size: 14px;
-    margin-bottom: 8px;
+.contacts .fields .alert {
     grid-column: 1 / -1;
+    padding: 12px;
+    background: #fdecea;
+    color: #c0392b;
 }
 
 .contacts .form-success { padding: 40px 0; }
@@ -153,6 +143,7 @@
 @media (max-width: 900px) {
     .contacts .grid { grid-template-columns: 1fr; gap: 48px; }
     .contacts .form-card { padding: 32px 24px; }
-    .contacts .fields { grid-template-columns: 1fr; gap: 20px; }
-    .contacts .fields .actions { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 540px) {
+    .contacts .fields { grid-template-columns: 1fr; }
 }
