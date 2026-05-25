@@ -1,8 +1,5 @@
 @extends('layouts.site')
 
-@section('title', __('site.articles.meta_title'))
-@section('description', __('site.articles.meta_description'))
-
 @section('content')
     @php($locale = app()->getLocale())
 

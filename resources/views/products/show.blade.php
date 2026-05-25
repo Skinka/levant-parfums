@@ -1,8 +1,5 @@
 @extends('layouts.site', ['theme' => $theme])
 
-@section('title', $product->name . ' · LEVANT Parfums')
-@section('description', $product->tagline ?: \Illuminate\Support\Str::limit(strip_tags($product->description ?? ''), 160))
-
 @section('content')
     <div class="product-page">
         <div class="container">

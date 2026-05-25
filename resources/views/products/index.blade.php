@@ -1,8 +1,5 @@
 @extends('layouts.site')
 
-@section('title', __('catalogue.public.title').' · LEVANT Parfums')
-@section('description', __('catalogue.public.subtitle'))
-
 @php
     $filters = [
         ['key' => 'all',    'label' => __('catalogue.public.filter_all'),    'value' => null],

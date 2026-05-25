@@ -1,9 +1,5 @@
 @extends('layouts.site')
 
-@section('title', $article->seo_title ?: $article->title)
-@section('description', $article->seo_description
-    ?: \Illuminate\Support\Str::limit(strip_tags((string) $article->intro), 160))
-
 @section('content')
     @php($locale = app()->getLocale())
     @php($coverUrl = $article->getFirstMediaUrl('primary', 'detail'))

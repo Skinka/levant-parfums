@@ -1,13 +1,15 @@
 @php($currentLocale = app()->getLocale())
+@php($seo = $seo ?? null)
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $currentLocale) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'LEVANT Parfums')</title>
-    @hasSection('description')
-        <meta name="description" content="@yield('description')">
-    @endif
+
+    <x-site.seo-meta :seo="$seo" :locale="$currentLocale" />
+    <x-site.json-ld :data="\App\Seo\StructuredData\OrganizationSchema::generate()" />
+    <x-site.json-ld :data="\App\Seo\StructuredData\WebSiteSchema::generate($currentLocale)" />
+
     @fonts
     @livewireScriptConfig
     @vite(['resources/css/app.css', 'resources/js/app.js'])
