@@ -22,6 +22,7 @@
                     <li><a href="{{ route('products.index') }}">{{ __('site.nav.catalog') }}</a></li>
                     <li><a href="{{ route('page.show', ['slug' => config('content.philosophy_slug')[$locale] ?? 'filosofiia']) }}">{{ __('site.nav.philosophy') }}</a></li>
                     <li><a href="{{ route('articles.index', [], false) }}">{{ __('site.nav.articles') }}</a></li>
+                    <li><a href="{{ route('page.show', ['slug' => config('content.contacts_slug')[$locale] ?? 'kontakty']) }}">{{ __('site.nav.contacts') }}</a></li>
                 </ul>
             </div>
 
@@ -49,6 +50,7 @@
             <div>
                 <h4>{{ __('site.footer.columns.contact') }}</h4>
                 <ul>
+                    <li><a href="{{ route('page.show', ['slug' => config('content.contacts_slug')[$locale] ?? 'kontakty']) }}">{{ __('site.footer.links.contacts_page') }}</a></li>
                     <li><a href="tel:+380974128819">+38 (097) 412 88 19</a></li>
                     <li><a href="mailto:concierge@levant.parfum">concierge@levant.parfum</a></li>
                     <li><a href="#" rel="noopener">Instagram</a></li>
