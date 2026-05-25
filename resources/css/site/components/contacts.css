@@ -1,4 +1,8 @@
 .contacts { padding: 32px 0 120px; }
+/* When this block leads a landing page, keep crumbs close to the header
+   (matches the .about-hero pattern used on the Philosophy page). */
+.landing-page > section.contacts:first-child { padding-top: 24px; }
+.contacts .crumbs { padding: 0 0 32px; }
 
 .contacts .section-head { margin-bottom: 64px; }
 .contacts .section-head h1 {
