@@ -91,6 +91,15 @@ return [
             'label' => 'Список статей',
             'add_item' => 'Додати статтю',
         ],
+        'contact' => [
+            'label' => 'Контакти',
+            'add_social' => 'Додати соцмережу',
+            'label_address' => 'Адреса',
+            'label_phone' => 'Телефон',
+            'label_email' => 'Пошта',
+            'label_hours' => 'Години',
+            'label_social' => 'Соцмережі',
+        ],
         'fields' => [
             // existing common
             'is_visible' => 'Показувати блок',
@@ -139,6 +148,19 @@ return [
             'author' => 'Автор',
             'city' => 'Місто',
             'rating' => 'Оцінка (1-5)',
+
+            // contact
+            'address' => 'Адреса',
+            'phone' => 'Телефон',
+            'phone_href' => 'Телефон для дзвінка',
+            'phone_href_hint' => 'Тільки цифри і +. Використовується у tel:-посиланні.',
+            'email' => 'Пошта',
+            'hours' => 'Години',
+            'socials' => 'Соцмережі',
+            'social_label' => 'Підпис',
+            'social_url' => 'Посилання',
+            'form_eyebrow' => 'Підпис форми',
+            'form_title' => 'Заголовок форми',
         ],
         'surface' => [
             'default' => 'Без фону (default)',

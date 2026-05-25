@@ -66,6 +66,15 @@ return [
         'pillars' => ['label' => 'Guide / Advantages (numbered grid)', 'add_item' => 'Add item'],
         'testimonials' => ['label' => 'Testimonials (slider)', 'add_item' => 'Add testimonial'],
         'articles' => ['label' => 'Article list', 'add_item' => 'Add article'],
+        'contact' => [
+            'label' => 'Contacts',
+            'add_social' => 'Add social',
+            'label_address' => 'Address',
+            'label_phone' => 'Phone',
+            'label_email' => 'Mail',
+            'label_hours' => 'Hours',
+            'label_social' => 'Social',
+        ],
         'fields' => [
             'is_visible' => 'Show block',
             'anchor' => 'Anchor (URL id)',
@@ -106,6 +115,19 @@ return [
             'author' => 'Author',
             'city' => 'City',
             'rating' => 'Rating (1-5)',
+
+            // contact
+            'address' => 'Address',
+            'phone' => 'Phone',
+            'phone_href' => 'Phone (dial target)',
+            'phone_href_hint' => 'Digits and + only. Used in the tel: link.',
+            'email' => 'Email',
+            'hours' => 'Hours',
+            'socials' => 'Social links',
+            'social_label' => 'Label',
+            'social_url' => 'URL',
+            'form_eyebrow' => 'Form eyebrow',
+            'form_title' => 'Form title',
         ],
         'surface' => [
             'default' => 'Plain (default)',
