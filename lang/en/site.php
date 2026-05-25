@@ -17,6 +17,13 @@ return [
         'contacts' => 'Contacts',
     ],
 
+    'menu' => [
+        'toggle_aria' => 'Open menu',
+        'close' => 'Close menu',
+        'aria' => 'Mobile menu',
+        'language' => 'Language',
+    ],
+
     'footer' => [
         'about' => 'Levant Parfums — a perfume house: composed in Spain, bottled in Turkey, with its market and soul in Ukraine.',
         'columns' => [

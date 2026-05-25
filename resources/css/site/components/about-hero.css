@@ -61,3 +61,10 @@
 @media (max-width: 800px) {
   .about-hero .grid { grid-template-columns: 1fr; gap: 32px; align-items: start; }
 }
+@media (max-width: 600px) {
+  .about-hero { padding: 40px 0 64px; }
+  .about-stats { grid-template-columns: 1fr; margin-top: 40px; }
+  .about-stats .stat { padding: 24px 20px; border-right: none; border-bottom: 1px solid var(--line-soft); }
+  .about-stats .stat:last-child { border-bottom: none; }
+  .about-stats .stat .num { font-size: 40px; }
+}

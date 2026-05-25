@@ -40,6 +40,19 @@
 }
 
 @media (max-width: 900px) {
+  .hero { padding: 56px 0 80px; }
   .hero .grid { grid-template-columns: 1fr; gap: 40px; }
   .hero .floating { display: none; }
+  .hero .meta { margin-top: 40px; padding-top: 24px; gap: 20px; }
+  .hero .meta .item .num { font-size: 30px; }
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 40px 0 56px; }
+  .hero .grid { gap: 28px; }
+  .hero .copy .lead { margin-top: 20px; }
+  .hero .copy .ctas { margin-top: 24px; gap: 12px; }
+  .hero .copy .ctas .btn { width: 100%; justify-content: center; }
+  .hero .meta { grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+  .hero .meta .item .num { font-size: 26px; }
 }

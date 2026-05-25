@@ -42,6 +42,7 @@
 
         <div class="head-right">
             <x-site.lang-switch :locale="$locale" />
+            <x-site.mobile-menu :nav="$nav" :path="$path" :locale="$locale" />
         </div>
     </div>
 </header>

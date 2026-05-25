@@ -6,6 +6,9 @@
   color: var(--ink-mute);
   display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
 }
+@media (max-width: 600px) {
+  .crumbs { padding: 16px 0; gap: 8px; letter-spacing: 0.12em; }
+}
 .crumbs a { transition: color var(--t-fast) var(--ease-out); }
 .crumbs a:hover { color: var(--ink); }
 .crumbs .sep { color: var(--ink-mute); }

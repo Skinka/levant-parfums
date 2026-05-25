@@ -2,12 +2,24 @@
 
 :root { --container-gutter: max(56px, calc(50vw - 664px)); }
 @media (max-width: 720px) { :root { --container-gutter: 24px; } }
+@media (max-width: 480px) { :root { --container-gutter: 16px; } }
 .container { max-width: 1440px; margin: 0 auto; padding: 0 56px; }
 @media (max-width: 720px) { .container { padding: 0 24px; } }
+@media (max-width: 480px) { .container { padding: 0 16px; } }
 
 section { padding: 120px 0; }
 section.tight { padding: 80px 0; }
 section.compact { padding: 56px 0; }
+@media (max-width: 900px) {
+  section { padding: 80px 0; }
+  section.tight { padding: 56px 0; }
+  section.compact { padding: 40px 0; }
+}
+@media (max-width: 600px) {
+  section { padding: 56px 0; }
+  section.tight { padding: 40px 0; }
+  section.compact { padding: 32px 0; }
+}
 .section-head {
   display: flex;
   justify-content: space-between;
@@ -16,6 +28,14 @@ section.compact { padding: 56px 0; }
   margin-bottom: 56px;
 }
 .section-head h2 { max-width: 18ch; }
+@media (max-width: 700px) {
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+}
 
 /* Diamond ornament (from brand book packaging) */
 .diamond-band {

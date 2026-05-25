@@ -38,4 +38,7 @@
 .pyramid .level .note:hover { border-color: var(--accent); color: var(--accent); }
 @media (max-width: 640px) {
   .pyramid .level { grid-template-columns: 1fr; gap: 12px; }
+  .pyramid { margin: 40px 0; padding-top: 32px; gap: 28px; }
+  .pyramid h2 { font-size: 26px; }
+  .pyramid .level .note { font-size: 15px; padding: 6px 12px; }
 }

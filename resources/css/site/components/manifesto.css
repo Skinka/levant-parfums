@@ -26,3 +26,8 @@
 @media (max-width: 800px) {
   .manifesto .grid { grid-template-columns: 1fr; gap: 32px; }
 }
+@media (max-width: 600px) {
+  .manifesto .grid { gap: 20px; }
+  .manifesto .body { font-size: 15px; }
+  .manifesto .body .quote-open { font-size: 72px; height: 24px; }
+}

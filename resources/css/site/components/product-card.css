@@ -7,6 +7,7 @@
   grid-auto-columns: minmax(300px, 1fr);
   gap: 24px;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   scroll-behavior: smooth;
   scrollbar-width: none;
   padding-bottom: 4px;
@@ -120,4 +121,23 @@
   width: 4px; height: 4px;
   background: var(--accent);
   border-radius: 50%;
+}
+
+@media (max-width: 600px) {
+  .card .body { padding: 16px 16px 18px; }
+  .card .body .title { font-size: 18px; }
+  .card .body .subtitle { font-size: 13px; }
+  .card .body .price { font-size: 18px; }
+  .card .body .vol { font-size: 10px; }
+  .card .img .placeholder { font-size: 28px; letter-spacing: 0.22em; }
+  .product-row .nav-btns { top: -48px; }
+  .product-track { grid-auto-columns: minmax(240px, 1fr); gap: 16px; }
+}
+
+/* Touch devices: don't apply hover transforms that "stick" after tap. */
+@media (hover: none) {
+  .card:hover { transform: none; box-shadow: none; border-color: var(--line-soft); }
+  .card:hover::before { transform: scaleX(0); }
+  .card:hover .img img { transform: none; }
+  .product-row .nav-btns button:hover { transform: none; }
 }

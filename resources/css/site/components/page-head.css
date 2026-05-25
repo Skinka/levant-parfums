@@ -5,3 +5,6 @@
   padding: 24px 0 40px;
   border-bottom: 1px solid var(--line-soft);
 }
+@media (max-width: 600px) {
+  .page-head { padding: 16px 0 24px; }
+}

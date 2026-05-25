@@ -80,6 +80,7 @@
 .lang-menu {
   position: absolute; right: 0; top: calc(100% + 6px);
   background: var(--card); border: 1px solid var(--line); min-width: 140px;
+  max-width: calc(100vw - 32px);
   box-shadow: var(--shadow); z-index: 30; padding: 6px;
   animation: drop 0.25s var(--ease-out) both;
 }
@@ -103,3 +104,24 @@
   background: var(--accent); opacity: 0;
 }
 .lang-menu a.active .dot, .lang-menu button.active .dot { opacity: 1; }
+
+/* ── Tablet / mobile ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .header > .container {
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .header .nav { display: none; }
+  .head-right { gap: 8px; justify-self: end; }
+  .head-right .lang { display: none; }
+  .brand { font-size: 18px; }
+  .brand .sub { font-size: 9px; letter-spacing: 0.55em; margin-top: 4px; }
+}
+
+@media (max-width: 480px) {
+  .brand { font-size: 16px; }
+  .brand .mark { letter-spacing: 0.14em; }
+  .brand .sub { letter-spacing: 0.4em; }
+}

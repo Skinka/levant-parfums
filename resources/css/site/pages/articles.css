@@ -15,12 +15,16 @@
 .articles-grid--3 .article-card .cover { aspect-ratio: 4/3; }
 .articles-grid--3 .article-card h3 { font-size: 22px; }
 @media (max-width: 900px) { .articles-grid, .articles-grid--3 { grid-template-columns: 1fr; gap: 40px; } }
+@media (max-width: 600px) {
+  .articles-grid, .articles-grid--3 { gap: 32px; margin-top: 40px; }
+  .article-card h3 { font-size: 22px; }
+}
 
 /* Article detail page */
 .article-head { max-width: 780px; margin: 0 auto; }
 .article-head .meta { display: flex; gap: 18px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); flex-wrap: wrap; }
 .article-head .meta .tag { color: var(--accent); }
-.article-head .article-title { margin-top: 28px; font-style: italic; font-size: clamp(40px, 5vw, 80px); line-height: 1.05; }
+.article-head .article-title { margin-top: 28px; font-style: italic; font-size: clamp(28px, 5vw, 80px); line-height: 1.05; }
 .article-head .lead { margin-top: 28px; }
 
 .article-cover { max-width: 1200px; margin: 60px auto 0; aspect-ratio: 16/9; overflow: hidden; }
@@ -37,8 +41,21 @@
 .article-body li + li { margin-top: 8px; }
 .article-body img { width: 100%; height: auto; margin: 32px 0; }
 
+@media (max-width: 600px) {
+  .article-cover { margin-top: 40px; }
+  .article-body { margin-top: 40px; font-size: 16px; line-height: 1.7; }
+  .article-body > p:first-child { font-size: 20px; line-height: 1.45; }
+  .article-body h2 { font-size: 26px; margin-top: 40px; }
+  .article-body h3 { font-size: 20px; margin-top: 28px; }
+  .article-body blockquote { font-size: 18px; padding-left: 16px; }
+}
+
 .related-articles { margin-top: 60px; padding: 60px 0 0; border-top: 1px solid var(--line); }
 .related-articles .articles-grid { margin-top: 48px; }
+@media (max-width: 600px) {
+  .related-articles { margin-top: 40px; padding-top: 40px; }
+  .related-articles .articles-grid { margin-top: 32px; }
+}
 
 .in-article-products { margin-top: 60px; }
 .in-article-products .product-slider { margin-bottom: 0; }

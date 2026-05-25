@@ -61,3 +61,21 @@
 .lnk:hover::after { transform: scaleX(1); transform-origin: left center; }
 .lnk-mute { color: var(--ink-mute); }
 .lnk-mute:hover { color: var(--ink); }
+
+/* Touch devices: don't latch hover transforms after a tap. */
+@media (hover: none) {
+  .btn:hover::after { transform: translateX(-101%); }
+  .btn:hover { border-color: var(--accent); }
+  .btn.ghost:hover { color: var(--ink); border-color: var(--ink-soft); }
+  .btn.gold-ghost:hover { color: var(--accent); }
+  .btn:hover .btn-arrow { transform: none; }
+  .lnk:hover { gap: 8px; }
+  .lnk:hover::after { transform: scaleX(0.32); transform-origin: right center; }
+  .lnk-mute:hover { color: var(--ink-mute); }
+}
+
+/* Tighter buttons on phones. */
+@media (max-width: 600px) {
+  .btn { padding: 14px 22px; font-size: 11px; }
+  .btn-sm { padding: 9px 14px; font-size: 10px; }
+}

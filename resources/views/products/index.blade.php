@@ -26,11 +26,9 @@
                         <div class="eyebrow">{{ __('catalogue.public.eyebrow') }}</div>
                         <h1 style="margin-top: 16px">{{ __('catalogue.public.title') }}</h1>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+                    <div class="catalog-total">
                         <div class="eyebrow">{{ __('catalogue.public.total_label') }}</div>
-                        <div style="font-family: var(--font-serif); font-size: 72px; color: var(--accent); line-height: 1;">
-                            {{ $total }}
-                        </div>
+                        <div class="catalog-total__value">{{ $total }}</div>
                     </div>
                 </div>
             </div>

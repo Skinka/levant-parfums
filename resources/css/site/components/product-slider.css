@@ -18,12 +18,23 @@
   text-transform: uppercase; color: var(--accent); justify-self: end;
 }
 .product-slider .track {
-  display: grid; grid-auto-flow: column; grid-auto-columns: 280px;
-  gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory;
+  display: grid; grid-auto-flow: column; grid-auto-columns: clamp(240px, 70vw, 280px);
+  gap: 24px; overflow-x: auto; scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
   padding-bottom: 12px;
   margin-inline: calc(-1 * var(--container-gutter));
   padding-inline: var(--container-gutter);
   scroll-padding-inline: var(--container-gutter);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
-.product-slider .track > * { scroll-snap-align: start; }
+.product-slider .track::-webkit-scrollbar { display: none; }
+.product-slider .track > * { scroll-snap-align: start; min-width: 0; }
 .product-slider .track > :last-child { scroll-snap-align: end; }
+
+@media (max-width: 600px) {
+  .product-slider { margin: 40px 0; }
+  .product-slider .head { margin-bottom: 24px; }
+  .product-slider h2 { font-size: 24px; }
+  .product-slider .track { gap: 16px; }
+}

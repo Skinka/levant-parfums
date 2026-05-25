@@ -146,4 +146,17 @@
 }
 @media (max-width: 540px) {
     .contacts .fields { grid-template-columns: 1fr; }
+    .contacts .fields .actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    .contacts .fields .agree { max-width: none; }
+    .contacts .fields .actions .btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 600px) {
+    .contacts { padding: 20px 0 64px; }
+    .contacts .section-head { margin-bottom: 36px; }
+    .contacts .info .v { font-size: 18px; }
+    .contacts .form-card { padding: 24px 20px; }
 }

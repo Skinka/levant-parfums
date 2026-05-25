@@ -9,6 +9,10 @@
 @media (max-width: 800px) {
   .character { grid-template-columns: 1fr; gap: 32px; }
 }
+@media (max-width: 600px) {
+  .character { margin: 40px 0; padding-top: 32px; gap: 24px; }
+  .character .bar-row .top .v { font-size: 18px; }
+}
 .character .bar-row { display: flex; flex-direction: column; gap: 12px; }
 .character .bar-row .top {
   display: flex; justify-content: space-between; align-items: baseline;

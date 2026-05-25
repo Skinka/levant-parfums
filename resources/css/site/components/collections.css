@@ -55,3 +55,7 @@
 @media (max-width: 800px) {
   .collections .grid { grid-template-columns: 1fr; }
 }
+@media (max-width: 600px) {
+  .collection-card { padding: 28px; aspect-ratio: 3/4; }
+  .collection-card .desc { font-size: 14px; }
+}

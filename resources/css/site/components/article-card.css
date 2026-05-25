@@ -51,3 +51,8 @@
 @media (max-width: 900px) {
   .blog .grid { grid-template-columns: 1fr; }
 }
+@media (max-width: 600px) {
+  .blog { padding: 56px 0; }
+  .article-card h3 { font-size: 20px; }
+  .article-card .cover .placeholder { font-size: 28px; letter-spacing: 0.22em; }
+}

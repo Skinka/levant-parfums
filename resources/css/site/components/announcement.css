@@ -24,3 +24,12 @@
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+@media (max-width: 600px) {
+  .announcement {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    padding: 8px 0;
+  }
+  .announcement .marquee-track { gap: 24px; }
+}

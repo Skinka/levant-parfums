@@ -60,9 +60,12 @@
 }
 
 @media (max-width: 800px) {
-  .threepoints .points { grid-template-columns: 1fr; }
+  .threepoints { padding: 64px 0; }
+  .threepoints .head { margin-bottom: 40px; }
+  .threepoints .points { grid-template-columns: 1fr; gap: 8px; }
+  .threepoints .pt { padding: 20px 12px; }
   .threepoints .conn {
-    width: 1px; height: 40px;
+    width: 1px; height: 32px;
     background: linear-gradient(180deg, transparent, var(--accent), transparent);
     justify-self: center;
   }

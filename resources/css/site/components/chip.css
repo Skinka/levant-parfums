@@ -18,3 +18,13 @@
 }
 .chip:hover { color: var(--ink); border-color: var(--accent); }
 .chip.active:hover { color: var(--bg); }
+
+@media (hover: none) {
+  .chip:hover { color: var(--ink-soft); border-color: var(--line); }
+  .chip.active:hover { color: var(--bg); border-color: var(--ink); }
+}
+
+@media (max-width: 600px) {
+  .chip-row { flex-wrap: wrap; }
+  .chip { padding: 10px 14px; font-size: 10px; letter-spacing: 0.14em; }
+}
