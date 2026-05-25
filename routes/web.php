@@ -3,8 +3,11 @@
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductCatalogController;
+use App\Http\Controllers\RobotsController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
+Route::get('/robots.txt', RobotsController::class)->name('robots');
 
 Route::group([
     'prefix' => LaravelLocalization::setLocale(),
