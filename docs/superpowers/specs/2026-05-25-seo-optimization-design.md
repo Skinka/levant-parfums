@@ -81,7 +81,15 @@ final readonly class SeoData
 }
 ```
 
-Invariant: `alternates` always contains both supported locales plus `x-default` (= the `uk` URL). `canonical` always equals the alternate for the *current* locale, even when `robots = noindex,follow` — except for filtered catalog pages, where `canonical` points to the clean `/products` URL by design.
+Invariants for `alternates`:
+
+- **Always** includes the current locale's URL (we just served it, so it exists).
+- Includes the other locale's URL **only if** the translation exists. For Page/Article this means `$model->getTranslation('slug', $otherLocale, false)` is non-null; for Product/static routes both locales always exist.
+- `x-default` equals the `uk` URL when present, otherwise it is omitted. (In practice uk is the default locale and always populated; an uk-less translation is an edge case.)
+
+This deliberately violates a "symmetric pair" invariant: emitting a hreflang to a non-existent translation would point crawlers at a 404, which is worse than asymmetry. The sitemap follows the same rule (see Sitemap section).
+
+`canonical` equals the alternate for the *current* locale, even when `robots = noindex,follow` — except for filtered/sorted catalog pages, where `canonical` collapses to the clean `/products` (or `/products?page=N`) URL by design.
 
 ## `AlternateUrlResolver`
 
@@ -100,9 +108,9 @@ All three return `['uk' => '<abs>', 'en' => '<abs>', 'x-default' => '<abs>']`. U
 
 Behaviour per case:
 
-- **forTranslatedSlug** (Page/Article): uses `$slugTranslations[$locale]`. If a slug is missing for a locale, that hreflang entry is omitted (don't pretend a translation exists).
-- **forSharedSlug** (Product): same slug across both locales, only the `/en/` prefix differs.
-- **forStaticRoute** (`/products`, `/articles`, home): both locales, query params appended verbatim.
+- **forTranslatedSlug** (Page/Article): emits an entry for each locale where `$slugTranslations[$locale]` is non-null. Skips locales with missing translations. `x-default` is emitted only if the uk slug is present (default-locale URL acts as the language-neutral fallback).
+- **forSharedSlug** (Product): both locales always emitted — slug is the same, only the `/en/` prefix differs. `x-default` = uk URL.
+- **forStaticRoute** (`/products`, `/articles`, home): both locales always emitted, query params appended verbatim. `x-default` = uk URL.
 
 ## Builders
 
@@ -139,19 +147,36 @@ Behaviour per case:
 - `alternates`: `forSharedSlug('products.show', ['product' => $product->slug])`.
 - `jsonLd` = `[ProductSchema::generate($product, $locale), BreadcrumbSchema::generate($crumbs)]`.
 
-### `CatalogSeoBuilder::build(?string $series, string $sort, int $page, string $locale): SeoData`
+### `CatalogSeoBuilder::build(CatalogSeoInput $input, string $locale): SeoData`
+
+Takes a small input DTO carrying **raw URL state**, not normalized values, because indexing decisions depend on whether the user *typed* a query param — independent of whether its value was valid:
+
+```php
+final readonly class CatalogSeoInput
+{
+    public function __construct(
+        public bool $hasSortParam,    // true if request had any `sort` query param, valid or not
+        public bool $hasSeriesParam,  // true if request had any `series` query param, valid or not
+        public int $page,             // 1-based; 1 means "no ?page= or ?page=1"
+    ) {}
+}
+```
+
+The controller builds this DTO from `$request->has('sort')`, `$request->has('series')`, `$request->integer('page', 1)` — before normalization.
 
 Indexing matrix:
 
-| Query | `canonical` | `robots` |
+| URL shape | `canonical` | `robots` |
 | --- | --- | --- |
-| `/products` (no params, default sort) | `/products` | `index,follow` |
-| `/products?page=N` (N > 1) | `/products?page=N` | `index,follow` |
-| `/products?sort=*` (anything other than `pop`) | `/products` | `noindex,follow` |
-| `/products?series=*` | `/products` | `noindex,follow` |
-| any combination with `sort` or `series` | `/products` | `noindex,follow` |
+| `/products` (no `sort`, no `series`, no `page` or `page=1`) | `/products` | `index,follow` |
+| `/products?page=N` (N > 1, no `sort`, no `series`) | `/products?page=N` | `index,follow` |
+| `/products?sort=*` (any value, including `pop`) | `/products` | `noindex,follow` |
+| `/products?series=*` (any value, including invalid) | `/products` | `noindex,follow` |
+| `/products?page=N&sort=*` and/or `&series=*` | `/products?page=N` (or `/products` if `N=1`) | `noindex,follow` |
 
-`alternates` = `forStaticRoute('products.index', $queryParams)` where `$queryParams` matches the indexing decision (clean for noindex variants, with `?page=N` for paginated index variant).
+Rule of thumb: **presence** of `sort` or `series` in the URL → `noindex,follow` + canonical strips those params (but keeps `page=N` if N > 1, so deep pagination still has a reachable canonical).
+
+`alternates` = `forStaticRoute('products.index', $queryParams)` where `$queryParams` matches the canonical (no `sort`/`series`, includes `page=N` only if N > 1).
 
 ## JSON-LD generators
 
@@ -195,7 +220,7 @@ All return `array` (encoded to JSON by `<x-site.json-ld>`). Optional fields are 
   "description": "<localized description, stripped>",
   "image": ["<absolute og image>"],
   "sku": "<id>",
-  "brand": {"@type": "Brand", "name": "<brand->name OR organization.name>"},
+  "brand": {"@type": "Brand", "name": "<config('site.organization.name')>"},
   "category": "<perfumeFamily->name (localised)>",
   "offers": {
     "@type": "Offer",
@@ -207,6 +232,8 @@ All return `array` (encoded to JSON by `<x-site.json-ld>`). Optional fields are 
   }
 }
 ```
+
+`brand` is **always** the organization name (LEVANT Parfums), never `$product->inspiredBrand?->name`. The `inspiredBrand` relation models "inspired by brand X" (niche-perfumery context — e.g. a fragrance inspired by Tom Ford); using that as schema.org `Brand` would (a) misrepresent the manufacturer to crawlers and (b) carry trademark risk by attributing other brands' names to LEVANT products in structured data. The inspiration is UI-only marketing context, not a schema attribute.
 
 Availability is `InStock` if `$product->in_stock` is truthy, else `OutOfStock`.
 
@@ -296,7 +323,7 @@ Controller behaviour:
    - every published `Page` (per locale, using translated slug)
    - every published `Product` (one slug, two locale variants)
    - every published `Article` (per locale, translated slug)
-3. For each URL emit a `<url>` element with `<loc>`, `<lastmod>` (model `updated_at` or `now()` for index pages), and a sibling `<xhtml:link rel="alternate" hreflang="…"/>` per locale plus `x-default`.
+3. For each URL emit a `<url>` element with `<loc>`, `<lastmod>` (model `updated_at` or `now()` for index pages), and sibling `<xhtml:link rel="alternate" hreflang="…"/>` elements **following the same rule as `AlternateUrlResolver`**: one per locale where the translation exists, plus `x-default` when the uk URL exists. Page/Article rows with only one translation get only the matching `xhtml:link` plus `x-default`; Product and static-route rows always get both locales + `x-default`. Never emit a hreflang pointing at a URL that would 404.
 4. Returns XML with `Content-Type: application/xml; charset=UTF-8`.
 
 Template: `resources/views/sitemap/index.blade.php` — pure XML with `@foreach`.
@@ -404,7 +431,18 @@ $seo = app(PageSeoBuilder::class)->build($page, app()->getLocale());
 return view("pages.templates.{$page->template->value}", compact('page', 'seo'));
 ```
 
-Same shape for `ProductCatalogController@index/@show`, `ArticleController@index/@show`. Theme (`$theme`) is unaffected.
+`ProductCatalogController@index` builds the input DTO from the **raw** request (before normalising `$series`/`$sort`), so SEO sees the actual URL the user landed on:
+
+```php
+$catalogSeoInput = new CatalogSeoInput(
+    hasSortParam:   $request->has('sort'),
+    hasSeriesParam: $request->has('series'),
+    page:           $request->integer('page', 1),
+);
+$seo = app(CatalogSeoBuilder::class)->build($catalogSeoInput, app()->getLocale());
+```
+
+`ProductCatalogController@show`, `ArticleController@index/@show` follow the simpler `PageController` pattern. Theme (`$theme`) is unaffected.
 
 The existing `View::share('alternateSlugs', …)` in `PageController` and `ArticleController` becomes obsolete (replaced by `SeoData->alternates`), but stays for now because `lang-switch` and `mobile-menu` Blade components still read it. Removal is a separate follow-up.
 
@@ -428,6 +466,7 @@ No other changes to these views.
 | new | `app/Seo/SeoData.php` |
 | new | `app/Seo/AlternateUrlResolver.php` |
 | new | `app/Seo/Builders/{Page,Article,ArticleIndex,Product,Catalog}SeoBuilder.php` |
+| new | `app/Seo/Builders/CatalogSeoInput.php` (DTO for raw catalog query state) |
 | new | `app/Seo/StructuredData/{Organization,WebSite,Product,Article,Breadcrumb}Schema.php` |
 | new | `app/Http/Controllers/SitemapController.php` |
 | new | `app/Http/Controllers/RobotsController.php` |
@@ -454,16 +493,16 @@ No other changes to these views.
 ### Unit (`tests/Unit/Seo/`)
 
 - `SeoDataTest.php` — constructor accepts all fields; readonly verified by attempt-to-mutate assertion.
-- `AlternateUrlResolverTest.php` — all three methods × two locales × edge cases (missing translation, query params, default-locale prefix elision).
+- `AlternateUrlResolverTest.php` — all three methods × two locales × edge cases. Explicitly cover: (a) Page with both translations → both locales + `x-default` emitted; (b) Page with uk-only translation → only uk + `x-default`; (c) Page with en-only translation (synthetic) → only en, no `x-default`; (d) Product → always both locales + `x-default`; (e) static route with query params → params appended to both alternates.
 - `Builders/{Page,Article,ArticleIndex,Product,Catalog}SeoBuilderTest.php` — for each builder verify: title fallback chain (`seo_title` → `title` → suffix), description fallback (`seo_description` → derived), alternates contain both locales + `x-default`, canonical matches current-locale alternate (or `/products` for noindex catalog variants), robots value, `jsonLd` contains expected `@type`s.
 - `StructuredData/{Organization,WebSite,Product,Article,Breadcrumb}SchemaTest.php` — structure assertions; for `ProductSchema` verify `priceCurrency` flips with locale and `availability` flips with `in_stock`; verify optional fields are omitted when empty (no `null`/empty-string output).
 
 ### Feature (`tests/Feature/Seo/`)
 
 - `LayoutSeoTest.php` — for each public route (`/`, `/products`, `/products/{slug}`, `/articles`, `/articles/{slug}`, `/{page-slug}`) assert response contains: `<title>`, canonical, hreflang for `uk`, `en`, and `x-default`, OG core tags, Twitter card tag, exactly one Organization JSON-LD, exactly one WebSite JSON-LD.
-- `CatalogIndexingTest.php` — `/products` → `index,follow` with canonical `/products`; `/products?sort=priceA` → `noindex,follow` with canonical `/products`; `/products?series=onyx` → `noindex,follow` with canonical `/products`; `/products?page=2` → `index,follow` with canonical `/products?page=2`.
-- `ProductSchemaTest.php` — `/products/{slug}` (uk locale) emits Product JSON-LD with `priceCurrency: UAH`; `/en/products/{slug}` emits `priceCurrency: EUR`; out-of-stock product emits `availability: OutOfStock`.
-- `SitemapTest.php` — `GET /sitemap.xml` returns 200, content-type `application/xml`, contains URLs for all seeded entities and all index pages, every `<url>` has `xhtml:link` siblings for both locales + `x-default`.
+- `CatalogIndexingTest.php` — covers the full matrix including invalid-value cases: `/products` → `index,follow`, canonical `/products`; `/products?page=2` → `index,follow`, canonical `/products?page=2`; `/products?sort=priceA` → `noindex,follow`, canonical `/products`; `/products?sort=bad` → `noindex,follow`, canonical `/products` (invalid value still counts as "param present"); `/products?sort=pop` (explicit default) → `noindex,follow`, canonical `/products`; `/products?series=onyx` → `noindex,follow`, canonical `/products`; `/products?series=bad` → `noindex,follow`, canonical `/products`; `/products?page=2&sort=priceA` → `noindex,follow`, canonical `/products?page=2`.
+- `ProductSchemaTest.php` — `/products/{slug}` (uk locale) emits Product JSON-LD with `priceCurrency: UAH`; `/en/products/{slug}` emits `priceCurrency: EUR`; out-of-stock product emits `availability: OutOfStock`; `brand.name` always equals `config('site.organization.name')` even when `$product->inspired_brand_id` points to a different brand record (regression guard against accidentally leaking inspired brand into structured data).
+- `SitemapTest.php` — `GET /sitemap.xml` returns 200, content-type `application/xml`, contains URLs for all seeded entities and all index pages. Asserts: (a) Product/static-route `<url>` blocks always have both-locale `xhtml:link` siblings + `x-default`; (b) a Page with only a uk slug emits only the uk `xhtml:link` + `x-default`, no `en` entry; (c) no `xhtml:link` points at a URL the controller wouldn't actually serve.
 - `RobotsTest.php` — `GET /robots.txt` returns 200, content-type `text/plain`, contains `Disallow: /admin` and `Sitemap: {APP_URL}/sitemap.xml`.
 
 Existing tests are not affected — removed `@section('title')` lines have no asserted consumers.
