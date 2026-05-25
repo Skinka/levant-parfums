@@ -14,4 +14,9 @@ return [
         'terms' => ['uk' => 'umovy-vykorystannya', 'en' => 'terms'],
         'privacy' => ['uk' => 'konfidentsiynist', 'en' => 'privacy'],
     ],
+
+    'philosophy_slug' => [
+        'uk' => 'filosofiia',
+        'en' => 'philosophy',
+    ],
 ];

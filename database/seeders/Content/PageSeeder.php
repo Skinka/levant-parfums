@@ -91,6 +91,8 @@ class PageSeeder extends Seeder
                 Page::query()->create($data);
             }
         }
+
+        $this->seedPhilosophyPage();
     }
 
     private function simplePages(): array
@@ -308,6 +310,120 @@ MD,
         ];
     }
 
+
+    private function seedPhilosophyPage(): void
+    {
+        $slug = config('content.philosophy_slug');
+
+        $blocks = $this->buildPhilosophyBlocks();
+
+        $existing = Page::query()->whereJsonContains('slug->uk', $slug['uk'])->first();
+
+        $data = [
+            'slug' => $slug,
+            'title' => ['uk' => 'Філософія', 'en' => 'Philosophy'],
+            'intro' => ['uk' => '', 'en' => ''],
+            'content' => null,
+            'seo_title' => [
+                'uk' => 'Філософія · Levant Parfums',
+                'en' => 'Philosophy · Levant Parfums',
+            ],
+            'seo_description' => [
+                'uk' => 'Парфумерний дім на перетині трьох світів: розроблено в Іспанії, розлито в Туреччині, серце ринку — в Україні.',
+                'en' => 'A perfume house at the crossing of three worlds: composed in Spain, bottled in Turkey, with its market and soul in Ukraine.',
+            ],
+            'is_published' => true,
+            'is_homepage' => false,
+            'template' => PageTemplate::Landing,
+            'blocks' => $blocks,
+        ];
+
+        if ($existing) {
+            $existing->fill($data)->save();
+        } else {
+            Page::query()->create($data);
+        }
+    }
+
+    private function buildPhilosophyBlocks(): array
+    {
+        return [
+            [
+                'type' => 'about_hero',
+                'data' => [
+                    'is_visible' => true,
+                    'eyebrow' => ['uk' => 'Про дім', 'en' => 'About the house'],
+                    'title' => [
+                        'uk' => 'Парфумерний дім на перетині трьох світів',
+                        'en' => 'A perfume house at the crossing of three worlds',
+                    ],
+                    'lead' => [
+                        'uk' => 'Levant Parfums — це 22 композиції, 20 років досвіду парфумерної школи та три країни в одному підписі. Без переплати за логотип.',
+                        'en' => 'Levant Parfums — 22 compositions, twenty years of perfumery school, three countries in one signature. No premium for a logo.',
+                    ],
+                    'body' => [
+                        'uk' => 'Levant — давня назва регіону, де зустрічаються Схід і Захід, де торгівля, культура та аромати знаходили одне одного тисячоліттями. Наш дім — це продовження цієї історії: ідея народжується в Іспанії, флакон збирається у Туреччині, серце ринку — в Україні. Три точки. Один підпис.',
+                        'en' => 'Levant is the ancient name of a region where East and West meet, where trade, culture and scent have found each other for millennia. Our house is the continuation of that story: the idea is born in Spain, the bottle is assembled in Turkey, the market and the soul are in Ukraine. Three points. One signature.',
+                    ],
+                    'image_path' => 'pages/blocks/levant-luxury-bottle.jpg',
+                    'stats' => [
+                        ['num' => '22', 'meta_label' => ['uk' => 'композиції',  'en' => 'compositions']],
+                        ['num' => '2',  'meta_label' => ['uk' => 'колекції',    'en' => 'collections']],
+                        ['num' => '3',  'meta_label' => ['uk' => 'країни',      'en' => 'countries']],
+                        ['num' => '20', 'meta_label' => ['uk' => 'років школи', 'en' => 'years of school']],
+                    ],
+                ],
+            ],
+
+            [
+                'type' => 'text',
+                'data' => [
+                    'is_visible' => true,
+                    'anchor' => 'manifesto',
+                    'eyebrow' => ['uk' => 'Філософія', 'en' => 'Philosophy'],
+                    'title' => [
+                        'uk' => "Якщо вам потрібне ім'я і красива коробка — вам у дьюті-фрі.",
+                        'en' => 'If you need a name and a beautiful box — go to duty-free.',
+                    ],
+                    'body' => [
+                        'uk' => "Ми ж — для тих, хто хоче аромат, а не бирку. 20 років у парфумерії дають нам знати, де купувати найкращі інгредієнти, — і ми це робимо.\n\nРозроблено в Іспанії. Розлито в Туреччині. Зібрано тут — в Україні. Без переплати за логотип, без подвоєної ціни за порожній флакон.\n\nДорога коробка не робить аромат кращим. Ми вкладаємо у склянку те, у що інші вкладають у логотип. Кінцевий результат — нішевий характер за чесну ціну.",
+                        'en' => "We are for those who want the scent, not the tag. Twenty years in perfumery taught us where to source the best ingredients — and we do.\n\nComposed in Spain. Bottled in Turkey. Assembled here, in Ukraine. No premium for a logo, no doubled price for an empty bottle.\n\nAn expensive box does not make a better scent. We invest in the bottle what others invest in the logo. The result — niche character at an honest price.",
+                    ],
+                    'signature' => ['uk' => '— Команда Levant', 'en' => '— The Levant team'],
+                ],
+            ],
+
+            [
+                'type' => 'brand_story',
+                'data' => [
+                    'is_visible' => true,
+                    'eyebrow' => ['uk' => 'Три точки. Один путь.', 'en' => 'Three points. One signature.'],
+                    'title' => [
+                        'uk' => 'Levant — перетин трьох світів',
+                        'en' => 'Levant — a crossing of three worlds',
+                    ],
+                    'body' => [
+                        'uk' => 'Levant — давня назва регіону, де зустрічаються Схід і Захід, де торгівля, культура та аромати знаходили одне одного тисячоліттями.',
+                        'en' => 'Levant is the ancient name of a region where East and West meet, where trade, culture and scent have found each other for millennia.',
+                    ],
+                    'pillars' => [
+                        [
+                            'pillar_label' => ['uk' => 'Іспанія', 'en' => 'Spain'],
+                            'pillar_caption' => ['uk' => 'Народження ідеї', 'en' => 'Where the idea is born'],
+                        ],
+                        [
+                            'pillar_label' => ['uk' => 'Туреччина', 'en' => 'Turkey'],
+                            'pillar_caption' => ['uk' => 'Розливається тут', 'en' => 'Where it is bottled'],
+                        ],
+                        [
+                            'pillar_label' => ['uk' => 'Україна', 'en' => 'Ukraine'],
+                            'pillar_caption' => ['uk' => 'Ринок і душа', 'en' => 'The market and the soul'],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
 
     private function copyAsset(string $filename): void
     {
