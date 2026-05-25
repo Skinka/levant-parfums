@@ -93,6 +93,7 @@ class PageSeeder extends Seeder
         }
 
         $this->seedPhilosophyPage();
+        $this->seedContactsPage();
     }
 
     private function simplePages(): array
@@ -419,6 +420,76 @@ MD,
                             'pillar_caption' => ['uk' => 'Ринок і душа', 'en' => 'The market and the soul'],
                         ],
                     ],
+                ],
+            ],
+        ];
+    }
+
+    private function seedContactsPage(): void
+    {
+        $slug = config('content.contacts_slug');
+
+        $blocks = $this->buildContactsBlocks();
+
+        $existing = Page::query()->whereJsonContains('slug->uk', $slug['uk'])->first();
+
+        $data = [
+            'slug' => $slug,
+            'title' => ['uk' => 'Контакти', 'en' => 'Contacts'],
+            'intro' => ['uk' => '', 'en' => ''],
+            'content' => null,
+            'seo_title' => [
+                'uk' => 'Контакти · Levant Parfums',
+                'en' => 'Contacts · Levant Parfums',
+            ],
+            'seo_description' => [
+                'uk' => 'Бутік-студія Levant Parfums у центрі Києва. Адреса, телефон, пошта, години роботи, форма звʼязку.',
+                'en' => 'Levant Parfums boutique studio in central Kyiv. Address, phone, mail, opening hours, contact form.',
+            ],
+            'is_published' => true,
+            'is_homepage' => false,
+            'template' => PageTemplate::Landing,
+            'blocks' => $blocks,
+        ];
+
+        if ($existing) {
+            $existing->fill($data)->save();
+        } else {
+            Page::query()->create($data);
+        }
+    }
+
+    private function buildContactsBlocks(): array
+    {
+        return [
+            [
+                'type' => 'contact',
+                'data' => [
+                    'is_visible' => true,
+                    'eyebrow' => ['uk' => "Зв'язок", 'en' => 'Contact'],
+                    'title' => ['uk' => 'Контакти', 'en' => 'Contacts'],
+                    'lead' => [
+                        'uk' => 'Бутік-студія у центрі Києва. Запис на консультацію — за телефоном або через форму.',
+                        'en' => 'A boutique studio in central Kyiv. Book a consultation by phone or via the form.',
+                    ],
+                    'address' => [
+                        'uk' => 'Київ, вул. Рейтарська 19, друга арка',
+                        'en' => 'Kyiv, Reitarska 19, second arch',
+                    ],
+                    'phone' => '+38 (097) 412 88 19',
+                    'phone_href' => '+380974128819',
+                    'email' => 'concierge@levant.parfum',
+                    'hours' => [
+                        'uk' => 'Пн–Сб · 11:00–20:00',
+                        'en' => 'Mon–Sat · 11:00–20:00',
+                    ],
+                    'socials' => [
+                        ['label' => 'Instagram', 'url' => 'https://instagram.com/levant.parfums'],
+                        ['label' => 'Telegram', 'url' => 'https://t.me/levantparfums'],
+                        ['label' => 'TikTok', 'url' => 'https://tiktok.com/@levant.parfums'],
+                    ],
+                    'form_eyebrow' => ['uk' => 'Форма', 'en' => 'Form'],
+                    'form_title' => ['uk' => 'Напишіть нам', 'en' => 'Write to us'],
                 ],
             ],
         ];
