@@ -109,7 +109,7 @@ Each `Series` has a `theme_class` column. `ProductCatalogController@show` passes
 ### Frontend stack
 
 - **Tailwind CSS v4** via the `@tailwindcss/vite` plugin; entry is `resources/css/app.css` which imports `tailwindcss`, then the modular `resources/css/site/index.css` (which pulls in `site/components/*.css` and `site/pages/*.css`). Theme tokens (`--font-sans`, `--font-serif`) are declared in the `@theme` block in `app.css`.
-- **Fonts**: Inter + Fraunces, wired through `laravel-vite-plugin/fonts` (`bunny(...)` in `vite.config.js`) and injected via the `@fonts` Blade directive in the site layout.
+- **Fonts**: Inter + Piazzolla, wired through `laravel-vite-plugin/fonts` (`bunny(...)` in `vite.config.js`) and injected via the `@fonts` Blade directive in the site layout. Piazzolla replaced the original Fraunces because Fraunces ships no Cyrillic subset on Bunny/Google Fonts — Ukrainian text fell back to Georgia. Any future serif swap must verify Cyrillic glyph coverage.
 - **Alpine.js 3** is registered once at the layout level. JS entry `resources/js/app.js` imports a small set of site modules from `resources/js/site/` (`reveal`, `intro-veil`, `lightbox`). Do not pull in a second Alpine instance — see commit `056fb9b` ("drop duplicate Alpine") for the precedent.
 - Public site Blade components live under `resources/views/components/site/*` and are invoked as `<x-site.{name} />`.
 

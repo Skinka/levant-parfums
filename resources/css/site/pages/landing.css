@@ -1,0 +1,23 @@
+/* Landing page (homepage) — block rhythm.
+   Every block on the landing page is a <section> rendered by templates/landing.blade.php.
+   Each section's per-component CSS declares its own padding (100–120px); the gap between
+   any two adjacent sections is the sum of the trailing and leading padding.
+
+   The product page uses margin: 60px 0 between .pyramid / .character / #order, so the
+   visible gap between adjacent blocks is 60px. We mirror that here by overriding the
+   per-component padding inside .landing-page: 30px top + 30px bottom = 60px between. */
+
+.landing-page > section {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  margin: 0;
+}
+
+/* Preserve a fuller entry/exit for the page itself — the inter-block 60px applies
+   only between blocks, not above the hero or below the last block. */
+.landing-page > section:first-child {
+  padding-top: 80px;
+}
+.landing-page > section:last-child {
+  padding-bottom: 0;
+}

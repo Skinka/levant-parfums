@@ -2,6 +2,7 @@
 
 @php
     $supported = LaravelLocalization::getSupportedLocales();
+    $alternateSlugs = view()->shared('alternateSlugs', []);
 @endphp
 
 <div class="lang" x-data="{ open: false }" @click.outside="open = false">
@@ -14,7 +15,18 @@
 
     <div class="lang-menu" x-show="open" x-cloak x-transition>
         @foreach($supported as $code => $info)
-            <a href="{{ LaravelLocalization::getLocalizedURL($code, null, [], true) }}"
+            @php
+                // Always emit URLs with an explicit locale prefix. The localization
+                // middleware will canonicalize (and update the locale session) on the
+                // way in — emitting a prefix-less URL for the default locale would
+                // leave the session locale stale and trigger a wrong-slug redirect.
+                if (! empty($alternateSlugs) && ! empty($alternateSlugs[$code])) {
+                    $href = url('/'.$code.'/'.$alternateSlugs[$code]);
+                } else {
+                    $href = LaravelLocalization::getLocalizedURL($code, null, [], true);
+                }
+            @endphp
+            <a href="{{ $href }}"
                rel="alternate" hreflang="{{ $code }}"
                class="{{ $code === $locale ? 'active' : '' }}">
                 <span>{{ $info['native'] ?? $info['name'] ?? strtoupper($code) }}</span>

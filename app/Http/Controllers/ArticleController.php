@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Content\Article;
+use Illuminate\Support\Facades\View;
 
 class ArticleController extends Controller
 {
@@ -37,6 +38,8 @@ class ArticleController extends Controller
             ->latest('published_at')
             ->take(3)
             ->get();
+
+        View::share('alternateSlugs', $article->getTranslations('slug'));
 
         return view('articles.show', compact('article', 'products', 'related'));
     }

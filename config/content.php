@@ -7,4 +7,11 @@ return [
         'uk', 'en',
         'home',
     ],
+
+    'help_pages' => [
+        'delivery' => ['uk' => 'dostavka-ta-oplata', 'en' => 'delivery-and-payment'],
+        'returns' => ['uk' => 'povernennya', 'en' => 'returns'],
+        'terms' => ['uk' => 'umovy-vykorystannya', 'en' => 'terms'],
+        'privacy' => ['uk' => 'konfidentsiynist', 'en' => 'privacy'],
+    ],
 ];

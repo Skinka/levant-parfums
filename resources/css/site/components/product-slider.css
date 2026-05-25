@@ -21,5 +21,9 @@
   display: grid; grid-auto-flow: column; grid-auto-columns: 280px;
   gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory;
   padding-bottom: 12px;
+  margin-inline: calc(-1 * var(--container-gutter));
+  padding-inline: var(--container-gutter);
+  scroll-padding-inline: var(--container-gutter);
 }
 .product-slider .track > * { scroll-snap-align: start; }
+.product-slider .track > :last-child { scroll-snap-align: end; }

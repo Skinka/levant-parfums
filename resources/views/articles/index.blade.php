@@ -6,14 +6,14 @@
 @section('content')
     @php($locale = app()->getLocale())
 
-    <section style="padding: 32px 0 120px">
+    <section style="padding: 0">
         <div class="container">
             <x-site.breadcrumbs :items="[
                 ['href' => LaravelLocalization::localizeURL('/'), 'label' => __('site.nav.home')],
                 ['label' => __('site.nav.articles')],
             ]"/>
 
-            <div class="section-head" style="margin-top: 32px">
+            <div class="section-head">
                 <div>
                     <div class="eyebrow">{{ __('site.articles.eyebrow', ['year' => now()->year]) }}</div>
                     <h1 style="margin-top: 18px; font-style: italic">{{ __('site.articles.title') }}</h1>
@@ -24,7 +24,7 @@
             </div>
 
             @if($articles->isEmpty())
-                <p class="lead" style="margin-top: 80px">—</p>
+                <p class="lead" style="margin-top: 60px">—</p>
             @else
                 <div class="articles-grid reveal-stagger">
                     @foreach($articles as $article)

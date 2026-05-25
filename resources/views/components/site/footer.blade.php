@@ -34,13 +34,14 @@
                 </ul>
             </div>
 
+            @php($helpPages = config('content.help_pages'))
             <div>
                 <h4>{{ __('site.footer.columns.help') }}</h4>
                 <ul>
-                    <li><a href="#">{{ __('site.footer.links.delivery') }}</a></li>
-                    <li><a href="#">{{ __('site.footer.links.returns') }}</a></li>
-                    <li><a href="#">{{ __('site.footer.links.terms') }}</a></li>
-                    <li><a href="#">{{ __('site.footer.links.privacy') }}</a></li>
+                    <li><a href="{{ route('page.show', ['slug' => $helpPages['delivery'][$locale]]) }}">{{ __('site.footer.links.delivery') }}</a></li>
+                    <li><a href="{{ route('page.show', ['slug' => $helpPages['returns'][$locale]]) }}">{{ __('site.footer.links.returns') }}</a></li>
+                    <li><a href="{{ route('page.show', ['slug' => $helpPages['terms'][$locale]]) }}">{{ __('site.footer.links.terms') }}</a></li>
+                    <li><a href="{{ route('page.show', ['slug' => $helpPages['privacy'][$locale]]) }}">{{ __('site.footer.links.privacy') }}</a></li>
                 </ul>
             </div>
 

@@ -8,7 +8,7 @@
     @php($locale = app()->getLocale())
     @php($coverUrl = $article->getFirstMediaUrl('primary', 'detail'))
 
-    <article style="padding: 32px 0 80px">
+    <article>
         <div class="container">
             <x-site.breadcrumbs :items="[
                 ['href' => LaravelLocalization::localizeURL('/'), 'label' => __('site.nav.home')],

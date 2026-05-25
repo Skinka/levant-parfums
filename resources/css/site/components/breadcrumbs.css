@@ -1,7 +1,7 @@
 /* Breadcrumbs. */
 
 .crumbs {
-  padding: 32px 0;
+  padding: 24px 0;
   font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-mute);
   display: flex; gap: 12px; align-items: center; flex-wrap: wrap;

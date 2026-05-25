@@ -1,5 +1,7 @@
 /* Layout primitives + ornaments + utilities. */
 
+:root { --container-gutter: max(56px, calc(50vw - 664px)); }
+@media (max-width: 720px) { :root { --container-gutter: 24px; } }
 .container { max-width: 1440px; margin: 0 auto; padding: 0 56px; }
 @media (max-width: 720px) { .container { padding: 0 24px; } }
 
