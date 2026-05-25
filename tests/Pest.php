@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mcamara\LaravelLocalization\LaravelLocalization;
 use Tests\TestCase;
 
 /*
@@ -44,7 +45,13 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+// LaravelLocalization registers route prefixes at bootstrap; in tests the app
+// boots without a request so non-default locales (e.g. `/en`) have no route.
+// This helper re-bootstraps the app forcing the package's per-locale prefix.
+function refreshApplicationWithLocale(string $locale): void
 {
-    // ..
+    $test = test();
+    $test->tearDown();
+    putenv(LaravelLocalization::ENV_ROUTE_KEY . '=' . $locale);
+    $test->setUp();
 }

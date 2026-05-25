@@ -2,9 +2,14 @@
 
 use App\Enums\PageTemplate;
 use App\Models\Content\Page;
+use Mcamara\LaravelLocalization\LaravelLocalization;
 
 beforeEach(function () {
     $this->withHeaders(['Accept-Language' => 'uk']);
+});
+
+afterEach(function () {
+    putenv(LaravelLocalization::ENV_ROUTE_KEY);
 });
 
 function makePhilosophyPage(array $overrides = []): Page
@@ -77,6 +82,7 @@ it('renders the Philosophy page at the uk slug', function () {
 });
 
 it('renders the Philosophy page at the en slug', function () {
+    refreshApplicationWithLocale('en');
     makePhilosophyPage();
 
     $this->withHeaders(['Accept-Language' => 'en'])
@@ -126,6 +132,16 @@ it('renders all four stats from the about_hero block', function () {
 });
 
 it('exposes a Philosophy link in the header nav', function () {
+    Page::query()->create([
+        'is_homepage' => true,
+        'is_published' => true,
+        'template' => PageTemplate::Landing,
+        'slug' => ['uk' => 'home-uk', 'en' => 'home-en'],
+        'title' => ['uk' => 'Головна', 'en' => 'Home'],
+        'intro' => ['uk' => '', 'en' => ''],
+        'content' => null,
+        'blocks' => [],
+    ]);
     makePhilosophyPage();
 
     $expectedUrl = route('page.show', ['slug' => config('content.philosophy_slug')['uk']]);
