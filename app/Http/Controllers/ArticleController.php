@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Content\Article;
+use App\Seo\Builders\ArticleIndexSeoBuilder;
+use App\Seo\Builders\ArticleSeoBuilder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function __construct(
+        private readonly ArticleIndexSeoBuilder $indexSeoBuilder,
+        private readonly ArticleSeoBuilder $showSeoBuilder,
+    ) {}
+
+    public function index(Request $request)
     {
         $articles = Article::query()
             ->published()
@@ -15,7 +23,9 @@ class ArticleController extends Controller
             ->latest('published_at')
             ->paginate(12);
 
-        return view('articles.index', compact('articles'));
+        $seo = $this->indexSeoBuilder->build(app()->getLocale(), max(1, $request->integer('page', 1)));
+
+        return view('articles.index', compact('articles', 'seo'));
     }
 
     public function show(string $slug)
@@ -41,6 +51,8 @@ class ArticleController extends Controller
 
         View::share('alternateSlugs', $article->getTranslations('slug'));
 
-        return view('articles.show', compact('article', 'products', 'related'));
+        $seo = $this->showSeoBuilder->build($article, $locale);
+
+        return view('articles.show', compact('article', 'products', 'related', 'seo'));
     }
 }

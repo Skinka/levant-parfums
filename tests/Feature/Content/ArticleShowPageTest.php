@@ -124,10 +124,11 @@ it('renders the related articles block when other published articles exist', fun
         ->assertSee('Сусід B')
         ->assertSee('Сусід C');
 
-    // Current article title appears in breadcrumb + h1 = 2 occurrences;
-    // if it also leaked into "related" it would be 3.
+    // After SEO wiring the title appears in <title>, og:title, twitter:title,
+    // the HTML breadcrumb, and the <h1> — 5 legitimate occurrences.
+    // If it also leaked into the "related" block each card would add more.
     $body = $response->getContent();
-    expect(substr_count($body, 'Основна'))->toBeLessThan(3);
+    expect(substr_count($body, 'Основна'))->toBeLessThan(6);
 });
 
 it('omits the related block when there are no other articles', function () {
