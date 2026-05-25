@@ -6,6 +6,7 @@
 @import './layout.css';
 @import './animations.css';
 
+@import './components/about-hero.css';
 @import './components/button.css';
 @import './components/announcement.css';
 @import './components/header.css';
