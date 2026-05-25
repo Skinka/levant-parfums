@@ -14,6 +14,7 @@ return [
         'catalog' => 'Catalogue',
         'philosophy' => 'Philosophy',
         'articles' => 'Articles',
+        'contacts' => 'Contacts',
     ],
 
     'footer' => [
@@ -31,6 +32,7 @@ return [
             'returns' => 'Returns',
             'terms' => 'Terms',
             'privacy' => 'Privacy',
+            'contacts_page' => 'Contacts page',
         ],
         'rights' => '© :year Levant Parfums. All rights reserved.',
         'geo' => 'Composed in Spain · Bottled in Turkey · Assembled in Ukraine',

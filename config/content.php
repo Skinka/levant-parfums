@@ -19,4 +19,6 @@ return [
         'uk' => 'filosofiia',
         'en' => 'philosophy',
     ],
+
+    'contacts_slug' => ['uk' => 'kontakty', 'en' => 'contacts'],
 ];
