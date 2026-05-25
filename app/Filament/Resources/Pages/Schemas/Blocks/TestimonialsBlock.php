@@ -3,20 +3,19 @@
 namespace App\Filament\Resources\Pages\Schemas\Blocks;
 
 use App\Filament\Resources\Pages\Schemas\Blocks\Concerns\TranslatableTabs;
-use App\Models\Catalogue\Product;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 
-class ProductsBlock
+class TestimonialsBlock
 {
     public static function make(): Block
     {
-        return Block::make('products')
-            ->label(trans('content.blocks.products.label'))
-            ->icon('heroicon-o-shopping-bag')
+        return Block::make('testimonials')
+            ->label(trans('content.blocks.testimonials.label'))
+            ->icon('heroicon-o-chat-bubble-left-right')
             ->schema([
                 ...self::commonFields(),
                 TranslatableTabs::make('eyebrow'),
@@ -28,19 +27,22 @@ class ProductsBlock
                     ->helperText(trans('content.blocks.fields.cta_url_helper')),
                 Repeater::make('items')
                     ->schema([
-                        Select::make('product_id')
-                            ->label(trans('content.blocks.fields.product_id'))
-                            ->options(fn () => Product::query()
-                                ->orderBy('slug')
-                                ->get()
-                                ->mapWithKeys(fn (Product $p) => [$p->id => $p->name])
-                                ->all())
-                            ->searchable()
-                            ->required(),
+                        TranslatableTabs::make('quote', required: true, component: Textarea::class),
+                        TextInput::make('author')
+                            ->label(trans('content.blocks.fields.author'))
+                            ->required()
+                            ->maxLength(120),
+                        TranslatableTabs::make('city'),
+                        TextInput::make('rating')
+                            ->label(trans('content.blocks.fields.rating'))
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(5),
                     ])
-                    ->reorderable()
-                    ->defaultItems(0)
-                    ->addActionLabel(trans('content.blocks.products.add_item')),
+                    ->minItems(2)
+                    ->defaultItems(2)
+                    ->addActionLabel(trans('content.blocks.testimonials.add_item'))
+                    ->reorderable(),
             ]);
     }
 

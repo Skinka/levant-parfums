@@ -16,7 +16,7 @@ it('GET / returns 200 for the published homepage', function () {
     Page::factory()->homepage()->create([
         'title' => ['uk' => 'Головна', 'en' => 'Home'],
         'blocks' => [
-            ['type' => 'hero', 'data' => ['is_visible' => true, 'title' => ['uk' => 'Привіт', 'en' => 'Hi']]],
+            ['type' => 'hero', 'data' => ['is_visible' => true, 'title_top' => ['uk' => 'Привіт', 'en' => 'Hi']]],
         ],
     ]);
 

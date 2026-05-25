@@ -4,23 +4,34 @@ namespace App\Filament\Resources\Pages\Schemas\Blocks;
 
 use App\Filament\Resources\Pages\Schemas\Blocks\Concerns\TranslatableTabs;
 use Filament\Forms\Components\Builder\Block;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 
-class TextBlock
+class BrandStoryBlock
 {
     public static function make(): Block
     {
-        return Block::make('text')
-            ->label(trans('content.blocks.text.label'))
-            ->icon('heroicon-o-document-text')
+        return Block::make('brand_story')
+            ->label(trans('content.blocks.brand_story.label'))
+            ->icon('heroicon-o-map')
             ->schema([
                 ...self::commonFields(),
                 TranslatableTabs::make('eyebrow'),
                 TranslatableTabs::make('title', required: true),
-                TranslatableTabs::make('body', required: true, component: Textarea::class),
-                TranslatableTabs::make('signature'),
+                TranslatableTabs::make('body', component: Textarea::class),
+                Repeater::make('pillars')
+                    ->label(trans('content.blocks.fields.pillars'))
+                    ->schema([
+                        TranslatableTabs::make('pillar_label', required: true),
+                        TranslatableTabs::make('pillar_caption'),
+                    ])
+                    ->minItems(3)
+                    ->maxItems(3)
+                    ->defaultItems(3)
+                    ->addActionLabel(trans('content.blocks.brand_story.add_pillar'))
+                    ->reorderable(false),
             ]);
     }
 

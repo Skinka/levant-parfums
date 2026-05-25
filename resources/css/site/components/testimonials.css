@@ -1,0 +1,55 @@
+/* Testimonials — horizontal slider of review cards. Slider mechanics mirror .product-slider .track. */
+
+.testimonials {
+  padding: 120px 0;
+  background: var(--bg-2);
+}
+.testimonials .section-head { margin-bottom: 32px; }
+
+.testimonials .track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(360px, 1fr);
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  scrollbar-width: none;
+  margin-right: calc(50% - 50vw);
+}
+.testimonials .track::-webkit-scrollbar { display: none; }
+.testimonials .track > * {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+/* Review card */
+.review {
+  background: var(--card);
+  border: 1px solid var(--line-soft);
+  padding: 40px;
+  display: flex; flex-direction: column; gap: 18px;
+  transition: all var(--t-med) var(--ease-out);
+}
+.review:hover { border-color: var(--accent); }
+.review .quote-mark {
+  font-family: var(--font-serif);
+  font-size: 64px; line-height: 0.3;
+  color: var(--accent);
+  height: 22px;
+}
+.review .text {
+  font-family: var(--font-serif);
+  font-size: 22px; line-height: 1.45;
+  font-style: italic;
+  color: var(--ink);
+}
+.review .meta {
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-mute);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.review .stars {
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
