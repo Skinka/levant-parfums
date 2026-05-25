@@ -1,6 +1,9 @@
 /* About-hero — editorial intro with crumbs, italic h1, lead, body, square image, and a 4-cell stats row. */
 
 .about-hero { padding: 80px 0 100px; }
+/* When this block leads a landing page, keep crumbs close to the header
+   (matches product/article pages, which sit ~24px below the header). */
+.landing-page > section.about-hero:first-child { padding-top: 24px; }
 .about-hero .crumbs { padding: 0 0 32px; }
 .about-hero .grid {
   display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px;
