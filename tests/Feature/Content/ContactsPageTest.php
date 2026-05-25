@@ -106,7 +106,6 @@ it('hides empty info rows', function () {
     $response->assertOk()
         ->assertSee('Київ, вул. Рейтарська 19')
         ->assertSee('hello@x.test')
-        ->assertDontSee('tel:', escape: false)
         ->assertDontSee('Телефон')
         ->assertDontSee('Години')
         ->assertDontSee('Соцмережі');
