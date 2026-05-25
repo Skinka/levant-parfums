@@ -121,14 +121,16 @@ New class `app/Filament/Resources/Pages/Schemas/Blocks/ContactBlock.php`, mirror
 - `TranslatableTabs::make('eyebrow')`.
 - `TranslatableTabs::make('title', required: true)`.
 - `TranslatableTabs::make('lead', component: Textarea::class)`.
-- `TranslatableTabs::make('address', component: Textarea::class, required: true)`.
-- `TextInput::make('phone')->required()`.
+- `TranslatableTabs::make('address', component: Textarea::class)`.
+- `TextInput::make('phone')`.
 - `TextInput::make('phone_href')->regex('/^\+?[0-9]+$/')` with a helper hint that explains the `tel:`-target format.
-- `TextInput::make('email')->email()->required()`.
+- `TextInput::make('email')->email()`.
 - `TranslatableTabs::make('hours')`.
 - `TranslatableTabs::make('form_eyebrow')`.
 - `TranslatableTabs::make('form_title', required: true)`.
 - `Repeater::make('socials')` — 0..6 items, schema `TextInput::make('label')->required()` + `TextInput::make('url')->url()->required()`, reorderable, with `addActionLabel(trans('content.blocks.contact.add_social'))`.
+
+Only `title` and `form_title` are required at the admin level. Every info field (`address`, `phone`, `email`, `hours`) is optional so the admin can clear any of them and have the corresponding row disappear on the public page — that is the contract promised by the empty-field rule below and the matching tests. The seeder still ships with all four populated; nullability is for the edit path, not the initial state.
 
 Register the new block in `PageForm` so it shows up in the page Builder.
 
@@ -189,7 +191,7 @@ New file `resources/views/pages/blocks/contact.blade.php`. Follows the locale-re
     $formTitle   = $t('form_title');
 
     $phone     = $data['phone']      ?? '';
-    $phoneHref = $data['phone_href'] ?? $phone;
+    $phoneHref = filled($data['phone_href'] ?? null) ? $data['phone_href'] : $phone;
     $email     = $data['email']      ?? '';
     $socials   = array_values(array_filter(
         $data['socials'] ?? [],
@@ -286,9 +288,7 @@ Replace `resources/views/forms/contact.blade.php`. Constraint: keep `wire:model=
 ```blade
 @if (session('forms.success.contact'))
     <div class="form-success">
-        <div class="ok" aria-hidden="true">
-            <x-site.icon name="check" size="24" />
-        </div>
+        <div class="ok" aria-hidden="true">✓</div>
         <h3>{{ __('forms.contact.thanks') }}</h3>
     </div>
 @else
@@ -321,7 +321,7 @@ Replace `resources/views/forms/contact.blade.php`. Constraint: keep `wire:model=
             <span class="agree">{{ __('forms.contact.agree') }}</span>
             <button type="submit" class="btn">
                 <span>{{ __('forms.contact.submit') }}</span>
-                <x-site.icon name="arrow-r" size="14" />
+                <span class="btn-arrow" aria-hidden="true">→</span>
             </button>
         </div>
     </form>
@@ -342,7 +342,7 @@ contact.agree   // uk: "Натискаючи кнопку, я погоджуюс
 
 Existing `forms.fields.name|email|message` keys stay as-is.
 
-**Icon component risk.** The blade uses `<x-site.icon name="check" />` and `name="arrow-r"`. If no shared `x-site.icon` exists in the project, implementation either adds one (with the two glyphs needed) or inlines SVG. Verify in the impl plan.
+**Icons.** The success card uses the plain `✓` glyph inside `<div class="ok">` — matches the pattern in `resources/views/forms/order.blade.php:10`. The submit button uses `<span class="btn-arrow" aria-hidden="true">→</span>` — matches `resources/views/components/site/product-info.blade.php:80`. The project has no shared icon component (verified — `app/View/` does not exist), so following the established inline-glyph convention.
 
 ## CSS
 
@@ -515,17 +515,19 @@ Then add one line to `resources/css/site/index.css`:
 
 ### Header (`resources/views/components/site/header.blade.php`)
 
-Append `contacts` to `$nav` so the order is `home / catalogue / articles / contacts` (the Philosophy spec inserts its own entry between catalogue and articles — if Philosophy ships first, `contacts` simply tails the array):
+Append `contacts` to `$nav` as the last entry, after `articles`. The Philosophy nav entry is already in place (`header.blade.php:10`), so the resulting order is `home / catalogue / philosophy / articles / contacts`. Match uses exact-equality (`$r === '/' . $contactsSlug`) — same shape as the existing Philosophy match — so the link is highlighted only on the contacts page itself, not on any incidental path that happens to start with `/contacts`.
 
 ```php
 $contactsSlug = config('content.contacts_slug')[$locale] ?? config('content.contacts_slug')['uk'];
 $contactsUrl  = route('page.show', ['slug' => $contactsSlug]);
 
 $nav = [
-    ['key' => 'home',     'url' => LaravelLocalization::localizeURL('/'),     'match' => fn ($r) => $r === '/' || $r === ''],
-    ['key' => 'catalog',  'url' => route('products.index'),                   'match' => fn ($r) => str_starts_with($r, '/products')],
-    ['key' => 'articles', 'url' => route('articles.index', [], false),        'match' => fn ($r) => str_starts_with($r, '/articles')],
-    ['key' => 'contacts', 'url' => $contactsUrl,                              'match' => fn ($r) => str_starts_with($r, '/'.$contactsSlug)],
+    ['key' => 'home',       /* ... */],
+    ['key' => 'catalog',    /* ... */],
+    ['key' => 'philosophy', /* ... already present */],
+    ['key' => 'articles',   /* ... */],
+    ['key' => 'contacts',   'url' => $contactsUrl,
+                            'match' => fn ($r) => $r === '/' . $contactsSlug],
 ];
 ```
 
@@ -580,7 +582,6 @@ The existing `ContactFormTest`, `FormTypeTest`, `FormRateLimiterTest` cover the 
 
 ## Risks
 
-- **`x-site.icon` may not exist.** The new form blade uses `<x-site.icon name="check" />` and `name="arrow-r"`. If the project has no shared icon component, the impl plan either adds one (with the two glyphs needed) or inlines `<svg>`. Caught early — verify during planning.
 - **Footer Contact column duplication.** The footer's hardcoded phone/email/Instagram/Telegram (`footer.blade.php:54–62`) will drift from the admin-edited block data. Accepted in v1 — the new page is the canonical surface; the footer is a convenience. Follow-up: read footer contact links from the contact block.
 - **Seeder overwrites admin edits.** `PageSeeder` is upsert; re-running it after admin edits resets the block content. Same behaviour as help and philosophy pages — treat seed data as initial state, not source of truth.
 - **No phone-format validation on the display field.** `phone_href` is regex-validated to `^\+?[0-9]+$` in the admin form, but `phone` (the displayed string) is free text. Risk is low (admin-only field) and any error is locally visible on the page.
