@@ -13,6 +13,7 @@ enum BlockType: string
     case Pillars = 'pillars';
     case Testimonials = 'testimonials';
     case Articles = 'articles';
+    case Contact = 'contact';
 
     public function label(): string
     {
