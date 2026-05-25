@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'brand_strapline' => 'LUXURY SERIES',
+    'brand_strapline' => 'PARFUMS',
 
     'announcement' => [
         'Колекція 2026 · Luxury × Onyx — у наявності',
