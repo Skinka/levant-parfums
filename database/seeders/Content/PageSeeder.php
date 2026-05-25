@@ -310,7 +310,6 @@ MD,
         ];
     }
 
-
     private function seedPhilosophyPage(): void
     {
         $slug = config('content.philosophy_slug');

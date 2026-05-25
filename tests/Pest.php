@@ -52,6 +52,6 @@ function refreshApplicationWithLocale(string $locale): void
 {
     $test = test();
     $test->tearDown();
-    putenv(LaravelLocalization::ENV_ROUTE_KEY . '=' . $locale);
+    putenv(LaravelLocalization::ENV_ROUTE_KEY.'='.$locale);
     $test->setUp();
 }
