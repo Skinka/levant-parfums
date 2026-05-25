@@ -44,9 +44,11 @@ blocks         = [about_hero, text, brand_story]   // see Block composition
 
 The page is resolved by the existing catch-all route `/{slug}` → `PageController@show`, which does `whereJsonContains("slug->{$locale}", $slug)`. No new route.
 
-### Reserved slugs
+### Slug uniqueness — leave reserved_slugs alone
 
-Add `filosofiia` and `philosophy` to `config('content.reserved_slugs')`. Prevents a CMS editor from creating another page with the same slug and shadowing the philosophy page. `Page::booted()` already throws `DomainException` when a reserved slug is saved.
+The Philosophy page slugs are **not** added to `config('content.reserved_slugs')`. `Page::booted()` throws `DomainException` for any saved page whose translated slug appears in that list, so adding them would block `PageSeeder` from creating the page itself (the same way it blocks the help pages from being seeded — those slugs are also intentionally absent from the list).
+
+Uniqueness is enforced by the **functional unique JSON indexes** added in migration `2026_05_23_055707_create_pages_table.php` (separate MySQL and SQLite branches on `JSON_EXTRACT(slug, '$.uk')` and `'$.en'`). An admin trying to save another page with `filosofiia` or `philosophy` will hit the DB constraint. No application-level reservation needed.
 
 ### Reusable URL config
 
@@ -167,9 +169,23 @@ Reuse `blocks.fields.is_visible`, `blocks.fields.anchor`, `blocks.fields.eyebrow
 
 Locale resolution helpers (`$t`, `$statLabel`) follow the established `brand_story.blade.php` pattern.
 
-**CSS.** New `resources/css/site/components/about-hero.css`. Copy `styles.css:819–830` verbatim, adjusted to use the project's CSS variables (`--ink`, `--ink-soft`, `--ink-mute`, `--accent`, `--line-soft`, `--ease-out`, `--font-serif`). Add `@import './components/about-hero.css'` to `resources/css/site/index.css`.
+**CSS.** New `resources/css/site/components/about-hero.css`. Copy `styles.css:819–830` adjusted to use the project's CSS variables (`--ink`, `--ink-soft`, `--ink-mute`, `--accent`, `--line-soft`, `--ease-out`, `--font-serif`). Add `@import './components/about-hero.css'` to `resources/css/site/index.css`.
 
-Mobile breakpoint behaviour is identical to the source (`@media (max-width: 900px)` stacks stats to 2x2).
+Mobile breakpoints. The source CSS has no mobile rule for `.about-hero .grid`, so on narrow viewports the hero would stay at 2 columns with an 80px gap — cramped to broken. Match the project pattern used by `.manifesto .grid` and add:
+
+```css
+@media (max-width: 800px) {
+  .about-hero .grid { grid-template-columns: 1fr; gap: 32px; align-items: start; }
+}
+
+@media (max-width: 900px) {
+  .about-stats { grid-template-columns: 1fr 1fr; }
+  .about-stats .stat:nth-child(2) { border-right: none; }
+  .about-stats .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line-soft); }
+}
+```
+
+The 800/900px split mirrors the source — the stats grid drops to 2x2 first, the hero stacks slightly later.
 
 ### Block 2 — `text` (EXISTING)
 
@@ -244,7 +260,7 @@ New file `tests/Feature/Content/PhilosophyPageTest.php`:
 2. **Renders at the en slug.** Same for `/en/philosophy`.
 3. **Hidden block stays hidden.** Save the page with `about_hero.is_visible = false`; GET returns 200 but does not include the hero title — relies on `Page::visibleBlocks()`.
 4. **Stats render.** Response contains the four stat numbers (22, 2, 3, 20) and one of the localized labels.
-5. **Header has a Philosophy link.** GET `/uk`, assert the rendered header contains `<a href="/uk/filosofiia">Філософія</a>`.
+5. **Header has a Philosophy link.** GET `/uk`. Existing footer pattern uses `route('page.show', [...])` which returns an **absolute** URL (e.g. `http://localhost/uk/filosofiia`), so assertions on a relative `href` will be flaky. Resolve the expected URL in the test via `route('page.show', ['slug' => config('content.philosophy_slug')['uk']])` and assert against that, or use two looser `assertSee()` calls — one for `filosofiia` (the slug appears in the href) and one for the localized link text `Філософія`.
 
 Existing test patterns:
 - `tests/Feature/Content/Filament/ArticleResourceTest.php` for Livewire-based admin assertions (only needed if we want to test the Filament block form — optional).
@@ -280,7 +296,7 @@ Modified files:
 
 - `app/Enums/BlockType.php` — add `AboutHero` case.
 - `app/Filament/Resources/Pages/Schemas/PageForm.php` — register the new block.
-- `config/content.php` — add `philosophy_slug` map and append slugs to `reserved_slugs`.
+- `config/content.php` — add `philosophy_slug` map. `reserved_slugs` is **not** modified (would block the seeder).
 - `database/seeders/Content/PageSeeder.php` — seed the Philosophy page.
 - `lang/uk/content.php`, `lang/en/content.php` — labels for the new block (`blocks.about_hero.*`).
 - `lang/uk/site.php`, `lang/en/site.php` — `nav.philosophy` string.
