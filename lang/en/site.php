@@ -12,6 +12,7 @@ return [
         'aria' => 'Primary navigation',
         'home' => 'Home',
         'catalog' => 'Catalogue',
+        'philosophy' => 'Philosophy',
         'articles' => 'Articles',
     ],
 

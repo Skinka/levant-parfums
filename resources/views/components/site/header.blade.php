@@ -1,10 +1,14 @@
 @props(['locale'])
 
 @php
+    $philosophySlug = config('content.philosophy_slug')[$locale] ?? config('content.philosophy_slug')['uk'];
+    $philosophyUrl = route('page.show', ['slug' => $philosophySlug]);
+
     $nav = [
-        ['key' => 'home',     'url' => LaravelLocalization::localizeURL('/'),         'match' => fn ($r) => $r === '/' || $r === ''],
-        ['key' => 'catalog',  'url' => route('products.index'),                       'match' => fn ($r) => str_starts_with($r, '/products')],
-        ['key' => 'articles', 'url' => route('articles.index', [], false),            'match' => fn ($r) => str_starts_with($r, '/articles')],
+        ['key' => 'home',       'url' => LaravelLocalization::localizeURL('/'),         'match' => fn ($r) => $r === '/' || $r === ''],
+        ['key' => 'catalog',    'url' => route('products.index'),                       'match' => fn ($r) => str_starts_with($r, '/products')],
+        ['key' => 'philosophy', 'url' => $philosophyUrl,                                'match' => fn ($r) => $r === '/' . $philosophySlug],
+        ['key' => 'articles',   'url' => route('articles.index', [], false),            'match' => fn ($r) => str_starts_with($r, '/articles')],
     ];
     $path = '/' . trim(request()->path(), '/');
     // Strip locale prefix from the path so the matcher works regardless of locale URL prefixing.
