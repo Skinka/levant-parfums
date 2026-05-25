@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Pages\Schemas;
 
 use App\Enums\PageTemplate;
+use App\Filament\Resources\Pages\Schemas\Blocks\AboutHeroBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\ArticlesBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\BrandStoryBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\HeroBlock;
@@ -86,6 +87,7 @@ class PageForm
                 ->visible(fn (callable $get) => $get('template') === PageTemplate::Landing->value)
                 ->blocks([
                     HeroBlock::make(),
+                    AboutHeroBlock::make(),
                     TextBlock::make(),
                     ProductsBlock::make(),
                     BrandStoryBlock::make(),
