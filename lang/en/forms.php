@@ -99,4 +99,10 @@ return [
         'thanks' => ['order' => 'Thank you for your order', 'preorder' => 'Thank you for your preorder'],
         'subtotal' => 'Subtotal',
     ],
+
+    'contact' => [
+        'thanks' => 'Thank you. We have received your message.',
+        'submit' => 'Send',
+        'agree' => 'By clicking, I agree with the privacy policy',
+    ],
 ];
