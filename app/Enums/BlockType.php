@@ -5,6 +5,7 @@ namespace App\Enums;
 enum BlockType: string
 {
     case Hero = 'hero';
+    case AboutHero = 'about_hero';
     case Text = 'text';
     case Products = 'products';
     case BrandStory = 'brand_story';

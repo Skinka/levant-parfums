@@ -58,6 +58,7 @@ return [
     ],
     'blocks' => [
         'hero' => ['label' => 'Hero block'],
+        'about_hero' => ['label' => 'About-hero', 'add_stat' => 'Add stat'],
         'text' => ['label' => 'Manifesto / editorial text'],
         'products' => ['label' => 'Product list', 'add_item' => 'Add product'],
         'brand_story' => ['label' => 'Brand story (three points)', 'add_pillar' => 'Add point'],
@@ -91,6 +92,7 @@ return [
             'meta' => 'Meta numbers (3 items)',
             'meta_num' => 'Number',
             'meta_label' => 'Label',
+            'stats' => 'Stats',
             'secondary_cta_label' => 'Secondary CTA label',
             'secondary_cta_url' => 'Secondary CTA URL',
 
