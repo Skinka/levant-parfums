@@ -5,8 +5,10 @@ use App\Models\Catalogue\Series;
 use App\Models\Content\Article;
 use App\Models\Content\Page;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
+    Storage::fake('public');
     $this->withSession(['locale' => 'uk']);
     $this->image = UploadedFile::fake()->image('hero.jpg', 1600, 1200);
 });
