@@ -6,6 +6,7 @@ use App\Enums\PageTemplate;
 use App\Filament\Resources\Pages\Schemas\Blocks\AboutHeroBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\ArticlesBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\BrandStoryBlock;
+use App\Filament\Resources\Pages\Schemas\Blocks\ContactBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\HeroBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\PillarsBlock;
 use App\Filament\Resources\Pages\Schemas\Blocks\ProductsBlock;
@@ -95,6 +96,7 @@ class PageForm
                     PillarsBlock::make(),
                     TestimonialsBlock::make(),
                     ArticlesBlock::make(),
+                    ContactBlock::make(),
                 ])
                 ->collapsible()
                 ->collapsed()
