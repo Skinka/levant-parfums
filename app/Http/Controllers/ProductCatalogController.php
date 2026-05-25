@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Catalogue\Product;
+use App\Seo\Builders\CatalogSeoBuilder;
+use App\Seo\Builders\CatalogSeoInput;
+use App\Seo\Builders\ProductSeoBuilder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -15,13 +18,18 @@ class ProductCatalogController extends Controller
 
     private const ALLOWED_SORTS = ['pop', 'new', 'priceA', 'priceB'];
 
+    public function __construct(
+        private readonly CatalogSeoBuilder $catalogSeoBuilder,
+        private readonly ProductSeoBuilder $productSeoBuilder,
+    ) {}
+
     public function index(Request $request): View
     {
-        $series = $request->query('series');
-        $series = in_array($series, self::ALLOWED_SERIES, true) ? $series : null;
+        $rawSeries = $request->query('series');
+        $series = in_array($rawSeries, self::ALLOWED_SERIES, true) ? $rawSeries : null;
 
-        $sort = $request->query('sort', 'pop');
-        $sort = in_array($sort, self::ALLOWED_SORTS, true) ? $sort : 'pop';
+        $rawSort = $request->query('sort', 'pop');
+        $sort = in_array($rawSort, self::ALLOWED_SORTS, true) ? $rawSort : 'pop';
 
         $base = Product::query()
             ->where('is_published', true)
@@ -40,12 +48,22 @@ class ProductCatalogController extends Controller
         $total = (clone $base)->count();
         $totalAll = Product::where('is_published', true)->count();
 
+        $seo = $this->catalogSeoBuilder->build(
+            new CatalogSeoInput(
+                hasSortParam: $request->has('sort'),
+                hasSeriesParam: $request->has('series'),
+                page: max(1, $request->integer('page', 1)),
+            ),
+            app()->getLocale(),
+        );
+
         return view('products.index', [
             'products' => $products,
             'total' => $total,
             'totalAll' => $totalAll,
             'series' => $series,
             'sort' => $sort,
+            'seo' => $seo,
         ]);
     }
 
@@ -79,7 +97,9 @@ class ProductCatalogController extends Controller
 
         $theme = $product->series?->theme_class ?? 'theme-cream';
 
-        return view('products.show', compact('product', 'related', 'theme'));
+        $seo = $this->productSeoBuilder->build($product, app()->getLocale());
+
+        return view('products.show', compact('product', 'related', 'theme', 'seo'));
     }
 
     private function applySort(Builder $query, string $sort): void
