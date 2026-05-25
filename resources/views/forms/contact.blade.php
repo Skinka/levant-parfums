@@ -1,3 +1,4 @@
+<div>
 @if (session('forms.success.contact'))
     <div class="form-success">
         <div class="ok" aria-hidden="true">✓</div>
@@ -38,3 +39,4 @@
         </div>
     </form>
 @endif
+</div>
