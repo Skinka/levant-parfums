@@ -23,13 +23,14 @@ class Article extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $fillable = [
-        'slug', 'title', 'intro', 'content',
+        'slug', 'title', 'intro', 'category', 'content',
+        'read_time_minutes',
         'seo_title', 'seo_description',
         'is_published', 'published_at',
     ];
 
     public array $translatable = [
-        'slug', 'title', 'intro', 'content', 'seo_title', 'seo_description',
+        'slug', 'title', 'intro', 'category', 'content', 'seo_title', 'seo_description',
     ];
 
     protected function casts(): array
@@ -38,6 +39,11 @@ class Article extends Model implements HasMedia
             'is_published' => 'boolean',
             'published_at' => 'datetime',
         ];
+    }
+
+    public function displayDate(): ?string
+    {
+        return $this->published_at?->translatedFormat('j F Y');
     }
 
     public function products(): BelongsToMany

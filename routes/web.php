@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductCatalogController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,12 @@ Route::group([
     Route::get('/products/{product:slug}', [ProductCatalogController::class, 'show'])
         ->where('product', '[A-Za-z0-9\-_]+')
         ->name('products.show');
+
+    Route::get('/articles', [ArticleController::class, 'index'])
+        ->name('articles.index');
+    Route::get('/articles/{slug}', [ArticleController::class, 'show'])
+        ->where('slug', '[A-Za-z0-9\-_]+')
+        ->name('articles.show');
 
     Route::get('/{slug}', [PageController::class, 'show'])
         ->where('slug', '[A-Za-z0-9\-_]+')

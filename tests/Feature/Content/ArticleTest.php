@@ -60,3 +60,34 @@ it('DB rejects duplicate en slug for two articles', function () {
     expect(fn () => Article::factory()->create(['slug' => ['uk' => 'foo-uk-2', 'en' => 'bar']]))
         ->toThrow(QueryException::class);
 });
+
+it('stores category as a translatable json column and read_time_minutes as int', function () {
+    $article = Article::factory()->create([
+        'category' => ['uk' => 'Філософія', 'en' => 'Philosophy'],
+        'read_time_minutes' => 7,
+    ]);
+
+    $fresh = $article->fresh();
+
+    expect($fresh->getTranslation('category', 'uk'))->toBe('Філософія');
+    expect($fresh->getTranslation('category', 'en'))->toBe('Philosophy');
+    expect($fresh->read_time_minutes)->toBe(7);
+});
+
+it('formats displayDate() in the active locale', function () {
+    $article = Article::factory()->create([
+        'published_at' => Carbon::create(2026, 5, 12, 9, 0, 0),
+    ]);
+
+    app()->setLocale('uk');
+    expect($article->displayDate())->toBe('12 травня 2026');
+
+    app()->setLocale('en');
+    expect($article->displayDate())->toBe('12 May 2026');
+});
+
+it('displayDate() returns null when published_at is null', function () {
+    $article = Article::factory()->draft()->create();
+
+    expect($article->displayDate())->toBeNull();
+});

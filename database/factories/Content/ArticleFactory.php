@@ -25,6 +25,11 @@ class ArticleFactory extends Factory
             ],
             'title' => ['uk' => $titleUk, 'en' => $titleEn],
             'intro' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],
+            'category' => [
+                'uk' => fake()->randomElement(['Філософія', 'Маніфест', 'Освіта', 'Колекції']),
+                'en' => fake()->randomElement(['Philosophy', 'Manifesto', 'Education', 'Collections']),
+            ],
+            'read_time_minutes' => fake()->numberBetween(3, 8),
             'content' => ['uk' => fake('uk_UA')->paragraphs(2, true), 'en' => fake()->paragraphs(2, true)],
             'seo_title' => ['uk' => $titleUk, 'en' => $titleEn],
             'seo_description' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],

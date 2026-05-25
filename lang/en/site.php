@@ -12,6 +12,7 @@ return [
         'aria' => 'Primary navigation',
         'home' => 'Home',
         'catalog' => 'Catalogue',
+        'articles' => 'Articles',
     ],
 
     'footer' => [
@@ -32,5 +33,17 @@ return [
         ],
         'rights' => '© :year Levant Parfums. All rights reserved.',
         'geo' => 'Composed in Spain · Bottled in Turkey · Assembled in Ukraine',
+    ],
+
+    'articles' => [
+        'meta_title' => 'Articles — LEVANT Parfums',
+        'meta_description' => 'Guides, manifestos and editorial notes from the Levant perfume house.',
+        'eyebrow' => 'Articles · :year',
+        'title' => 'Articles',
+        'subtitle' => 'Guides, interviews and editorial notes from the world of perfumery.',
+        'read_min' => 'min',
+        'read_more' => 'Read more',
+        'related_title' => 'Read also',
+        'in_article_products' => 'Scents in this story',
     ],
 ];

@@ -4,6 +4,7 @@
     $nav = [
         ['key' => 'home',     'url' => LaravelLocalization::localizeURL('/'),         'match' => fn ($r) => $r === '/' || $r === ''],
         ['key' => 'catalog',  'url' => route('products.index'),                       'match' => fn ($r) => str_starts_with($r, '/products')],
+        ['key' => 'articles', 'url' => route('articles.index', [], false),            'match' => fn ($r) => str_starts_with($r, '/articles')],
     ];
     $path = '/' . trim(request()->path(), '/');
     // Strip locale prefix from the path so the matcher works regardless of locale URL prefixing.

@@ -23,6 +23,8 @@ return [
         'title' => 'Заголовок',
         'slug' => 'URL',
         'intro' => 'Короткий вступ',
+        'category' => 'Категорія',
+        'read_time_minutes' => 'Час читання (хв)',
         'content' => 'Контент',
         'seo_title' => 'SEO title',
         'seo_description' => 'SEO description',
@@ -50,6 +52,9 @@ return [
     'template' => [
         'simple' => 'Звичайна сторінка',
         'landing' => 'Лендинг (блоки)',
+    ],
+    'units' => [
+        'minutes' => 'хв',
     ],
     'blocks' => [
         'hero' => [
