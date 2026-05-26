@@ -7,7 +7,7 @@
         <div class="grid">
             <div>
                 <a href="{{ LaravelLocalization::localizeURL('/') }}" class="brand">
-                    <span class="mark">L E V A N T</span>
+                    <span class="mark">LEVANT</span>
                     <span class="sub">{{ __('site.brand_strapline') }}</span>
                 </a>
                 <p style="margin-top: 24px; color: var(--ink-soft); font-size: 14px; line-height: 1.7; max-width: 36ch;">
@@ -16,7 +16,7 @@
             </div>
 
             <div>
-                <h4>{{ __('site.footer.columns.nav') }}</h4>
+                <h2>{{ __('site.footer.columns.nav') }}</h2>
                 <ul>
                     <li><a href="{{ LaravelLocalization::localizeURL('/') }}">{{ __('site.nav.home') }}</a></li>
                     <li><a href="{{ route('products.index') }}">{{ __('site.nav.catalog') }}</a></li>
@@ -27,7 +27,7 @@
             </div>
 
             <div>
-                <h4>{{ __('site.footer.columns.shop') }}</h4>
+                <h2>{{ __('site.footer.columns.shop') }}</h2>
                 <ul>
                     <li><a href="{{ route('products.index', ['series' => 'onyx']) }}">{{ __('catalogue.public.filter_onyx') }}</a></li>
                     <li><a href="{{ route('products.index', ['series' => 'luxury']) }}">{{ __('catalogue.public.filter_luxury') }}</a></li>
@@ -38,7 +38,7 @@
 
             @php($helpPages = config('content.help_pages'))
             <div>
-                <h4>{{ __('site.footer.columns.help') }}</h4>
+                <h2>{{ __('site.footer.columns.help') }}</h2>
                 <ul>
                     <li><a href="{{ route('page.show', ['slug' => $helpPages['delivery'][$locale]]) }}">{{ __('site.footer.links.delivery') }}</a></li>
                     <li><a href="{{ route('page.show', ['slug' => $helpPages['returns'][$locale]]) }}">{{ __('site.footer.links.returns') }}</a></li>
@@ -48,7 +48,7 @@
             </div>
 
             <div>
-                <h4>{{ __('site.footer.columns.contact') }}</h4>
+                <h2>{{ __('site.footer.columns.contact') }}</h2>
                 <ul>
                     <li><a href="{{ route('page.show', ['slug' => config('content.contacts_slug')[$locale] ?? 'kontakty']) }}">{{ __('site.footer.links.contacts_page') }}</a></li>
                     <li><a href="tel:+380974128819">+38 (097) 412 88 19</a></li>

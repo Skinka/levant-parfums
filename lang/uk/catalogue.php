@@ -119,6 +119,7 @@ return [
         'product' => [
             'gallery_open' => 'Відкрити зображення',
             'gallery_zoom' => 'Натисніть, щоб збільшити',
+            'gallery_thumb' => 'Фото :n',
             'why_label' => 'Чому саме цей',
             'order_cta' => 'Оформити замовлення',
             'preorder_cta' => 'Оформити передзамовлення',

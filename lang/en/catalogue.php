@@ -119,6 +119,7 @@ return [
         'product' => [
             'gallery_open' => 'Open image',
             'gallery_zoom' => 'Click to enlarge',
+            'gallery_thumb' => 'Photo :n',
             'why_label' => 'Why this one',
             'order_cta' => 'Place order',
             'preorder_cta' => 'Place preorder',

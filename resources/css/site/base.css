@@ -38,10 +38,10 @@ input, textarea, select { font: inherit; color: inherit; }
   --bg-3:      #fffaf0;
   --ink:       #1f1c17;
   --ink-soft:  #4a4337;
-  --ink-mute:  #87796a;
+  --ink-mute:  #665947;
   --line:      #d6c9ad;
   --line-soft: rgba(31,28,23,0.10);
-  --accent:    #a07a2a;
+  --accent:    #7a5d1c;
   --accent-2:  #c79a45;
   --accent-ink:#fffaf0;
   --gold:      #b08a3e;
@@ -58,7 +58,7 @@ input, textarea, select { font: inherit; color: inherit; }
   --bg-3:      #1a1f44;
   --ink:       #f1e6cb;
   --ink-soft:  #c9bda1;
-  --ink-mute:  #7f7765;
+  --ink-mute:  #928974;
   --line:      rgba(212,184,109,0.28);
   --line-soft: rgba(241,230,203,0.10);
   --accent:    #d8b56a;

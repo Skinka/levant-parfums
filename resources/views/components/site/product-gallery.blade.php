@@ -13,7 +13,7 @@
     @if(count($urls) > 1)
         <div class="thumbs">
             @foreach($cardUrls as $i => $thumb)
-                <button type="button" class="{{ $i === 0 ? 'active' : '' }}" data-thumb-index="{{ $i }}">
+                <button type="button" class="{{ $i === 0 ? 'active' : '' }}" data-thumb-index="{{ $i }}" aria-label="{{ __('catalogue.public.product.gallery_thumb', ['n' => $i + 1]) }}">
                     <img src="{{ $thumb }}" alt="">
                 </button>
             @endforeach
@@ -26,7 +26,7 @@
         data-lightbox-trigger
         data-lightbox-images='@json($urls)'
         data-lightbox-index="0"
-        aria-label="{{ __('catalogue.public.product.gallery_open') }}"
+        aria-label="{{ __('catalogue.public.product.gallery_open') }} — {{ $product->name }}"
     >
         @if(! empty($urls))
             <img src="{{ $urls[0] }}" alt="{{ $product->name }}" data-main-image>

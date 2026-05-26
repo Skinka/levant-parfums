@@ -26,8 +26,8 @@
 
 <header class="header">
     <div class="container">
-        <a href="{{ LaravelLocalization::localizeURL('/') }}" class="brand" aria-label="LEVANT">
-            <span class="mark">L E V A N T</span>
+        <a href="{{ LaravelLocalization::localizeURL('/') }}" class="brand">
+            <span class="mark">LEVANT</span>
             <span class="sub">{{ __('site.brand_strapline') }}</span>
         </a>
 
