@@ -15,12 +15,12 @@ class ConcentrationFactory extends Factory
 
     public function definition(): array
     {
-        $name = fake()->unique()->word();
+        $name = $this->faker->unique()->word();
         $abbr = strtoupper(Str::substr($name, 0, 3));
 
         return [
             'name' => ['uk' => "EDP $name", 'en' => "EDP $name"],
-            'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(1, 99999),
+            'slug' => Str::slug($name).'-'.$this->faker->unique()->numberBetween(1, 99999),
             'abbreviation' => $abbr,
             'sort_order' => 0,
             'is_active' => true,

@@ -15,8 +15,8 @@ class ArticleFactory extends Factory
 
     public function definition(): array
     {
-        $titleUk = 'Стаття '.fake()->unique()->numberBetween(1, 99999);
-        $titleEn = 'Article '.fake()->unique()->numberBetween(1, 99999);
+        $titleUk = 'Стаття '.$this->faker->unique()->numberBetween(1, 99999);
+        $titleEn = 'Article '.$this->faker->unique()->numberBetween(1, 99999);
 
         return [
             'slug' => [
@@ -24,15 +24,15 @@ class ArticleFactory extends Factory
                 'en' => Str::slug($titleEn).'-'.Str::random(4),
             ],
             'title' => ['uk' => $titleUk, 'en' => $titleEn],
-            'intro' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],
+            'intro' => ['uk' => $this->faker->sentence(), 'en' => $this->faker->sentence()],
             'category' => [
-                'uk' => fake()->randomElement(['Філософія', 'Маніфест', 'Освіта', 'Колекції']),
-                'en' => fake()->randomElement(['Philosophy', 'Manifesto', 'Education', 'Collections']),
+                'uk' => $this->faker->randomElement(['Філософія', 'Маніфест', 'Освіта', 'Колекції']),
+                'en' => $this->faker->randomElement(['Philosophy', 'Manifesto', 'Education', 'Collections']),
             ],
-            'read_time_minutes' => fake()->numberBetween(3, 8),
-            'content' => ['uk' => fake('uk_UA')->paragraphs(2, true), 'en' => fake()->paragraphs(2, true)],
+            'read_time_minutes' => $this->faker->numberBetween(3, 8),
+            'content' => ['uk' => $this->faker->paragraphs(2, true), 'en' => $this->faker->paragraphs(2, true)],
             'seo_title' => ['uk' => $titleUk, 'en' => $titleEn],
-            'seo_description' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],
+            'seo_description' => ['uk' => $this->faker->sentence(), 'en' => $this->faker->sentence()],
             'is_published' => true,
             'published_at' => now(),
         ];

@@ -52,6 +52,14 @@ return new class extends Migration
     public function down(): void
     {
         $driver = DB::getDriverName();
+
+        // Landing pages store no standalone content. Before returning to the
+        // previous NOT NULL column definition, replace those NULL values with
+        // an empty JSON object so migrate:refresh can complete on MySQL.
+        DB::table('pages')
+            ->whereNull('content')
+            ->update(['content' => '{}']);
+
         if ($driver === 'mysql') {
             DB::statement('DROP INDEX pages_is_homepage_uniq ON pages');
         } elseif ($driver === 'sqlite') {
@@ -63,7 +71,7 @@ return new class extends Migration
             $table->dropColumn(['template', 'blocks', 'is_homepage']);
         });
 
-        // Restore content as NOT NULL (best-effort; will fail if any row has NULL).
+        // Restore the original column definition.
         Schema::table('pages', function (Blueprint $table) {
             $table->json('content')->nullable(false)->change();
         });

@@ -1,0 +1,293 @@
+---
+- name: Deploy LevantParfums
+  hosts: web
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Require deployment configuration
+      ansible.builtin.assert:
+        that:
+          - app_url is match('^https?://')
+          - "'example.com' not in app_url"
+          - nginx_server_names | length > 0
+          - "'example.com' not in nginx_server_names"
+          - vault_app_key is defined
+          - vault_app_key is match('^base64:')
+          - vault_app_db_password is defined
+          - vault_app_db_password | length >= 16
+          - vault_app_db_password is match('^[A-Za-z0-9._-]+$')
+          - app_forms_admin_email | length > 0
+        fail_msg: >-
+          Fill ansible/inventory/group_vars/web/defaults.yml and create encrypted
+          ansible/inventory/group_vars/web/vault.yml before deploying.
+      no_log: true
+
+  tasks:
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ app_path }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
+
+    - name: Install JavaScript dependencies on the Ansible controller
+      ansible.builtin.command:
+        cmd: npm ci --no-audit --no-fund
+        chdir: "{{ playbook_dir }}/../.."
+      delegate_to: localhost
+      become: false
+      changed_when: true
+
+    - name: Build production frontend assets on the Ansible controller
+      ansible.builtin.command:
+        cmd: npm run build
+        chdir: "{{ playbook_dir }}/../.."
+      delegate_to: localhost
+      become: false
+      changed_when: true
+
+    - name: Ensure Laravel vendor view directory is writable by the deploy user
+      ansible.builtin.file:
+        path: "{{ app_path }}/resources/views/vendor"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
+      become: true
+
+    - name: Synchronize the application source and built assets
+      ansible.posix.synchronize:
+        src: "{{ playbook_dir }}/../../"
+        dest: "{{ app_path }}/"
+        mode: push
+        archive: true
+        compress: true
+        delete: true
+        use_ssh_args: true
+        rsync_opts:
+          - "--exclude=.agents/"
+          - "--exclude=.codex/"
+          - "--exclude=.DS_Store"
+          - "--exclude=.env"
+          - "--exclude=.git/"
+          - "--exclude=.github/"
+          - "--exclude=.idea/"
+          - "--exclude=.worktrees/"
+          - "--exclude=.vscode/"
+          - "--exclude=ansible/"
+          - "--exclude=bootstrap/cache/"
+          - "--exclude=docs/"
+          - "--exclude=node_modules/"
+          - "--exclude=storage/"
+          - "--exclude=tests/"
+          # Exclude only Composer dependencies at the project root, not
+          # resources/views/vendor with Laravel pagination templates.
+          - "--exclude=/vendor/"
+          - "--omit-dir-times"
+      become: true
+      become_user: "{{ app_user }}"
+      changed_when: true
+      notify:
+        - Restart PHP-FPM
+        - Restart queue worker
+
+    - name: Create writable Laravel directories
+      ansible.builtin.file:
+        path: "{{ app_path }}/{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "2775"
+      loop:
+        - bootstrap/cache
+        - storage/app/private
+        - storage/app/public
+        - storage/framework/cache/data
+        - storage/framework/sessions
+        - storage/framework/views
+        - storage/logs
+
+    - name: Write production environment file
+      ansible.builtin.template:
+        src: app.env.j2
+        dest: "{{ app_path }}/.env"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0640"
+      no_log: true
+      notify:
+        - Restart PHP-FPM
+        - Restart queue worker
+
+    - name: Install PHP dependencies
+      ansible.builtin.command:
+        cmd: >-
+          php{{ php_version }} /usr/bin/composer install --no-dev --prefer-dist
+          --no-interaction --optimize-autoloader
+        chdir: "{{ app_path }}"
+      become: true
+      become_user: "{{ app_user }}"
+      environment:
+        COMPOSER_ALLOW_SUPERUSER: "0"
+      register: composer_install
+      changed_when: "'Nothing to install, update or remove' not in composer_install.stdout"
+
+    - name: Link public storage to Laravel uploads
+      ansible.builtin.file:
+        src: "../storage/app/public"
+        dest: "{{ app_path }}/public/storage"
+        state: link
+        force: true
+
+    - name: Run pending database migrations
+      ansible.builtin.command:
+        cmd: "php{{ php_version }} artisan migrate --force"
+        chdir: "{{ app_path }}"
+      become: true
+      become_user: "{{ app_user }}"
+      register: migration_result
+      changed_when: "'Nothing to migrate.' not in migration_result.stdout"
+
+    - name: Clear obsolete Laravel caches
+      ansible.builtin.command:
+        cmd: "php{{ php_version }} artisan optimize:clear"
+        chdir: "{{ app_path }}"
+      become: true
+      become_user: "{{ app_user }}"
+      changed_when: true
+
+    - name: Cache Laravel production configuration
+      ansible.builtin.command:
+        cmd: "php{{ php_version }} artisan config:cache"
+        chdir: "{{ app_path }}"
+      become: true
+      become_user: "{{ app_user }}"
+      changed_when: true
+
+    - name: Cache localized Laravel routes
+      ansible.builtin.command:
+        cmd: "php{{ php_version }} artisan route:trans:cache"
+        chdir: "{{ app_path }}"
+      become: true
+      become_user: "{{ app_user }}"
+      changed_when: true
+
+    - name: Cache Laravel views
+      ansible.builtin.command:
+        cmd: "php{{ php_version }} artisan view:cache"
+        chdir: "{{ app_path }}"
+      become: true
+      become_user: "{{ app_user }}"
+      changed_when: true
+      notify:
+        - Restart PHP-FPM
+        - Restart queue worker
+
+    - name: Install Nginx virtual host
+      ansible.builtin.template:
+        src: nginx-site.conf.j2
+        dest: "/etc/nginx/sites-available/{{ app_service_name }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload Nginx
+
+    - name: Enable Nginx virtual host
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/{{ app_service_name }}.conf"
+        dest: "/etc/nginx/sites-enabled/{{ app_service_name }}.conf"
+        state: link
+      notify: Reload Nginx
+
+    - name: Optionally disable Nginx default virtual host
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      when: nginx_disable_default_site | bool
+      notify: Reload Nginx
+
+    - name: Install dedicated PHP-FPM pool
+      ansible.builtin.template:
+        src: php-fpm-pool.conf.j2
+        dest: "/etc/php/{{ php_version }}/fpm/pool.d/{{ app_service_name }}.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart PHP-FPM
+
+    - name: Validate Nginx configuration
+      ansible.builtin.command:
+        cmd: nginx -t
+      changed_when: false
+
+    - name: Install Laravel queue worker service
+      ansible.builtin.template:
+        src: levant-queue.service.j2
+        dest: "/etc/systemd/system/{{ app_service_name }}-queue.service"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload systemd
+        - Restart queue worker
+
+    - name: Install Laravel scheduler service
+      ansible.builtin.template:
+        src: levant-scheduler.service.j2
+        dest: "/etc/systemd/system/{{ app_service_name }}-scheduler.service"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Install Laravel scheduler timer
+      ansible.builtin.template:
+        src: levant-scheduler.timer.j2
+        dest: "/etc/systemd/system/{{ app_service_name }}-scheduler.timer"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload systemd
+        - Restart scheduler timer
+
+    - name: Enable Laravel queue worker
+      ansible.builtin.systemd_service:
+        name: "{{ app_service_name }}-queue"
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Enable Laravel scheduler timer
+      ansible.builtin.systemd_service:
+        name: "{{ app_service_name }}-scheduler.timer"
+        enabled: true
+        state: started
+        daemon_reload: true
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: Restart PHP-FPM
+      ansible.builtin.systemd_service:
+        name: "php{{ php_version }}-fpm"
+        state: restarted
+
+    - name: Reload Nginx
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: reloaded
+
+    - name: Restart queue worker
+      ansible.builtin.systemd_service:
+        name: "{{ app_service_name }}-queue"
+        state: restarted
+
+    - name: Restart scheduler timer
+      ansible.builtin.systemd_service:
+        name: "{{ app_service_name }}-scheduler.timer"
+        state: restarted

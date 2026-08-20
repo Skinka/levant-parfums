@@ -15,11 +15,11 @@ class SeasonFactory extends Factory
 
     public function definition(): array
     {
-        $uk = fake('uk_UA')->unique()->word();
+        $uk = $this->faker->unique()->word();
 
         return [
             'name' => ['uk' => $uk, 'en' => Str::title($uk)],
-            'slug' => Str::slug($uk).'-'.fake()->unique()->numberBetween(1, 99999),
+            'slug' => Str::slug($uk).'-'.$this->faker->unique()->numberBetween(1, 99999),
             'sort_order' => 0,
             'is_active' => true,
         ];

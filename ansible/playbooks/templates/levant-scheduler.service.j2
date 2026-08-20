@@ -1,0 +1,10 @@
+[Unit]
+Description={{ app_name }} Laravel scheduler
+After=network.target
+
+[Service]
+Type=oneshot
+User={{ app_user }}
+Group={{ app_group }}
+WorkingDirectory={{ app_path }}
+ExecStart=/usr/bin/php{{ php_version }} {{ app_path }}/artisan schedule:run --no-interaction

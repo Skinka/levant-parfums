@@ -15,11 +15,11 @@ class NoteFactory extends Factory
 
     public function definition(): array
     {
-        $name = fake()->unique()->word();
+        $name = $this->faker->unique()->word();
 
         return [
             'name' => ['uk' => $name, 'en' => $name],
-            'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(1, 99999),
+            'slug' => Str::slug($name).'-'.$this->faker->unique()->numberBetween(1, 99999),
             'description' => null,
             'sort_order' => 0,
             'is_active' => true,

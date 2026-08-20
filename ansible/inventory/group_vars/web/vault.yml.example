@@ -1,0 +1,12 @@
+---
+# Скопируйте этот файл в vault.yml и зашифруйте его:
+# ansible-vault encrypt ansible/inventory/group_vars/web/vault.yml
+# Не добавляйте vault.yml в Git.
+
+# Сгенерируйте ключ один раз: php artisan key:generate --show
+vault_app_key: "base64:replace-with-a-real-laravel-key"
+vault_app_db_password: "replace-with-a-long-random-password"
+vault_nginx_basic_auth_password: "replace-with-a-private-site-password"
+
+# Оставьте пустым для MAIL_MAILER=log. Для SMTP укажите пароль провайдера.
+vault_app_mail_password: ""

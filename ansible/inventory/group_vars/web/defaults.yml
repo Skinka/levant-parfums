@@ -1,0 +1,77 @@
+---
+# Обычные (не секретные) параметры production-сервера.
+# Секреты лежат в inventory/group_vars/web/vault.yml и должны быть зашифрованы Ansible Vault.
+
+app_name: "LevantParfums"
+app_service_name: "levantparfums"
+app_user: "levant"
+app_group: "www-data"
+app_path: "/var/www/levantparfums"
+
+# Адрес репозитория и ветка/тег для развёртывания.
+app_repository: "https://github.com/Skinka/levant-parfums"
+app_version: "main"
+
+# Публичный адрес приложения и имена, которые обслуживает Nginx.
+app_url: "https://levantparfums.com"
+nginx_server_names:
+  - "levantparfums.com"
+  - "www.levantparfums.com"
+nginx_client_max_body_size: "32m"
+nginx_disable_default_site: false
+# Сертификат Let's Encrypt уже выпущен для этого домена. Домен должен иметь
+# A/AAAA-запись на сервер до добавления его в сертификат.
+nginx_tls_enabled: true
+nginx_tls_domain: "levantparfums.com"
+
+# Закрывает сайт HTTP Basic Auth. Сам пароль хранится только в Ansible Vault.
+nginx_basic_auth_enabled: true
+nginx_basic_auth_user: "levant"
+nginx_basic_auth_realm: "Levant Parfums"
+nginx_basic_auth_file: "/etc/nginx/levantparfums.htpasswd"
+
+# PHP 8.3 требуется composer.json. Ubuntu 26.04 поставляет PHP 8.5,
+# который совместим с ограничением ^8.3 в composer.json.
+php_version: >-
+  {{ '8.5' if ansible_facts['distribution_version'] is version('26.04', '>=') else '8.3' }}
+node_major_version: "22"
+php_fpm_max_children: 10
+
+# MySQL остаётся доступным только локально на сервере.
+mysql_bind_address: "127.0.0.1"
+app_db_name: "levantparfums"
+app_db_user: "levantparfums"
+
+# Laravel application settings.
+app_env: "production"
+app_debug: false
+app_timezone: "Europe/Kyiv"
+app_locale: "uk"
+app_fallback_locale: "uk"
+app_faker_locale: "uk_UA"
+
+app_log_level: "warning"
+app_session_lifetime: 120
+app_session_domain: "null"
+app_forms_admin_email: "info@levantparfums.com"
+app_forms_queue: "default"
+
+# Настройки почтового провайдера. По умолчанию почта не отправляется наружу,
+# пока их явно не поменяют.
+app_mailer: "log"
+app_mail_scheme: "null"
+app_mail_host: "127.0.0.1"
+app_mail_port: 2525
+app_mail_username: "null"
+app_mail_from_address: "info@levantparfums.com"
+app_mail_from_name: "Levant Parfums"
+
+# Данные для schema.org на публичном сайте.
+seo_org_name: "LEVANT Parfums"
+seo_org_logo: "/images/og/logo.png"
+seo_org_phone: ""
+seo_org_email: "info@levantparfums.com"
+seo_org_country: "UA"
+seo_org_city: ""
+seo_org_street: ""
+seo_org_same_as: ""

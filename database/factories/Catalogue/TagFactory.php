@@ -15,13 +15,13 @@ class TagFactory extends Factory
 
     public function definition(): array
     {
-        $name = fake()->unique()->word();
+        $name = $this->faker->unique()->word();
 
         return [
             'name' => ['uk' => $name, 'en' => $name],
-            'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(1, 99999),
-            'color' => fake()->hexColor(),
-            'is_featured' => fake()->boolean(50),
+            'slug' => Str::slug($name).'-'.$this->faker->unique()->numberBetween(1, 99999),
+            'color' => $this->faker->hexColor(),
+            'is_featured' => $this->faker->boolean(50),
             'sort_order' => 0,
             'is_active' => true,
         ];

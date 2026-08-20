@@ -1,0 +1,117 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ nginx_server_names | join(' ') }};
+
+{% if nginx_tls_enabled | bool %}
+    return 301 https://{{ nginx_tls_domain }}$request_uri;
+{% else %}
+    root {{ app_path }}/public;
+    index index.php;
+    charset utf-8;
+    client_max_body_size {{ nginx_client_max_body_size }};
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+{% if nginx_basic_auth_enabled | bool %}
+    auth_basic "{{ nginx_basic_auth_realm }}";
+    auth_basic_user_file {{ nginx_basic_auth_file }};
+{% endif %}
+
+    access_log /var/log/nginx/{{ app_service_name }}.access.log;
+    error_log /var/log/nginx/{{ app_service_name }}.error.log warn;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ ^/index\.php(/|$) {
+        fastcgi_pass unix:/run/php/{{ app_service_name }}.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_buffer_size 32k;
+        fastcgi_buffers 8 32k;
+        fastcgi_busy_buffers_size 64k;
+        fastcgi_hide_header X-Powered-By;
+    }
+
+    location ~* \.(?:css|js|mjs|jpg|jpeg|gif|png|svg|webp|ico|woff|woff2)$ {
+        try_files $uri =404;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+{% endif %}
+}
+
+{% if nginx_tls_enabled | bool %}
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {{ nginx_tls_domain }};
+
+    ssl_certificate /etc/letsencrypt/live/{{ nginx_tls_domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ nginx_tls_domain }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    root {{ app_path }}/public;
+    index index.php;
+    charset utf-8;
+    client_max_body_size {{ nginx_client_max_body_size }};
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+{% if nginx_basic_auth_enabled | bool %}
+    auth_basic "{{ nginx_basic_auth_realm }}";
+    auth_basic_user_file {{ nginx_basic_auth_file }};
+{% endif %}
+
+    access_log /var/log/nginx/{{ app_service_name }}.access.log;
+    error_log /var/log/nginx/{{ app_service_name }}.error.log warn;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ ^/index\.php(/|$) {
+        fastcgi_pass unix:/run/php/{{ app_service_name }}.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_buffer_size 32k;
+        fastcgi_buffers 8 32k;
+        fastcgi_busy_buffers_size 64k;
+        fastcgi_hide_header X-Powered-By;
+    }
+
+    location ~* \.(?:css|js|mjs|jpg|jpeg|gif|png|svg|webp|ico|woff|woff2)$ {
+        try_files $uri =404;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+
+{% set nginx_tls_redirect_names = nginx_server_names | reject('equalto', nginx_tls_domain) | list %}
+{% if nginx_tls_redirect_names | length > 0 %}
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {{ nginx_tls_redirect_names | join(' ') }};
+
+    ssl_certificate /etc/letsencrypt/live/{{ nginx_tls_domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ nginx_tls_domain }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    return 301 https://{{ nginx_tls_domain }}$request_uri;
+}
+{% endif %}
+{% endif %}

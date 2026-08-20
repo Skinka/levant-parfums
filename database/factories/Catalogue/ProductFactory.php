@@ -20,25 +20,25 @@ class ProductFactory extends Factory
 
     public function definition(): array
     {
-        $name = 'LUXURY '.fake()->unique()->numberBetween(1, 9999);
+        $name = 'LUXURY '.$this->faker->unique()->numberBetween(1, 9999);
 
         return [
-            'sku' => 'LV-'.fake()->unique()->numerify('######'),
+            'sku' => 'LV-'.$this->faker->unique()->numerify('######'),
             'slug' => Str::slug($name),
             'name' => ['uk' => $name, 'en' => $name],
-            'tagline' => ['uk' => fake('uk_UA')->sentence(4), 'en' => fake()->sentence(4)],
-            'description' => ['uk' => fake('uk_UA')->paragraph(), 'en' => fake()->paragraph()],
-            'inspired_perfume_name' => fake()->words(2, true),
+            'tagline' => ['uk' => $this->faker->sentence(4), 'en' => $this->faker->sentence(4)],
+            'description' => ['uk' => $this->faker->paragraph(), 'en' => $this->faker->paragraph()],
+            'inspired_perfume_name' => $this->faker->words(2, true),
             'inspired_brand_id' => Brand::factory(),
             'volume_ml' => 50,
-            'gender' => fake()->randomElement(Gender::cases())->value,
-            'price_uah' => fake()->randomFloat(2, 500, 5000),
-            'price_eur' => fake()->randomFloat(2, 15, 130),
+            'gender' => $this->faker->randomElement(Gender::cases())->value,
+            'price_uah' => $this->faker->randomFloat(2, 500, 5000),
+            'price_eur' => $this->faker->randomFloat(2, 15, 130),
             'in_stock' => true,
             'is_published' => true,
             'published_at' => now(),
             'seo_title' => ['uk' => $name, 'en' => $name],
-            'seo_description' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],
+            'seo_description' => ['uk' => $this->faker->sentence(), 'en' => $this->faker->sentence()],
             'perfume_family_id' => PerfumeFamily::factory(),
             'concentration_id' => Concentration::factory(),
             'series_id' => Series::factory(),

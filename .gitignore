@@ -31,3 +31,5 @@ Thumbs.db
 /storage/screenshots
 /*.png
 storage/lighthouse
+ansible/inventory/production.ini
+ansible/inventory/group_vars/web/vault.yml

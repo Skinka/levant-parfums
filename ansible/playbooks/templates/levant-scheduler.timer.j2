@@ -1,0 +1,10 @@
+[Unit]
+Description=Run {{ app_name }} Laravel scheduler every minute
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+Persistent=true
+Unit={{ app_service_name }}-scheduler.service
+
+[Install]
+WantedBy=timers.target

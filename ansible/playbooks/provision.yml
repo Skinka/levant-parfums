@@ -1,0 +1,242 @@
+---
+- name: Prepare an Ubuntu server for LevantParfums
+  hosts: web
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Require Ubuntu
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['distribution'] == 'Ubuntu'
+          - ansible_facts['distribution_version'] is version('22.04', '>=')
+        fail_msg: >-
+          This playbook supports Ubuntu 22.04, 24.04, and 26.04. Adapt the
+          package and repository tasks before using another distribution.
+
+    - name: Require deployment variables
+      ansible.builtin.assert:
+        that:
+          - app_db_name | length > 0
+          - app_db_user | length > 0
+          - vault_app_db_password is defined
+          - vault_app_db_password | length >= 16
+          - vault_app_db_password is match('^[A-Za-z0-9._-]+$')
+          - >-
+            not (nginx_basic_auth_enabled | bool) or
+            (vault_nginx_basic_auth_password is defined and
+            vault_nginx_basic_auth_password | length > 0)
+        fail_msg: >-
+          Create and encrypt ansible/inventory/group_vars/web/vault.yml from
+          vault.yml.example, then set a database password of at least 16 characters
+          using only letters, digits, dots, underscores, or hyphens.
+      no_log: true
+
+  tasks:
+    - name: Install base system packages
+      ansible.builtin.apt:
+        name:
+          - acl
+          - apache2-utils
+          - ca-certificates
+          - composer
+          - curl
+          - ffmpeg
+          - git
+          - gnupg
+          - mysql-server
+          - nginx
+          - python3-pymysql
+          - rsync
+          - unzip
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Create the APT keyring directory
+      ansible.builtin.file:
+        path: /usr/share/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Download the PHP packages repository signing key
+      ansible.builtin.get_url:
+        url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6"
+        dest: /usr/share/keyrings/ondrej-php.asc
+        owner: root
+        group: root
+        mode: "0644"
+      register: ondrej_php_asc_key
+      when: ansible_facts['distribution_version'] is version('24.04', '<')
+
+    - name: Check whether the PHP packages repository key exists
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/ondrej-php.gpg
+      register: ondrej_php_gpg_key
+      when: ansible_facts['distribution_version'] is version('24.04', '<')
+
+    - name: Convert the PHP packages repository key for APT
+      ansible.builtin.command:
+        cmd: >-
+          gpg --dearmor --yes --output /usr/share/keyrings/ondrej-php.gpg
+          /usr/share/keyrings/ondrej-php.asc
+      when: >-
+        ansible_facts['distribution_version'] is version('24.04', '<') and
+        (ondrej_php_asc_key.changed or not ondrej_php_gpg_key.stat.exists)
+      changed_when: true
+
+    - name: Enable the PHP packages repository on Ubuntu 22.04
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/usr/share/keyrings/ondrej-php.gpg]
+          https://ppa.launchpadcontent.net/ondrej/php/ubuntu
+          {{ ansible_facts['distribution_release'] }} main
+        filename: ondrej-php
+        state: present
+        update_cache: true
+      when: ansible_facts['distribution_version'] is version('24.04', '<')
+
+    - name: Install PHP runtime and Laravel extensions
+      ansible.builtin.apt:
+        name:
+          - "php{{ php_version }}-bcmath"
+          - "php{{ php_version }}-cli"
+          - "php{{ php_version }}-common"
+          - "php{{ php_version }}-curl"
+          - "php{{ php_version }}-fpm"
+          - "php{{ php_version }}-gd"
+          - "php{{ php_version }}-intl"
+          - "php{{ php_version }}-mbstring"
+          - "php{{ php_version }}-mysql"
+          - "php{{ php_version }}-xml"
+          - "php{{ php_version }}-zip"
+        state: present
+        update_cache: true
+
+    - name: Install PHP OPcache package on PHP 8.3
+      ansible.builtin.apt:
+        name: "php{{ php_version }}-opcache"
+        state: present
+      when: php_version == '8.3'
+
+    - name: Download the NodeSource signing key
+      ansible.builtin.get_url:
+        url: "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
+        dest: "/usr/share/keyrings/nodesource.asc"
+        owner: root
+        group: root
+        mode: "0644"
+      register: nodesource_asc_key
+      when: ansible_facts['distribution_version'] is version('26.04', '<')
+
+    - name: Check whether the NodeSource APT key exists
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/nodesource.gpg
+      register: nodesource_gpg_key
+      when: ansible_facts['distribution_version'] is version('26.04', '<')
+
+    - name: Convert the NodeSource signing key for APT
+      ansible.builtin.command:
+        cmd: >-
+          gpg --dearmor --yes --output /usr/share/keyrings/nodesource.gpg
+          /usr/share/keyrings/nodesource.asc
+      when: >-
+        ansible_facts['distribution_version'] is version('26.04', '<') and
+        (nodesource_asc_key.changed or not nodesource_gpg_key.stat.exists)
+      changed_when: true
+
+    - name: Enable the NodeSource repository
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/usr/share/keyrings/nodesource.gpg]
+          https://deb.nodesource.com/node_{{ node_major_version }}.x nodistro main
+        filename: nodesource
+        state: present
+        update_cache: true
+      when: ansible_facts['distribution_version'] is version('26.04', '<')
+
+    - name: Install Node.js for Vite builds
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+
+    - name: Keep MySQL private to this host
+      ansible.builtin.lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        regexp: '^bind-address\s*='
+        line: "bind-address = {{ mysql_bind_address }}"
+      notify: Restart MySQL
+
+    - name: Ensure application service account exists
+      ansible.builtin.user:
+        name: "{{ app_user }}"
+        groups: "{{ app_group }}"
+        append: true
+        create_home: true
+        shell: /bin/bash
+        system: true
+
+    - name: Create the Nginx Basic Auth password file
+      ansible.builtin.command:
+        argv:
+          - htpasswd
+          - -B
+          - -b
+          - -c
+          - "{{ nginx_basic_auth_file }}"
+          - "{{ nginx_basic_auth_user }}"
+          - "{{ vault_nginx_basic_auth_password }}"
+      when: nginx_basic_auth_enabled | bool
+      changed_when: true
+      no_log: true
+
+    - name: Restrict access to the Nginx Basic Auth password file
+      ansible.builtin.file:
+        path: "{{ nginx_basic_auth_file }}"
+        owner: root
+        group: "{{ app_group }}"
+        mode: "0640"
+      when: nginx_basic_auth_enabled | bool
+
+    - name: Ensure web services are enabled
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - mysql
+        - nginx
+        - "php{{ php_version }}-fpm"
+
+    - name: Create the application database
+      ansible.mysql.mysql_db:
+        name: "{{ app_db_name }}"
+        encoding: utf8mb4
+        collation: utf8mb4_unicode_ci
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_user: root
+
+    - name: Create the application MySQL user
+      ansible.mysql.mysql_user:
+        name: "{{ app_db_user }}"
+        plugin: caching_sha2_password
+        plugin_auth_string: "{{ vault_app_db_password }}"
+        salt: "{{ vault_app_db_password | hash('sha1') | truncate(20, true, '') }}"
+        host: "{{ item }}"
+        priv: "{{ app_db_name }}.*:ALL"
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_user: root
+      loop:
+        - localhost
+        - 127.0.0.1
+      no_log: true
+
+  handlers:
+    - name: Restart MySQL
+      ansible.builtin.systemd_service:
+        name: mysql
+        state: restarted

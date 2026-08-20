@@ -16,8 +16,8 @@ class PageFactory extends Factory
 
     public function definition(): array
     {
-        $titleUk = 'Сторінка '.fake()->unique()->numberBetween(1, 99999);
-        $titleEn = 'Page '.fake()->unique()->numberBetween(1, 99999);
+        $titleUk = 'Сторінка '.$this->faker->unique()->numberBetween(1, 99999);
+        $titleEn = 'Page '.$this->faker->unique()->numberBetween(1, 99999);
 
         return [
             'slug' => [
@@ -25,10 +25,10 @@ class PageFactory extends Factory
                 'en' => Str::slug($titleEn).'-'.Str::random(4),
             ],
             'title' => ['uk' => $titleUk, 'en' => $titleEn],
-            'intro' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],
-            'content' => ['uk' => fake('uk_UA')->paragraphs(2, true), 'en' => fake()->paragraphs(2, true)],
+            'intro' => ['uk' => $this->faker->sentence(), 'en' => $this->faker->sentence()],
+            'content' => ['uk' => $this->faker->paragraphs(2, true), 'en' => $this->faker->paragraphs(2, true)],
             'seo_title' => ['uk' => $titleUk, 'en' => $titleEn],
-            'seo_description' => ['uk' => fake('uk_UA')->sentence(), 'en' => fake()->sentence()],
+            'seo_description' => ['uk' => $this->faker->sentence(), 'en' => $this->faker->sentence()],
             'is_published' => true,
             'template' => PageTemplate::Simple,
             'blocks' => null,
